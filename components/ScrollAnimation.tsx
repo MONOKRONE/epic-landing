@@ -1,5 +1,8 @@
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
-import { useRef } from "react";
+"use client";
+
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   CheckCircle2,
   CreditCard,
@@ -13,326 +16,477 @@ import {
   Zap,
 } from "lucide-react";
 
-const EASE_EXPO_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const EASE_STANDARD: [number, number, number, number] = [0.4, 0, 0.2, 1];
+gsap.registerPlugin(ScrollTrigger);
 
 export default function ScrollAnimation() {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 30,
-    restDelta: 0.001,
-  });
+  // Phase 1 & 2 refs
+  const indicatorRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const phase1UIRef = useRef<HTMLDivElement>(null);
+  const bandRef = useRef<HTMLDivElement>(null);
+  const b0Ref = useRef<HTMLDivElement>(null);
+  const b0ContentRef = useRef<HTMLDivElement>(null);
+  const b1Ref = useRef<HTMLDivElement>(null);
+  const b2Ref = useRef<HTMLDivElement>(null);
+  const b3Ref = useRef<HTMLDivElement>(null);
+  const b4Ref = useRef<HTMLDivElement>(null);
+  const banksRef = useRef<HTMLDivElement>(null);
 
-  // ═══════════════════════════════════════════════════
-  // PHASE 1 & 2: 3D Scene (0 → 0.2)
-  // ═══════════════════════════════════════════════════
-  const sceneOpacity = useTransform(smoothProgress, [0.2, 0.21], [1, 0]);
-  const sceneRotateX = useTransform(
-    smoothProgress,
-    [0, 0.08, 0.14],
-    [20, 5, 0]
-  );
-  const sceneRotateY = useTransform(
-    smoothProgress,
-    [0, 0.08, 0.14],
-    [-15, 0, 0]
-  );
+  // Phase 3 ref
+  const screenFillRef = useRef<HTMLDivElement>(null);
 
-  const phase1Opacity = useTransform(smoothProgress, [0, 0.03], [1, 0]);
-  const phase1Y = useTransform(smoothProgress, [0, 0.03], [0, -50]);
-  const bandOpacity = useTransform(smoothProgress, [0.03, 0.06], [1, 0]);
+  // Phase 4 refs
+  const phase4Ref = useRef<HTMLDivElement>(null);
+  const docRef = useRef<HTMLDivElement>(null);
+  const docLinesRef = useRef<HTMLDivElement>(null);
+  const docHeaderRef = useRef<HTMLDivElement>(null);
+  const docBodyRef = useRef<HTMLDivElement>(null);
+  const docFooterRef = useRef<HTMLDivElement>(null);
+  const callout1Ref = useRef<HTMLDivElement>(null);
+  const callout1InnerRef = useRef<HTMLDivElement>(null);
+  const callout2Ref = useRef<HTMLDivElement>(null);
+  const callout2InnerRef = useRef<HTMLDivElement>(null);
+  const callout3Ref = useRef<HTMLDivElement>(null);
+  const callout3InnerRef = useRef<HTMLDivElement>(null);
+  const processingBarRef = useRef<HTMLDivElement>(null);
 
-  // Center Bill
-  const b0X = useTransform(
-    smoothProgress,
-    [0.06, 0.14, 0.2],
-    [0, 0, 0]
-  );
-  const b0Y = useTransform(
-    smoothProgress,
-    [0.06, 0.14, 0.2],
-    [0, 220, 600]
-  );
-  const b0Z = useTransform(
-    smoothProgress,
-    [0.06, 0.14, 0.2],
-    [0, 150, 800]
-  );
-  const b0Scale = useTransform(smoothProgress, [0.14, 0.2], [1, 50]);
-  const bill0ContentOpacity = useTransform(
-    smoothProgress,
-    [0.14, 0.16],
-    [1, 0]
-  );
+  // Phase 5 refs
+  const phase5Ref = useRef<HTMLDivElement>(null);
+  const phase5StatsRef = useRef<HTMLDivElement>(null);
+  const card0Ref = useRef<HTMLDivElement>(null);
+  const card1Ref = useRef<HTMLDivElement>(null);
+  const card2Ref = useRef<HTMLDivElement>(null);
+  const card3Ref = useRef<HTMLDivElement>(null);
 
-  // Other Bills
-  const otherBillsOpacity = useTransform(
-    smoothProgress,
-    [0.11, 0.14],
-    [1, 0]
-  );
-  const b1X = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, -240, -240, -300]
-  );
-  const b1Y = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, 180, 180, 0]
-  );
-  const b1Z = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [-10, 100, 100, 0]
-  );
-  const b1R = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, -12, -12, -20]
-  );
+  // Phase 6 refs
+  const phase6Ref = useRef<HTMLDivElement>(null);
+  const phase6CardRef = useRef<HTMLDivElement>(null);
+  const phase6ContentRef = useRef<HTMLDivElement>(null);
+  const phase6QuoteRef = useRef<HTMLDivElement>(null);
+  const phase6VideoRef = useRef<HTMLDivElement>(null);
 
-  const b2X = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, 240, 240, 300]
-  );
-  const b2Y = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, 190, 190, 0]
-  );
-  const b2Z = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [-20, 120, 120, 0]
-  );
-  const b2R = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, 12, 12, 20]
-  );
+  // Phase 7 refs
+  const phase7Ref = useRef<HTMLDivElement>(null);
+  const phase7TextRef = useRef<HTMLDivElement>(null);
+  const phase7PhoneRef = useRef<HTMLDivElement>(null);
 
-  const b3X = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, -460, -460, -600]
-  );
-  const b3Y = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, 120, 120, -100]
-  );
-  const b3Z = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [-30, 50, 50, -50]
-  );
-  const b3R = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, -24, -24, -40]
-  );
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const trigger = containerRef.current;
+      if (!trigger) return;
 
-  const b4X = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, 460, 460, 600]
-  );
-  const b4Y = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, 140, 140, -100]
-  );
-  const b4Z = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [-40, 70, 70, -50]
-  );
-  const b4R = useTransform(
-    smoothProgress,
-    [0.06, 0.11, 0.14, 0.17],
-    [0, 24, 24, 40]
-  );
+      const stBase = {
+        trigger,
+        scrub: 1,
+      };
 
-  // Banks
-  const banksOpacity = useTransform(
-    smoothProgress,
-    [0.09, 0.11, 0.14, 0.17],
-    [0, 1, 1, 0]
-  );
-  const banksY = useTransform(
-    smoothProgress,
-    [0.09, 0.11, 0.14, 0.17],
-    [50, 0, 0, 100]
-  );
+      // Helper: percentage-based start/end
+      const pct = (s: number, e: number) => ({
+        ...stBase,
+        start: `${s}% top`,
+        end: `${e}% top`,
+      });
 
-  // Scroll Indicator
-  const indicatorOpacity = useTransform(smoothProgress, [0, 0.03], [1, 0]);
+      // ═══════════════════════════════════════════════════
+      // PHASE 1 & 2: 3D Scene (0 → 20%)
+      // ═══════════════════════════════════════════════════
 
-  // ═══════════════════════════════════════════════════
-  // PHASE 3: Transition (0.19 → 0.26)
-  // ═══════════════════════════════════════════════════
-  const screenFillOpacity = useTransform(
-    smoothProgress,
-    [0.19, 0.21, 0.24, 0.26],
-    [0, 1, 1, 0]
-  );
+      // Scene 3D rotation
+      gsap.fromTo(
+        sceneRef.current,
+        { rotateX: 20, rotateY: -15 },
+        { rotateX: 0, rotateY: 0, scrollTrigger: pct(0, 14) }
+      );
 
-  // ═══════════════════════════════════════════════════
-  // PHASE 4: Document Transformation (0.24 → 0.46)
-  // ═══════════════════════════════════════════════════
-  const phase4Opacity = useTransform(
-    smoothProgress,
-    [0.24, 0.26, 0.48, 0.5],
-    [0, 1, 1, 0]
-  );
+      // Scene opacity out
+      gsap.fromTo(
+        sceneRef.current,
+        { opacity: 1 },
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(20, 21) }
+      );
 
-  const docX = useTransform(smoothProgress, [0.24, 0.26], [-800, 0]);
-  const docWidth = useTransform(
-    smoothProgress,
-    [0.26, 0.32],
-    ["280px", "480px"]
-  );
-  const docHeight = useTransform(
-    smoothProgress,
-    [0.26, 0.32],
-    ["360px", "680px"]
-  );
-  const docBg = useTransform(
-    smoothProgress,
-    [0.26, 0.32],
-    ["#2a206a", "#ffffff"]
-  );
-  const docRadius = useTransform(
-    smoothProgress,
-    [0.26, 0.32],
-    ["16px", "4px"]
-  );
-  const docShadow = useTransform(smoothProgress, [0.26, 0.32], [
-    "0px 20px 40px rgba(42, 32, 106, 0.4)",
-    "0px 25px 50px -12px rgba(0, 0, 0, 0.15)",
-  ]);
+      // Phase 1 UI fade out + move up
+      gsap.fromTo(
+        phase1UIRef.current,
+        { opacity: 1, y: 0 },
+        { opacity: 0, y: -50, scrollTrigger: pct(0, 3) }
+      );
 
-  const docLinesOpacity = useTransform(
-    smoothProgress,
-    [0.26, 0.29],
-    [1, 0]
-  );
-  const docHeaderOpacity = useTransform(
-    smoothProgress,
-    [0.32, 0.35],
-    [0, 1]
-  );
-  const docBodyOpacity = useTransform(
-    smoothProgress,
-    [0.38, 0.41],
-    [0, 1]
-  );
-  const docFooterOpacity = useTransform(
-    smoothProgress,
-    [0.43, 0.46],
-    [0, 1]
-  );
+      // Band overlay fade out
+      gsap.fromTo(
+        bandRef.current,
+        { opacity: 1 },
+        { opacity: 0, scrollTrigger: pct(3, 6) }
+      );
 
-  const callout1Opacity = useTransform(
-    smoothProgress,
-    [0.32, 0.35],
-    [0, 1]
-  );
-  const callout1Y = useTransform(smoothProgress, [0.32, 0.35], [40, 0]);
-  const callout1X = useTransform(smoothProgress, [0.32, 0.35], [40, 0]);
+      // Scroll indicator fade out
+      gsap.fromTo(
+        indicatorRef.current,
+        { opacity: 1 },
+        { opacity: 0, scrollTrigger: pct(0, 3) }
+      );
 
-  const callout2Opacity = useTransform(
-    smoothProgress,
-    [0.38, 0.41],
-    [0, 1]
-  );
-  const callout2Y = useTransform(smoothProgress, [0.38, 0.41], [40, 0]);
-  const callout2X = useTransform(smoothProgress, [0.38, 0.41], [40, 0]);
+      // Center Bill (b0)
+      gsap.fromTo(
+        b0Ref.current,
+        { x: 0, y: 0, z: 0, scale: 1 },
+        {
+          x: 0,
+          y: 600,
+          z: 800,
+          scale: 50,
+          scrollTrigger: pct(6, 20),
+        }
+      );
 
-  const callout3Opacity = useTransform(
-    smoothProgress,
-    [0.43, 0.46],
-    [0, 1]
-  );
-  const callout3Y = useTransform(smoothProgress, [0.43, 0.46], [40, 0]);
-  const callout3X = useTransform(smoothProgress, [0.43, 0.46], [40, 0]);
+      // b0 content opacity
+      gsap.fromTo(
+        b0ContentRef.current,
+        { opacity: 1 },
+        { opacity: 0, scrollTrigger: pct(14, 16) }
+      );
 
-  // ═══════════════════════════════════════════════════
-  // PHASE 5: Stats Section (0.5 → 0.65)
-  // ═══════════════════════════════════════════════════
-  const phase5Opacity = useTransform(
-    smoothProgress,
-    [0.5, 0.52, 0.63, 0.65],
-    [0, 1, 1, 0]
-  );
-  const phase5StatsY = useTransform(smoothProgress, [0.52, 0.56], [60, 0]);
-  const phase5StatsOpacity = useTransform(
-    smoothProgress,
-    [0.52, 0.56],
-    [0, 1]
-  );
-  // Cards stagger
-  const card0Opacity = useTransform(smoothProgress, [0.50, 0.53], [0, 1]);
-  const card0Y = useTransform(smoothProgress, [0.50, 0.53], [40, 0]);
-  const card1Opacity = useTransform(smoothProgress, [0.52, 0.55], [0, 1]);
-  const card1Y = useTransform(smoothProgress, [0.52, 0.55], [40, 0]);
-  const card2Opacity = useTransform(smoothProgress, [0.54, 0.57], [0, 1]);
-  const card2Y = useTransform(smoothProgress, [0.54, 0.57], [40, 0]);
-  const card3Opacity = useTransform(smoothProgress, [0.56, 0.59], [0, 1]);
-  const card3Y = useTransform(smoothProgress, [0.56, 0.59], [40, 0]);
+      // Other bills opacity (fade out)
+      const otherBills = [b1Ref.current, b2Ref.current, b3Ref.current, b4Ref.current];
+      otherBills.forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 1 },
+          { opacity: 0, scrollTrigger: pct(11, 14) }
+        );
+      });
 
-  // ═══════════════════════════════════════════════════
-  // PHASE 6: Testimonials (0.65 → 0.82)
-  // ═══════════════════════════════════════════════════
-  const phase6Opacity = useTransform(
-    smoothProgress,
-    [0.65, 0.67, 0.8, 0.82],
-    [0, 1, 1, 0]
-  );
-  const phase6DocScale = useTransform(
-    smoothProgress,
-    [0.65, 0.7],
-    [0.8, 1]
-  );
-  const phase6ContentOpacity = useTransform(
-    smoothProgress,
-    [0.7, 0.73],
-    [0, 1]
-  );
-  const phase6QuoteOpacity = useTransform(
-    smoothProgress,
-    [0.73, 0.76],
-    [0, 1]
-  );
-  const phase6VideoOpacity = useTransform(
-    smoothProgress,
-    [0.76, 0.79],
-    [0, 1]
-  );
+      // Bill 1
+      gsap.fromTo(
+        b1Ref.current,
+        { x: 0, y: 0, z: -10, rotateZ: 0 },
+        {
+          x: -300,
+          y: 0,
+          z: 0,
+          rotateZ: -20,
+          scrollTrigger: pct(6, 17),
+        }
+      );
 
-  // ═══════════════════════════════════════════════════
-  // PHASE 7: Final CTA (0.82 → 1.0)
-  // ═══════════════════════════════════════════════════
-  const phase7Opacity = useTransform(
-    smoothProgress,
-    [0.82, 0.85, 0.96, 1.0],
-    [0, 1, 1, 0]
-  );
-  const phase7Y = useTransform(smoothProgress, [0.82, 0.88], [80, 0]);
-  const phase7PhoneX = useTransform(smoothProgress, [0.85, 0.92], [100, 0]);
-  const phase7PhoneOpacity = useTransform(
-    smoothProgress,
-    [0.85, 0.92],
-    [0, 1]
-  );
+      // Bill 2
+      gsap.fromTo(
+        b2Ref.current,
+        { x: 0, y: 0, z: -20, rotateZ: 0 },
+        {
+          x: 300,
+          y: 0,
+          z: 0,
+          rotateZ: 20,
+          scrollTrigger: pct(6, 17),
+        }
+      );
+
+      // Bill 3
+      gsap.fromTo(
+        b3Ref.current,
+        { x: 0, y: 0, z: -30, rotateZ: 0 },
+        {
+          x: -600,
+          y: -100,
+          z: -50,
+          rotateZ: -40,
+          scrollTrigger: pct(6, 17),
+        }
+      );
+
+      // Bill 4
+      gsap.fromTo(
+        b4Ref.current,
+        { x: 0, y: 0, z: -40, rotateZ: 0 },
+        {
+          x: 600,
+          y: -100,
+          z: -50,
+          rotateZ: 40,
+          scrollTrigger: pct(6, 17),
+        }
+      );
+
+      // Banks
+      gsap.set(banksRef.current, { opacity: 0, y: 50 });
+      gsap.fromTo(
+        banksRef.current,
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, scrollTrigger: pct(9, 11) }
+      );
+      gsap.fromTo(
+        banksRef.current,
+        { opacity: 1, y: 0 },
+        { opacity: 0, y: 100, immediateRender: false, scrollTrigger: pct(14, 17) }
+      );
+
+      // ═══════════════════════════════════════════════════
+      // PHASE 3: Screen flash transition (19 → 26%)
+      // ═══════════════════════════════════════════════════
+      gsap.set(screenFillRef.current, { opacity: 0 });
+      gsap.fromTo(
+        screenFillRef.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(19, 21) }
+      );
+      gsap.fromTo(
+        screenFillRef.current,
+        { opacity: 1 },
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(24, 26) }
+      );
+
+      // ═══════════════════════════════════════════════════
+      // PHASE 4: Document Transformation (24 → 50%)
+      // ═══════════════════════════════════════════════════
+      gsap.set(phase4Ref.current, { opacity: 0 });
+      gsap.fromTo(
+        phase4Ref.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(24, 26) }
+      );
+      gsap.fromTo(
+        phase4Ref.current,
+        { opacity: 1 },
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(48, 50) }
+      );
+
+      // Document slide in from left
+      gsap.fromTo(
+        docRef.current,
+        { x: -800 },
+        { x: 0, scrollTrigger: pct(24, 26) }
+      );
+
+      // Document morph: bill → official document
+      gsap.fromTo(
+        docRef.current,
+        {
+          width: "280px",
+          height: "360px",
+          backgroundColor: "#2a206a",
+          borderRadius: "16px",
+          boxShadow: "0px 20px 40px rgba(42, 32, 106, 0.4)",
+        },
+        {
+          width: "480px",
+          height: "680px",
+          backgroundColor: "#ffffff",
+          borderRadius: "4px",
+          boxShadow: "0px 25px 50px -12px rgba(0, 0, 0, 0.15)",
+          scrollTrigger: pct(26, 32),
+        }
+      );
+
+      // Bill lines fade out
+      gsap.fromTo(
+        docLinesRef.current,
+        { opacity: 1 },
+        { opacity: 0, scrollTrigger: pct(26, 29) }
+      );
+
+      // Document sections appear sequentially
+      gsap.set(docHeaderRef.current, { opacity: 0 });
+      gsap.fromTo(
+        docHeaderRef.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(32, 35) }
+      );
+
+      gsap.set(docBodyRef.current, { opacity: 0 });
+      gsap.fromTo(
+        docBodyRef.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(38, 41) }
+      );
+
+      gsap.set(docFooterRef.current, { opacity: 0 });
+      gsap.fromTo(
+        docFooterRef.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(43, 46) }
+      );
+
+      // Callout cards
+      gsap.set(callout1Ref.current, { opacity: 0, y: 40, x: 40 });
+      gsap.fromTo(
+        callout1Ref.current,
+        { opacity: 0, y: 40, x: 40 },
+        { opacity: 1, y: 0, x: 0, scrollTrigger: pct(32, 35) }
+      );
+
+      gsap.set(callout2Ref.current, { opacity: 0, y: 40, x: 40 });
+      gsap.fromTo(
+        callout2Ref.current,
+        { opacity: 0, y: 40, x: 40 },
+        { opacity: 1, y: 0, x: 0, scrollTrigger: pct(38, 41) }
+      );
+
+      gsap.set(callout3Ref.current, { opacity: 0, y: 40, x: 40 });
+      gsap.fromTo(
+        callout3Ref.current,
+        { opacity: 0, y: 40, x: 40 },
+        { opacity: 1, y: 0, x: 0, scrollTrigger: pct(43, 46) }
+      );
+
+      // Floating animations for callout cards (non-scroll, infinite)
+      gsap.to(callout1InnerRef.current, {
+        y: -10,
+        duration: 4,
+        ease: "power2.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+
+      gsap.to(callout2InnerRef.current, {
+        y: -12,
+        duration: 3.5,
+        ease: "power2.inOut",
+        yoyo: true,
+        repeat: -1,
+        delay: 0.5,
+      });
+
+      gsap.to(callout3InnerRef.current, {
+        y: -8,
+        duration: 4.5,
+        ease: "power2.inOut",
+        yoyo: true,
+        repeat: -1,
+        delay: 1,
+      });
+
+      // Processing speed bar animation
+      gsap.fromTo(
+        processingBarRef.current,
+        { width: "0%" },
+        {
+          width: "100%",
+          duration: 2,
+          ease: "expo.out",
+          repeat: -1,
+        }
+      );
+
+      // ═══════════════════════════════════════════════════
+      // PHASE 5: Stats Section (50 → 65%)
+      // ═══════════════════════════════════════════════════
+      gsap.set(phase5Ref.current, { opacity: 0 });
+      gsap.fromTo(
+        phase5Ref.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(50, 52) }
+      );
+      gsap.fromTo(
+        phase5Ref.current,
+        { opacity: 1 },
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(63, 65) }
+      );
+
+      // Stats text
+      gsap.set(phase5StatsRef.current, { opacity: 0, y: 60 });
+      gsap.fromTo(
+        phase5StatsRef.current,
+        { opacity: 0, y: 60 },
+        { opacity: 1, y: 0, scrollTrigger: pct(52, 56) }
+      );
+
+      // Logo cards stagger
+      const cards = [card0Ref.current, card1Ref.current, card2Ref.current, card3Ref.current];
+      cards.forEach((card, i) => {
+        const start = 50 + i * 2;
+        const end = start + 3;
+        gsap.set(card, { opacity: 0, y: 40 });
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, scrollTrigger: pct(start, end) }
+        );
+      });
+
+      // ═══════════════════════════════════════════════════
+      // PHASE 6: Testimonials (65 → 82%)
+      // ═══════════════════════════════════════════════════
+      gsap.set(phase6Ref.current, { opacity: 0 });
+      gsap.fromTo(
+        phase6Ref.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(65, 67) }
+      );
+      gsap.fromTo(
+        phase6Ref.current,
+        { opacity: 1 },
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(80, 82) }
+      );
+
+      // Card scale
+      gsap.fromTo(
+        phase6CardRef.current,
+        { scale: 0.8 },
+        { scale: 1, scrollTrigger: pct(65, 70) }
+      );
+
+      // Content, quote, video
+      gsap.set(phase6ContentRef.current, { opacity: 0 });
+      gsap.fromTo(
+        phase6ContentRef.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(70, 73) }
+      );
+
+      gsap.set(phase6QuoteRef.current, { opacity: 0 });
+      gsap.fromTo(
+        phase6QuoteRef.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(73, 76) }
+      );
+
+      gsap.set(phase6VideoRef.current, { opacity: 0 });
+      gsap.fromTo(
+        phase6VideoRef.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(76, 79) }
+      );
+
+      // ═══════════════════════════════════════════════════
+      // PHASE 7: Final CTA (82 → 100%)
+      // ═══════════════════════════════════════════════════
+      gsap.set(phase7Ref.current, { opacity: 0 });
+      gsap.fromTo(
+        phase7Ref.current,
+        { opacity: 0 },
+        { opacity: 1, scrollTrigger: pct(82, 85) }
+      );
+      gsap.fromTo(
+        phase7Ref.current,
+        { opacity: 1 },
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(96, 100) }
+      );
+
+      // Text slide up
+      gsap.fromTo(
+        phase7TextRef.current,
+        { y: 80 },
+        { y: 0, scrollTrigger: pct(82, 88) }
+      );
+
+      // Phone slide in
+      gsap.set(phase7PhoneRef.current, { x: 100, opacity: 0 });
+      gsap.fromTo(
+        phase7PhoneRef.current,
+        { x: 100, opacity: 0 },
+        { x: 0, opacity: 1, scrollTrigger: pct(85, 92) }
+      );
+    }, containerRef);
+
+    return () => {
+      ctx.revert();
+      // ctx.revert() already kills ScrollTriggers created within this context
+      // Do NOT call ScrollTrigger.getAll().kill() — it destroys other components' triggers
+    };
+  }, []);
 
   return (
     <div ref={containerRef} className="h-[1400vh] relative">
@@ -346,8 +500,8 @@ export default function ScrollAnimation() {
         }}
       >
         {/* Scroll Indicator */}
-        <motion.div
-          style={{ opacity: indicatorOpacity }}
+        <div
+          ref={indicatorRef}
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-50"
         >
           <span
@@ -357,22 +511,21 @@ export default function ScrollAnimation() {
             Scroll down
           </span>
           <div className="w-px h-12 bg-gradient-to-b from-slate-400 to-transparent" />
-        </motion.div>
+        </div>
 
         {/* ══════ PHASE 1 & 2: 3D SCENE ══════ */}
-        <motion.div
+        <div
+          ref={sceneRef}
           style={{
-            rotateX: sceneRotateX,
-            rotateY: sceneRotateY,
-            opacity: sceneOpacity,
             transformStyle: "preserve-3d",
             willChange: "transform, opacity",
           }}
           className="relative w-[1000px] h-[800px]"
         >
           {/* Phase 1 UI Elements */}
-          <motion.div
-            style={{ opacity: phase1Opacity, y: phase1Y, z: 50 }}
+          <div
+            ref={phase1UIRef}
+            style={{ transform: "translateZ(50px)" }}
             className="absolute inset-0 pointer-events-none"
           >
             {/* Dealer Image */}
@@ -512,115 +665,87 @@ export default function ScrollAnimation() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Bills */}
           <div className="absolute top-1/2 left-1/2">
-            <motion.div
-              style={{
-                x: b4X,
-                y: b4Y,
-                z: b4Z,
-                rotateZ: b4R,
-                opacity: otherBillsOpacity,
-                willChange: "transform, opacity",
-              }}
+            <div
+              ref={b4Ref}
+              style={{ willChange: "transform, opacity" }}
               className="absolute -left-[140px] -top-[180px] w-[280px] h-[360px] rounded-2xl shadow-xl border border-indigo-500/50 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 to-indigo-800"
             >
               <CreditCard className="w-12 h-12 text-white/20 mb-3" />
               <div className="w-24 h-1.5 bg-white/20 rounded-full mb-2" />
               <div className="w-16 h-1.5 bg-white/20 rounded-full" />
-            </motion.div>
+            </div>
           </div>
 
           <div className="absolute top-1/2 left-1/2">
-            <motion.div
-              style={{
-                x: b3X,
-                y: b3Y,
-                z: b3Z,
-                rotateZ: b3R,
-                opacity: otherBillsOpacity,
-                willChange: "transform, opacity",
-              }}
+            <div
+              ref={b3Ref}
+              style={{ willChange: "transform, opacity" }}
               className="absolute -left-[140px] -top-[180px] w-[280px] h-[360px] rounded-2xl shadow-xl border border-indigo-400/50 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 to-indigo-700"
             >
               <CreditCard className="w-12 h-12 text-white/20 mb-3" />
               <div className="w-24 h-1.5 bg-white/20 rounded-full mb-2" />
               <div className="w-16 h-1.5 bg-white/20 rounded-full" />
-            </motion.div>
+            </div>
           </div>
 
           <div className="absolute top-1/2 left-1/2">
-            <motion.div
-              style={{
-                x: b2X,
-                y: b2Y,
-                z: b2Z,
-                rotateZ: b2R,
-                opacity: otherBillsOpacity,
-                willChange: "transform, opacity",
-              }}
+            <div
+              ref={b2Ref}
+              style={{ willChange: "transform, opacity" }}
               className="absolute -left-[140px] -top-[180px] w-[280px] h-[360px] rounded-2xl shadow-xl border border-violet-400/50 flex flex-col items-center justify-center bg-gradient-to-br from-violet-500 to-violet-700"
             >
               <CreditCard className="w-12 h-12 text-white/20 mb-3" />
               <div className="w-24 h-1.5 bg-white/20 rounded-full mb-2" />
               <div className="w-16 h-1.5 bg-white/20 rounded-full" />
-            </motion.div>
+            </div>
           </div>
 
           <div className="absolute top-1/2 left-1/2">
-            <motion.div
-              style={{
-                x: b1X,
-                y: b1Y,
-                z: b1Z,
-                rotateZ: b1R,
-                opacity: otherBillsOpacity,
-                willChange: "transform, opacity",
-              }}
+            <div
+              ref={b1Ref}
+              style={{ willChange: "transform, opacity" }}
               className="absolute -left-[140px] -top-[180px] w-[280px] h-[360px] rounded-2xl shadow-xl border border-purple-300/50 flex flex-col items-center justify-center bg-gradient-to-br from-purple-400 to-purple-600"
             >
               <CreditCard className="w-12 h-12 text-white/20 mb-3" />
               <div className="w-24 h-1.5 bg-white/20 rounded-full mb-2" />
               <div className="w-16 h-1.5 bg-white/20 rounded-full" />
-            </motion.div>
+            </div>
           </div>
 
           {/* Center Bill */}
           <div className="absolute top-1/2 left-1/2">
-            <motion.div
-              style={{
-                x: b0X,
-                y: b0Y,
-                z: b0Z,
-                scale: b0Scale,
-                willChange: "transform, opacity",
-              }}
+            <div
+              ref={b0Ref}
+              style={{ willChange: "transform, opacity" }}
               className="absolute -left-[140px] -top-[180px] w-[280px] h-[360px] bg-gradient-to-br from-purple-400 to-indigo-500 rounded-2xl shadow-2xl border border-purple-300 flex flex-col items-center justify-center"
             >
-              <motion.div
-                style={{ opacity: bill0ContentOpacity }}
+              <div
+                ref={b0ContentRef}
                 className="flex flex-col items-center justify-center w-full h-full"
               >
                 <CreditCard className="w-12 h-12 text-white/30 mb-3" />
                 <div className="w-24 h-1.5 bg-white/20 rounded-full mb-2" />
                 <div className="w-16 h-1.5 bg-white/20 rounded-full" />
-                <motion.div
-                  style={{ opacity: bandOpacity }}
+                <div
+                  ref={bandRef}
                   className="absolute top-1/2 -translate-y-1/2 w-full h-16 bg-white/10 backdrop-blur-md border-y-2 border-white/30 flex items-center justify-center shadow-lg"
                 >
                   <span className="text-white font-mono font-bold tracking-widest text-xl">
                     $10,000
                   </span>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Banks */}
-          <motion.div
-            style={{ opacity: banksOpacity, y: banksY, z: 200 }}
+          <div
+            ref={banksRef}
+            style={{ transform: "translateZ(200px)" }}
             className="absolute bottom-[-20px] left-0 w-full flex justify-between px-4 items-end"
           >
             {[
@@ -654,12 +779,13 @@ export default function ScrollAnimation() {
                 </span>
               </div>
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* ══════ PHASE 3: SCREEN TRANSITION ══════ */}
-        <motion.div
-          style={{ opacity: screenFillOpacity, willChange: "opacity" }}
+        <div
+          ref={screenFillRef}
+          style={{ willChange: "opacity" }}
           className="fixed inset-0 z-[100] pointer-events-none"
           data-phase="3"
         >
@@ -667,40 +793,33 @@ export default function ScrollAnimation() {
             className="w-full h-full"
             style={{ background: "var(--navy)" }}
           />
-        </motion.div>
+        </div>
 
         {/* ══════ PHASE 4: DOCUMENT TRANSFORMATION ══════ */}
-        <motion.div
-          style={{ opacity: phase4Opacity }}
+        <div
+          ref={phase4Ref}
           className="fixed inset-0 z-[200] flex items-center justify-center px-12 lg:px-24 max-w-7xl mx-auto w-full pointer-events-none"
         >
           <div className="flex items-center justify-center w-full h-full">
             {/* Left: Document */}
             <div className="w-1/2 flex justify-center items-center relative h-full">
-              <motion.div
-                style={{
-                  x: docX,
-                  width: docWidth,
-                  height: docHeight,
-                  backgroundColor: docBg,
-                  borderRadius: docRadius,
-                  boxShadow: docShadow,
-                }}
+              <div
+                ref={docRef}
                 className="relative flex flex-col items-center justify-center overflow-hidden p-8"
               >
                 {/* Bill Lines */}
-                <motion.div
-                  style={{ opacity: docLinesOpacity }}
+                <div
+                  ref={docLinesRef}
                   className="absolute inset-0 flex flex-col items-center justify-center"
                 >
                   <CreditCard className="w-12 h-12 text-white/30 mb-3" />
                   <div className="w-24 h-1.5 bg-white/20 rounded-full mb-2" />
                   <div className="w-16 h-1.5 bg-white/20 rounded-full" />
-                </motion.div>
+                </div>
 
                 {/* Document Header */}
-                <motion.div
-                  style={{ opacity: docHeaderOpacity }}
+                <div
+                  ref={docHeaderRef}
                   className="absolute top-8 left-8 right-8 flex flex-col items-center border-b-2 border-slate-200 pb-6"
                 >
                   <ShieldCheck
@@ -716,11 +835,11 @@ export default function ScrollAnimation() {
                   <p className="text-xs text-slate-500 font-mono mt-1">
                     DOC ID: MQ-99482-2026
                   </p>
-                </motion.div>
+                </div>
 
                 {/* Document Body */}
-                <motion.div
-                  style={{ opacity: docBodyOpacity }}
+                <div
+                  ref={docBodyRef}
                   className="absolute top-48 left-8 right-8 flex flex-col gap-4"
                 >
                   {[
@@ -759,11 +878,11 @@ export default function ScrollAnimation() {
                       parameters.
                     </p>
                   </div>
-                </motion.div>
+                </div>
 
                 {/* Document Footer */}
-                <motion.div
-                  style={{ opacity: docFooterOpacity }}
+                <div
+                  ref={docFooterRef}
                   className="absolute bottom-8 left-8 right-8 pt-6 border-t-2 border-slate-200 flex justify-between items-end"
                 >
                   <div className="flex flex-col">
@@ -791,27 +910,18 @@ export default function ScrollAnimation() {
                       04928471002
                     </span>
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             </div>
 
             {/* Right: Callouts */}
             <div className="w-1/2 flex flex-col justify-center gap-8 pl-8 relative z-10">
-              <motion.div
-                style={{
-                  opacity: callout1Opacity,
-                  y: callout1Y,
-                  x: callout1X,
-                  willChange: "transform, opacity",
-                }}
+              <div
+                ref={callout1Ref}
+                style={{ willChange: "transform, opacity" }}
               >
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: EASE_STANDARD,
-                  }}
+                <div
+                  ref={callout1InnerRef}
                   className="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-slate-100 w-80 relative -left-16"
                 >
                   <div className="flex items-center gap-4 mb-4">
@@ -850,25 +960,15 @@ export default function ScrollAnimation() {
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
 
-              <motion.div
-                style={{
-                  opacity: callout2Opacity,
-                  y: callout2Y,
-                  x: callout2X,
-                  willChange: "transform, opacity",
-                }}
+              <div
+                ref={callout2Ref}
+                style={{ willChange: "transform, opacity" }}
               >
-                <motion.div
-                  animate={{ y: [0, -12, 0] }}
-                  transition={{
-                    duration: 3.5,
-                    repeat: Infinity,
-                    ease: EASE_STANDARD,
-                    delay: 0.5,
-                  }}
+                <div
+                  ref={callout2InnerRef}
                   className="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-slate-100 w-72 ml-16"
                 >
                   <div className="flex items-center justify-between mb-5">
@@ -888,37 +988,21 @@ export default function ScrollAnimation() {
                     </div>
                   </div>
                   <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden relative">
-                    <motion.div
+                    <div
+                      ref={processingBarRef}
                       className="absolute top-0 left-0 h-full rounded-full"
-                      style={{ background: "var(--teal)" }}
-                      initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: EASE_EXPO_OUT,
-                      }}
+                      style={{ background: "var(--teal)", width: "0%" }}
                     />
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
 
-              <motion.div
-                style={{
-                  opacity: callout3Opacity,
-                  y: callout3Y,
-                  x: callout3X,
-                  willChange: "transform, opacity",
-                }}
+              <div
+                ref={callout3Ref}
+                style={{ willChange: "transform, opacity" }}
               >
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{
-                    duration: 4.5,
-                    repeat: Infinity,
-                    ease: EASE_STANDARD,
-                    delay: 1,
-                  }}
+                <div
+                  ref={callout3InnerRef}
                   className="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-slate-100 w-80 relative -left-8"
                 >
                   <div className="flex items-center gap-5">
@@ -946,15 +1030,15 @@ export default function ScrollAnimation() {
                       </p>
                     </div>
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ══════ PHASE 5: STATS ══════ */}
-        <motion.div
-          style={{ opacity: phase5Opacity }}
+        <div
+          ref={phase5Ref}
           className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-10 w-full">
@@ -962,14 +1046,14 @@ export default function ScrollAnimation() {
               {/* Left: Logo cards stack */}
               <div className="flex flex-col gap-4 items-center">
                 {[
-                  { src: "/svg/static_svg_logo-uber.svg", alt: "Uber", opacity: card0Opacity, y: card0Y },
-                  { src: "/svg/static_svg_logo-square.svg", alt: "Square", opacity: card1Opacity, y: card1Y },
-                  { src: "/svg/static_svg_logo-instacart.svg", alt: "Instacart", opacity: card2Opacity, y: card2Y },
-                  { src: "/svg/static_img_partners_WesternUnion.svg", alt: "Western Union", opacity: card3Opacity, y: card3Y },
+                  { src: "/svg/static_svg_logo-uber.svg", alt: "Uber", ref: card0Ref },
+                  { src: "/svg/static_svg_logo-square.svg", alt: "Square", ref: card1Ref },
+                  { src: "/svg/static_svg_logo-instacart.svg", alt: "Instacart", ref: card2Ref },
+                  { src: "/svg/static_img_partners_WesternUnion.svg", alt: "Western Union", ref: card3Ref },
                 ].map((card, i) => (
-                  <motion.div
+                  <div
                     key={i}
-                    style={{ opacity: card.opacity, y: card.y }}
+                    ref={card.ref}
                     className="w-[320px] flex items-center justify-center"
                   >
                     <div
@@ -987,14 +1071,12 @@ export default function ScrollAnimation() {
                         className="h-8 object-contain"
                       />
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 
               {/* Right: Stats */}
-              <motion.div
-                style={{ y: phase5StatsY, opacity: phase5StatsOpacity }}
-              >
+              <div ref={phase5StatsRef}>
                 <h2
                   className="text-4xl md:text-5xl font-bold mb-12"
                   style={{ color: "var(--navy)" }}
@@ -1057,14 +1139,14 @@ export default function ScrollAnimation() {
                     className="h-16 opacity-70"
                   />
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ══════ PHASE 6: TESTIMONIALS ══════ */}
-        <motion.div
-          style={{ opacity: phase6Opacity }}
+        <div
+          ref={phase6Ref}
           className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-10 w-full">
@@ -1114,8 +1196,8 @@ export default function ScrollAnimation() {
                 </div>
 
                 {/* Quote */}
-                <motion.div
-                  style={{ opacity: phase6QuoteOpacity }}
+                <div
+                  ref={phase6QuoteRef}
                   className="mb-8"
                 >
                   <div
@@ -1157,12 +1239,12 @@ export default function ScrollAnimation() {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </div>
 
               {/* Right: Card + Video */}
               <div className="flex flex-col items-center gap-8">
-                <motion.div style={{ scale: phase6DocScale }}>
+                <div ref={phase6CardRef}>
                   <div className="relative">
                     <div className="w-[360px] bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">
                       <div
@@ -1186,8 +1268,8 @@ export default function ScrollAnimation() {
                         />
                       </div>
 
-                      <motion.div
-                        style={{ opacity: phase6ContentOpacity }}
+                      <div
+                        ref={phase6ContentRef}
                         className="p-6"
                       >
                         <img
@@ -1215,14 +1297,14 @@ export default function ScrollAnimation() {
                         >
                           CEO of Affirm
                         </p>
-                      </motion.div>
+                      </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
 
                 {/* Video placeholder */}
-                <motion.div
-                  style={{ opacity: phase6VideoOpacity }}
+                <div
+                  ref={phase6VideoRef}
                   className="w-[360px]"
                 >
                   <div className="relative rounded-2xl overflow-hidden shadow-xl">
@@ -1247,15 +1329,15 @@ export default function ScrollAnimation() {
                       <p className="text-xs font-medium">Watch video</p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ══════ PHASE 7: FINAL CTA ══════ */}
-        <motion.div
-          style={{ opacity: phase7Opacity }}
+        <div
+          ref={phase7Ref}
           className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-10 w-full">
@@ -1265,7 +1347,7 @@ export default function ScrollAnimation() {
             >
               <div className="grid lg:grid-cols-2 gap-12 items-center p-12 lg:p-20">
                 {/* Left: Text */}
-                <motion.div style={{ y: phase7Y }}>
+                <div ref={phase7TextRef}>
                   <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                     Start innovating
                     <br />
@@ -1281,11 +1363,11 @@ export default function ScrollAnimation() {
                   >
                     Contact us
                   </a>
-                </motion.div>
+                </div>
 
                 {/* Right: Phone + Card */}
-                <motion.div
-                  style={{ x: phase7PhoneX, opacity: phase7PhoneOpacity }}
+                <div
+                  ref={phase7PhoneRef}
                   className="flex justify-center items-center relative"
                 >
                   <img
@@ -1298,7 +1380,7 @@ export default function ScrollAnimation() {
                     alt="Card"
                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-8 h-[250px] object-contain opacity-80"
                   />
-                </motion.div>
+                </div>
               </div>
 
               {/* Decorative gradient orbs */}
@@ -1312,7 +1394,7 @@ export default function ScrollAnimation() {
               />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

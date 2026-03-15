@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
 
 const navLinks = [
   { label: "Solutions", href: "#" },
@@ -11,12 +13,38 @@ const navLinks = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const line1Ref = useRef<HTMLSpanElement>(null);
+  const line2Ref = useRef<HTMLSpanElement>(null);
+  const line3Ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Hamburger animation
+  useEffect(() => {
+    if (mobileOpen) {
+      gsap.to(line1Ref.current, { rotate: 45, y: 6, duration: 0.3, ease: "power2.out" });
+      gsap.to(line2Ref.current, { opacity: 0, duration: 0.2 });
+      gsap.to(line3Ref.current, { rotate: -45, y: -6, duration: 0.3, ease: "power2.out" });
+      if (mobileMenuRef.current) {
+        gsap.fromTo(mobileMenuRef.current,
+          { height: 0, opacity: 0 },
+          { height: "auto", opacity: 1, duration: 0.3, ease: "power2.out" }
+        );
+      }
+    } else {
+      gsap.to(line1Ref.current, { rotate: 0, y: 0, duration: 0.3, ease: "power2.out" });
+      gsap.to(line2Ref.current, { opacity: 1, duration: 0.2 });
+      gsap.to(line3Ref.current, { rotate: 0, y: 0, duration: 0.3, ease: "power2.out" });
+      if (mobileMenuRef.current) {
+        gsap.to(mobileMenuRef.current, { height: 0, opacity: 0, duration: 0.3, ease: "power2.in" });
+      }
+    }
+  }, [mobileOpen]);
 
   return (
     <nav
@@ -97,22 +125,18 @@ export default function Nav() {
             className="lg:hidden flex flex-col gap-1.5 p-2"
             aria-label="Toggle menu"
           >
-            <motion.span
-              animate={
-                mobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }
-              }
+            <span
+              ref={line1Ref}
               className="block w-6 h-0.5 origin-center"
               style={{ background: "var(--navy)" }}
             />
-            <motion.span
-              animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
+            <span
+              ref={line2Ref}
               className="block w-6 h-0.5"
               style={{ background: "var(--navy)" }}
             />
-            <motion.span
-              animate={
-                mobileOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }
-              }
+            <span
+              ref={line3Ref}
               className="block w-6 h-0.5 origin-center"
               style={{ background: "var(--navy)" }}
             />
@@ -121,45 +145,39 @@ export default function Nav() {
       </div>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white/95 backdrop-blur-xl border-t overflow-hidden"
-            style={{ borderColor: "var(--gray-200)" }}
+      <div
+        ref={mobileMenuRef}
+        className="lg:hidden bg-white/95 backdrop-blur-xl border-t overflow-hidden"
+        style={{ borderColor: "var(--gray-200)", height: 0, opacity: 0 }}
+      >
+        <div className="px-6 py-4 flex flex-col gap-1">
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="px-4 py-3 text-base font-medium rounded-lg hover:bg-slate-50"
+              style={{ color: "var(--navy)" }}
+            >
+              {link.label}
+            </a>
+          ))}
+          <hr className="my-3" style={{ borderColor: "var(--gray-200)" }} />
+          <a
+            href="#"
+            className="px-4 py-3 text-base font-medium"
+            style={{ color: "var(--navy)" }}
           >
-            <div className="px-6 py-4 flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="px-4 py-3 text-base font-medium rounded-lg hover:bg-slate-50"
-                  style={{ color: "var(--navy)" }}
-                >
-                  {link.label}
-                </a>
-              ))}
-              <hr className="my-3" style={{ borderColor: "var(--gray-200)" }} />
-              <a
-                href="#"
-                className="px-4 py-3 text-base font-medium"
-                style={{ color: "var(--navy)" }}
-              >
-                Log in
-              </a>
-              <a
-                href="#"
-                className="mx-4 mt-2 mb-4 text-center text-base font-medium text-white px-5 py-3 rounded-full"
-                style={{ background: "var(--navy)" }}
-              >
-                Contact sales
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Log in
+          </a>
+          <a
+            href="#"
+            className="mx-4 mt-2 mb-4 text-center text-base font-medium text-white px-5 py-3 rounded-full"
+            style={{ background: "var(--navy)" }}
+          >
+            Contact sales
+          </a>
+        </div>
+      </div>
     </nav>
   );
 }

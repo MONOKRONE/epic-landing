@@ -1,144 +1,378 @@
-import { useState, useRef, useEffect } from "react";
+"use client";
 
-const EASE_QUINT_OUT = "cubic-bezier(0.5, 1, 0.89, 1)";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 
-interface FeatureTab {
+/* ------------------------------------------------------------------ */
+/*  Feature data                                                       */
+/* ------------------------------------------------------------------ */
+
+interface FeatureItem {
   id: string;
   title: string;
-  subtitle: string;
-  description: string;
-  video: {
-    show: string;
-    hover: string;
-    unhover: string;
-  };
+  video: { show: string; hover: string; unhover: string };
   overlay: string;
+  /* layout — percentage of container */
+  top: number;
+  left: number;
+  width: number;
+  height: number;
 }
 
-const tabs: FeatureTab[] = [
+const features: FeatureItem[] = [
   {
     id: "cards",
     title: "Issue virtual cards",
-    subtitle: "Card Issuing",
-    description:
-      "Create and manage virtual and physical cards instantly through our APIs. Design custom card programs that fit your specific use case.",
     video: {
-      show: "/mp4/marqeta-videos_img_features_cards_show.mp4",
-      hover: "/mp4/marqeta-videos_img_features_cards_hover.mp4",
-      unhover: "/mp4/marqeta-videos_img_features_cards_unhover.mp4",
+      show: "/mp4/features_cards_show.mp4",
+      hover: "/mp4/features_cards_hover.mp4",
+      unhover: "/mp4/features_cards_unhover.mp4",
     },
     overlay: "/png/marqeta-videos_img_features_cards_overlay.png",
+    top: 22,
+    left: 8,
+    width: 42,
+    height: 42,
   },
   {
     id: "controls",
     title: "Dynamic spend controls",
-    subtitle: "Spend Controls",
-    description:
-      "Set and modify spending rules in real time. Control where, when, and how cards can be used with granular precision.",
     video: {
-      show: "/mp4/marqeta-videos_img_features_controls_show.mp4",
-      hover: "/mp4/marqeta-videos_img_features_controls_hover.mp4",
-      unhover: "/mp4/marqeta-videos_img_features_controls_unhover.mp4",
+      show: "/mp4/features_controls_show.mp4",
+      hover: "/mp4/features_controls_hover.mp4",
+      unhover: "/mp4/features_controls_unhover.mp4",
     },
     overlay: "/png/marqeta-videos_img_features_controls_overlay.png",
+    top: 55,
+    left: 0,
+    width: 38,
+    height: 45,
   },
   {
     id: "widgets",
     title: "PCI widgets",
-    subtitle: "Compliance",
-    description:
-      "Embed PCI-compliant UI components directly into your application. Display card details securely without handling sensitive data.",
     video: {
-      show: "/mp4/marqeta-videos_img_features_widgets_show.mp4",
-      hover: "/mp4/marqeta-videos_img_features_widgets_hover.mp4",
-      unhover: "/mp4/marqeta-videos_img_features_widgets_unhover.mp4",
+      show: "/mp4/features_widgets_show.mp4",
+      hover: "/mp4/features_widgets_hover.mp4",
+      unhover: "/mp4/features_widgets_unhover.mp4",
     },
     overlay: "/png/marqeta-videos_img_features_widgets_overlay.png",
+    top: 47,
+    left: 31,
+    width: 50,
+    height: 40,
   },
   {
     id: "funding",
     title: "JIT Funding",
-    subtitle: "Funding",
-    description:
-      "Just-in-Time Funding gives you real-time control over every transaction. Approve or decline funding at the moment of purchase.",
     video: {
-      show: "/mp4/marqeta-videos_img_features_funding_show.mp4",
-      hover: "/mp4/marqeta-videos_img_features_funding_hover.mp4",
-      unhover: "/mp4/marqeta-videos_img_features_funding_unhover.mp4",
+      show: "/mp4/features_funding_show.mp4",
+      hover: "/mp4/features_funding_hover.mp4",
+      unhover: "/mp4/features_funding_unhover.mp4",
     },
     overlay: "/png/marqeta-videos_img_features_funding_overlay.png",
+    top: 0,
+    left: 53,
+    width: 47,
+    height: 58,
   },
 ];
 
-export default function Features() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const videoCache = useRef<Map<string, HTMLVideoElement>>(new Map());
-  const showVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const hoverVideoRef = useRef<HTMLVideoElement>(null);
+/* ------------------------------------------------------------------ */
+/*  Plus Icon SVG                                                      */
+/* ------------------------------------------------------------------ */
 
-  // Preload all videos on mount
+function PlusIcon() {
+  return (
+    <svg width="13" height="12" viewBox="0 0 13 12" fill="none">
+      <line x1="6.5" y1="0" x2="6.5" y2="12" stroke="white" strokeWidth="2" strokeLinecap="round" />
+      <line x1="0.5" y1="6" x2="12.5" y2="6" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Single Feature Card                                                */
+/* ------------------------------------------------------------------ */
+
+/* Label positions — each label sits ON TOP of its isometric device */
+const labelPositions: Record<string, React.CSSProperties> = {
+  cards: { top: "18%", left: "18%", transform: "none" },
+  funding: { top: "32%", left: "22%", transform: "none" },
+  controls: { top: "20%", left: "22%", transform: "none" },
+  widgets: { top: "55%", left: "28%", transform: "none" },
+};
+
+type VideoState = "static" | "showing" | "hovering" | "unhovering";
+
+function FeatureCard({ feature }: { feature: FeatureItem }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const stateRef = useRef<VideoState>("static");
+  const [hovered, setHovered] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
+  /* On mount: play the "show" video once to reveal the device,
+     then pause on its last frame — that IS the visible static state.
+     Also preload hover/unhover videos for instant transitions. */
   useEffect(() => {
-    tabs.forEach((tab) => {
-      [tab.video.show, tab.video.hover, tab.video.unhover].forEach((src) => {
-        const v = document.createElement("video");
-        v.preload = "auto";
-        v.muted = true;
-        v.playsInline = true;
+    const v = videoRef.current;
+    if (!v) return;
+
+    // Preload hover + unhover
+    [feature.video.hover, feature.video.unhover].forEach((src) => {
+      const preload = document.createElement("video");
+      preload.src = src;
+      preload.preload = "auto";
+      preload.muted = true;
+      preload.load();
+    });
+
+    // Play show video once, pause on last frame
+    v.src = feature.video.show;
+    v.load();
+    const onCanPlay = () => {
+      v.removeEventListener("canplay", onCanPlay);
+      v.play().catch(() => {});
+      setVideoLoaded(true);
+    };
+    v.addEventListener("canplay", onCanPlay);
+
+    // When show ends, pause on last frame (device fully visible)
+    const onEnded = () => {
+      v.removeEventListener("ended", onEnded);
+      // Stay on last frame — don't hide or reset
+      stateRef.current = "static";
+    };
+    v.addEventListener("ended", onEnded);
+
+    return () => {
+      v.removeEventListener("canplay", onCanPlay);
+      v.removeEventListener("ended", onEnded);
+    };
+  }, [feature.video]);
+
+  const playVideo = useCallback(
+    (src: string, loop: boolean): Promise<void> => {
+      return new Promise((resolve) => {
+        const v = videoRef.current;
+        if (!v) { resolve(); return; }
+
         v.src = src;
+        v.loop = loop;
         v.load();
-        videoCache.current.set(src, v);
-      });
-    });
-  }, []);
-
-  // Play active show video on tab change
-  useEffect(() => {
-    showVideoRefs.current.forEach((v, i) => {
-      if (!v) return;
-      if (i === activeTab) {
         v.currentTime = 0;
-        v.play().catch(() => {});
-      } else {
-        v.pause();
-      }
-    });
-  }, [activeTab]);
 
-  const handleTabClick = (index: number) => {
-    if (index === activeTab) return;
-    setActiveTab(index);
-    setIsHovered(false);
-  };
+        const onCanPlay = () => {
+          v.removeEventListener("canplay", onCanPlay);
+          v.play().catch(() => {});
+        };
+        v.addEventListener("canplay", onCanPlay);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    const video = hoverVideoRef.current;
-    if (video) {
-      video.src = tabs[activeTab].video.hover;
-      video.currentTime = 0;
-      video.play().catch(() => {});
+        if (!loop) {
+          const onEnded = () => {
+            v.removeEventListener("ended", onEnded);
+            resolve();
+          };
+          v.addEventListener("ended", onEnded);
+        } else {
+          const onPlay = () => {
+            v.removeEventListener("playing", onPlay);
+            resolve();
+          };
+          v.addEventListener("playing", onPlay);
+        }
+      });
+    },
+    []
+  );
+
+  const handleMouseEnter = useCallback(async () => {
+    setHovered(true);
+    stateRef.current = "showing";
+
+    // Play "show" video (one-shot intro), then loop "hover"
+    await playVideo(feature.video.show, false);
+
+    if (stateRef.current === "showing") {
+      stateRef.current = "hovering";
+      playVideo(feature.video.hover, true);
     }
-  };
+  }, [feature.video.show, feature.video.hover, playVideo]);
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    const video = hoverVideoRef.current;
-    if (video) {
-      video.src = tabs[activeTab].video.unhover;
-      video.currentTime = 0;
-      video.play().catch(() => {});
+  const handleMouseLeave = useCallback(async () => {
+    setHovered(false);
+    stateRef.current = "unhovering";
+
+    // Play "unhover" video (one-shot outro)
+    await playVideo(feature.video.unhover, false);
+
+    if (stateRef.current === "unhovering") {
+      stateRef.current = "static";
+      // After unhover ends, video stays paused on last frame (device visible)
     }
-  };
+  }, [feature.video.unhover, playVideo]);
+
+  return (
+    <div
+      className="absolute"
+      style={{
+        top: `${feature.top}%`,
+        left: `${feature.left}%`,
+        width: `${feature.width}%`,
+        height: `${feature.height}%`,
+        background: "transparent",
+        boxShadow: "none",
+        border: "none",
+      }}
+    >
+      {/* Video + overlay container */}
+      <div
+        className="relative w-full h-full cursor-pointer"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          background: "transparent",
+          boxShadow: "none",
+          border: "none",
+        }}
+      >
+        {/* Video — ALWAYS visible. Plays show on mount, pauses on last frame.
+            On hover plays show→hover loop. On unhover plays unhover then pauses. */}
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-contain"
+          muted
+          playsInline
+          preload="auto"
+          style={{
+            willChange: "transform",
+            transform: "translateZ(0)",
+            background: "transparent",
+          }}
+        />
+
+        {/* Overlay PNG — always visible on top of video.
+            Has #f7f7f8 edges (matching section bg) to hide video background,
+            and transparent center to reveal device content. */}
+        <img
+          src={feature.overlay}
+          alt=""
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+          style={{ zIndex: 2 }}
+        />
+      </div>
+
+      {/* Label: title + "+" badge + "Learn more" */}
+      <div
+        className="absolute flex flex-col items-start"
+        style={{
+          ...labelPositions[feature.id],
+          zIndex: 10,
+        }}
+      >
+        <a
+          href="#"
+          className="flex flex-col items-start gap-1 no-underline"
+          style={{ textDecoration: "none" }}
+        >
+          {/* Title */}
+          <span
+            className="block font-bold whitespace-nowrap"
+            style={{
+              fontSize: 15,
+              color: "var(--navy)",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {feature.title}
+          </span>
+
+          {/* "+" badge + Learn more row */}
+          <span className="flex items-center gap-0 relative">
+            {/* Green circle with + */}
+            <span
+              className="flex items-center justify-center shrink-0"
+              style={{
+                width: 29,
+                height: 29,
+                borderRadius: "50%",
+                background: "#1cc283",
+              }}
+            >
+              <PlusIcon />
+            </span>
+
+            {/* "Learn more" text — slides out on hover */}
+            <span
+              className="overflow-hidden whitespace-nowrap"
+              style={{
+                maxWidth: hovered ? 120 : 0,
+                opacity: hovered ? 1 : 0,
+                transition:
+                  "max-width 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease",
+                marginLeft: hovered ? 8 : 0,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "var(--navy)",
+                }}
+              >
+                Learn more
+              </span>
+            </span>
+          </span>
+        </a>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Features Section                                                   */
+/* ------------------------------------------------------------------ */
+
+export default function Features() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Intersection observer for entry animation
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section
+      id="features"
+      ref={sectionRef}
       className="py-24 lg:py-32"
-      style={{ background: "var(--color-bg-alt)" }}
+      style={{ background: "#f7f7f8" }}
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         {/* Section Header */}
-        <div className="max-w-2xl mb-16">
+        <div
+          className="max-w-2xl mb-8 lg:mb-4"
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateY(0)" : "translateY(40px)",
+            transition:
+              "opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)",
+          }}
+        >
           <p
             className="text-sm font-bold uppercase tracking-widest mb-4"
             style={{ color: "var(--teal)" }}
@@ -156,161 +390,26 @@ export default function Features() {
             style={{ color: "var(--color-text-light)" }}
           >
             Legacy payment solutions are slow, rigid, and lack control. Bring
-            the financial solutions to your customers at the point of need.
+            the financial solutions to your customers at the point of need and
+            delight them in a whole new way.
           </p>
         </div>
 
-        {/* Tabs + Content */}
-        <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
-          {/* Tab List */}
-          <div className="flex flex-col gap-2">
-            {tabs.map((tab, i) => (
-              <button
-                key={tab.id}
-                onClick={() => handleTabClick(i)}
-                className={`text-left p-6 rounded-2xl border ${
-                  i === activeTab
-                    ? "bg-white shadow-lg"
-                    : "bg-transparent border-transparent hover:bg-white/50"
-                }`}
-                style={{
-                  transition: `all 0.5s ${EASE_QUINT_OUT}`,
-                  borderColor:
-                    i === activeTab ? "var(--gray-200)" : "transparent",
-                }}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <div
-                    className="w-2 h-2 rounded-full"
-                    style={{
-                      transition: `background 0.35s ${EASE_QUINT_OUT}`,
-                      background:
-                        i === activeTab ? "var(--teal)" : "var(--gray-400)",
-                    }}
-                  />
-                  <span
-                    className="text-xs font-bold uppercase tracking-widest"
-                    style={{
-                      color:
-                        i === activeTab
-                          ? "var(--teal)"
-                          : "var(--color-text-light)",
-                    }}
-                  >
-                    {tab.subtitle}
-                  </span>
-                </div>
-                <h3
-                  className="text-xl font-bold mb-2"
-                  style={{ color: "var(--navy)" }}
-                >
-                  {tab.title}
-                </h3>
-                {i === activeTab && (
-                  <p
-                    className="text-sm leading-relaxed"
-                    style={{ color: "var(--color-text-light)" }}
-                  >
-                    {tab.description}
-                  </p>
-                )}
-                {i === activeTab && (
-                  <a
-                    href="#"
-                    className="inline-flex items-center gap-1 mt-3 text-sm font-medium transition-colors"
-                    style={{ color: "var(--teal)" }}
-                  >
-                    Learn more
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </a>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Video Display */}
-          <div
-            className="relative rounded-2xl overflow-hidden bg-slate-900 aspect-[4/3] cursor-pointer"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            {/* All show videos stacked */}
-            {tabs.map((tab, i) => (
-              <video
-                key={tab.id}
-                ref={(el) => {
-                  showVideoRefs.current[i] = el;
-                }}
-                src={tab.video.show}
-                className="absolute inset-0 w-full h-full object-cover"
-                muted
-                playsInline
-                autoPlay
-                preload="auto"
-                style={{
-                  opacity: i === activeTab && !isHovered ? 1 : 0,
-                  transition: `opacity 0.5s ${EASE_QUINT_OUT}`,
-                  willChange: "transform, opacity",
-                  transform: "translateZ(0)",
-                }}
-              />
-            ))}
-
-            {/* Hover/Unhover overlay video */}
-            <video
-              ref={hoverVideoRef}
-              className="absolute inset-0 w-full h-full object-cover"
-              muted
-              playsInline
-              preload="auto"
-              style={{
-                opacity: isHovered ? 1 : 0,
-                transition: `opacity 0.5s ${EASE_QUINT_OUT}`,
-                willChange: "transform, opacity",
-                transform: "translateZ(0)",
-              }}
-            />
-
-            {/* Static overlay image */}
-            <img
-              src={tabs[activeTab].overlay}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-              style={{
-                opacity: isHovered ? 0 : 1,
-                transition: `opacity 0.5s ${EASE_QUINT_OUT}`,
-                willChange: "opacity",
-              }}
-            />
-
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent pointer-events-none" />
-
-            {/* "+" indicator */}
-            <div className="absolute top-6 left-6 flex items-center gap-2">
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-lg font-bold"
-                style={{ background: "var(--teal)" }}
-              >
-                +
-              </div>
-              <span className="text-white text-sm font-medium bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
-                {tabs[activeTab].title}
-              </span>
-            </div>
-          </div>
+        {/* Isometric Features Area */}
+        <div
+          className="relative mx-auto"
+          style={{
+            maxWidth: 1200,
+            aspectRatio: "1193 / 850",
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateY(0)" : "translateY(60px)",
+            transition:
+              "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.2s",
+          }}
+        >
+          {features.map((feature) => (
+            <FeatureCard key={feature.id} feature={feature} />
+          ))}
         </div>
       </div>
     </section>

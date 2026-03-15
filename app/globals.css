@@ -1,26 +1,127 @@
 @import "tailwindcss";
 
+/* Epic Fonts */
+@font-face {
+  font-family: 'MarqetaSans';
+  src: url('/woff2/_next_static_media_5a3e756d8944f1d8-s.p.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MarqetaSans';
+  src: url('/woff2/_next_static_media_ff834fbfdde0c889-s.p.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MarqetaSans';
+  src: url('/woff2/_next_static_media_3389ba149401b4e1-s.p.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Epic Color System */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Brand */
+  --navy: #1e1b4b;
+  --navy-light: #312e81;
+  --teal: #4f46e5;
+  --teal-light: #6366f1;
+  --teal-dark: #3730a3;
+  --purple: #4f46e5;
+  --purple-light: #6366f1;
+
+  /* Neutrals */
+  --white: #ffffff;
+  --gray-50: #f8f9fa;
+  --gray-100: #f1f3f5;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #868e96;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+
+  /* Semantic */
+  --color-primary: #4f46e5;
+  --color-primary-light: #6366f1;
+  --color-accent: #4f46e5;
+  --color-accent-light: #6366f1;
+  --color-text: #1e1b4b;
+  --color-text-light: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f8f9fa;
+  --color-dark: #1e1b4b;
+  --color-border: #e9ecef;
+
+  /* Primary shades for components */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-dark: #3730a3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'MarqetaSans', system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'MarqetaSans', system-ui, -apple-system, sans-serif;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+.partner-logo img {
+  filter: grayscale(100%) contrast(0.3);
+  opacity: 0.7;
+  transition: all 0.4s ease;
+}
+
+.partner-logo:hover img {
+  filter: grayscale(0%) contrast(1);
+  opacity: 1;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gray-400);
+  border-radius: 3px;
 }
