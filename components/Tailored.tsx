@@ -242,7 +242,7 @@ export default function Tailored() {
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center w-full">
 
             {/* LEFT: Document cards */}
-            <div className="flex justify-center items-center mx-auto lg:mx-0">
+            <div className="hidden lg:flex justify-center items-center mx-auto lg:mx-0">
               <div className="relative w-full max-w-[280px] lg:max-w-[400px]" style={{ aspectRatio: "3/4" }}>
                 {docComponents.map((DocComponent, i) => (
                   <div
