@@ -1,340 +1,37 @@
 "use client";
 
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-/* ------------------------------------------------------------------ */
-/*  Feature data                                                       */
-/* ------------------------------------------------------------------ */
+gsap.registerPlugin(ScrollTrigger);
 
-interface FeatureItem {
-  id: string;
-  title: string;
-  video: { show: string; hover: string; unhover: string };
-  overlay: string;
-  /* layout — percentage of container */
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
-
-const features: FeatureItem[] = [
+const banks = [
   {
-    id: "cards",
-    title: "Issue virtual cards",
-    video: {
-      show: "/mp4/features_cards_show.mp4",
-      hover: "/mp4/features_cards_hover.mp4",
-      unhover: "/mp4/features_cards_unhover.mp4",
-    },
-    overlay: "/png/marqeta-videos_img_features_cards_overlay.png",
-    top: 22,
-    left: 8,
-    width: 42,
-    height: 42,
+    name: "Chase Bank",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80",
   },
   {
-    id: "controls",
-    title: "Dynamic spend controls",
-    video: {
-      show: "/mp4/features_controls_show.mp4",
-      hover: "/mp4/features_controls_hover.mp4",
-      unhover: "/mp4/features_controls_unhover.mp4",
-    },
-    overlay: "/png/marqeta-videos_img_features_controls_overlay.png",
-    top: 55,
-    left: 0,
-    width: 38,
-    height: 45,
+    name: "Bank of America",
+    image: "https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=600&q=80",
   },
   {
-    id: "widgets",
-    title: "PCI widgets",
-    video: {
-      show: "/mp4/features_widgets_show.mp4",
-      hover: "/mp4/features_widgets_hover.mp4",
-      unhover: "/mp4/features_widgets_unhover.mp4",
-    },
-    overlay: "/png/marqeta-videos_img_features_widgets_overlay.png",
-    top: 47,
-    left: 31,
-    width: 50,
-    height: 40,
+    name: "Wells Fargo",
+    image: "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=600&q=80",
   },
   {
-    id: "funding",
-    title: "JIT Funding",
-    video: {
-      show: "/mp4/features_funding_show.mp4",
-      hover: "/mp4/features_funding_hover.mp4",
-      unhover: "/mp4/features_funding_unhover.mp4",
-    },
-    overlay: "/png/marqeta-videos_img_features_funding_overlay.png",
-    top: 0,
-    left: 53,
-    width: 47,
-    height: 58,
+    name: "US Bank",
+    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80",
+  },
+  {
+    name: "Capital One",
+    image: "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?w=600&q=80",
   },
 ];
 
-/* ------------------------------------------------------------------ */
-/*  Plus Icon SVG                                                      */
-/* ------------------------------------------------------------------ */
-
-function PlusIcon() {
-  return (
-    <svg width="13" height="12" viewBox="0 0 13 12" fill="none">
-      <line x1="6.5" y1="0" x2="6.5" y2="12" stroke="white" strokeWidth="2" strokeLinecap="round" />
-      <line x1="0.5" y1="6" x2="12.5" y2="6" stroke="white" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Single Feature Card                                                */
-/* ------------------------------------------------------------------ */
-
-/* Label positions — each label sits ON TOP of its isometric device */
-const labelPositions: Record<string, React.CSSProperties> = {
-  cards: { top: "18%", left: "18%", transform: "none" },
-  funding: { top: "32%", left: "22%", transform: "none" },
-  controls: { top: "20%", left: "22%", transform: "none" },
-  widgets: { top: "55%", left: "28%", transform: "none" },
-};
-
-type VideoState = "static" | "showing" | "hovering" | "unhovering";
-
-function FeatureCard({ feature }: { feature: FeatureItem }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const stateRef = useRef<VideoState>("static");
-  const [hovered, setHovered] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-
-  /* On mount: play the "show" video once to reveal the device,
-     then pause on its last frame — that IS the visible static state.
-     Also preload hover/unhover videos for instant transitions. */
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-
-    // Preload hover + unhover
-    [feature.video.hover, feature.video.unhover].forEach((src) => {
-      const preload = document.createElement("video");
-      preload.src = src;
-      preload.preload = "auto";
-      preload.muted = true;
-      preload.load();
-    });
-
-    // Play show video once, pause on last frame
-    v.src = feature.video.show;
-    v.load();
-    const onCanPlay = () => {
-      v.removeEventListener("canplay", onCanPlay);
-      v.play().catch(() => {});
-      setVideoLoaded(true);
-    };
-    v.addEventListener("canplay", onCanPlay);
-
-    // When show ends, pause on last frame (device fully visible)
-    const onEnded = () => {
-      v.removeEventListener("ended", onEnded);
-      // Stay on last frame — don't hide or reset
-      stateRef.current = "static";
-    };
-    v.addEventListener("ended", onEnded);
-
-    return () => {
-      v.removeEventListener("canplay", onCanPlay);
-      v.removeEventListener("ended", onEnded);
-    };
-  }, [feature.video]);
-
-  const playVideo = useCallback(
-    (src: string, loop: boolean): Promise<void> => {
-      return new Promise((resolve) => {
-        const v = videoRef.current;
-        if (!v) { resolve(); return; }
-
-        v.src = src;
-        v.loop = loop;
-        v.load();
-        v.currentTime = 0;
-
-        const onCanPlay = () => {
-          v.removeEventListener("canplay", onCanPlay);
-          v.play().catch(() => {});
-        };
-        v.addEventListener("canplay", onCanPlay);
-
-        if (!loop) {
-          const onEnded = () => {
-            v.removeEventListener("ended", onEnded);
-            resolve();
-          };
-          v.addEventListener("ended", onEnded);
-        } else {
-          const onPlay = () => {
-            v.removeEventListener("playing", onPlay);
-            resolve();
-          };
-          v.addEventListener("playing", onPlay);
-        }
-      });
-    },
-    []
-  );
-
-  const handleMouseEnter = useCallback(async () => {
-    setHovered(true);
-    stateRef.current = "showing";
-
-    // Play "show" video (one-shot intro), then loop "hover"
-    await playVideo(feature.video.show, false);
-
-    if (stateRef.current === "showing") {
-      stateRef.current = "hovering";
-      playVideo(feature.video.hover, true);
-    }
-  }, [feature.video.show, feature.video.hover, playVideo]);
-
-  const handleMouseLeave = useCallback(async () => {
-    setHovered(false);
-    stateRef.current = "unhovering";
-
-    // Play "unhover" video (one-shot outro)
-    await playVideo(feature.video.unhover, false);
-
-    if (stateRef.current === "unhovering") {
-      stateRef.current = "static";
-      // After unhover ends, video stays paused on last frame (device visible)
-    }
-  }, [feature.video.unhover, playVideo]);
-
-  return (
-    <div
-      className="absolute"
-      style={{
-        top: `${feature.top}%`,
-        left: `${feature.left}%`,
-        width: `${feature.width}%`,
-        height: `${feature.height}%`,
-        background: "transparent",
-        boxShadow: "none",
-        border: "none",
-      }}
-    >
-      {/* Video + overlay container */}
-      <div
-        className="relative w-full h-full cursor-pointer"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          background: "transparent",
-          boxShadow: "none",
-          border: "none",
-        }}
-      >
-        {/* Video — ALWAYS visible. Plays show on mount, pauses on last frame.
-            On hover plays show→hover loop. On unhover plays unhover then pauses. */}
-        <video
-          ref={videoRef}
-          className="absolute inset-0 w-full h-full object-contain"
-          muted
-          playsInline
-          preload="auto"
-          style={{
-            willChange: "transform",
-            transform: "translateZ(0)",
-            background: "transparent",
-          }}
-        />
-
-        {/* Overlay PNG — always visible on top of video.
-            Has #f7f7f8 edges (matching section bg) to hide video background,
-            and transparent center to reveal device content. */}
-        <img
-          src={feature.overlay}
-          alt=""
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-          style={{ zIndex: 2 }}
-        />
-      </div>
-
-      {/* Label: title + "+" badge + "Learn more" */}
-      <div
-        className="absolute flex flex-col items-start"
-        style={{
-          ...labelPositions[feature.id],
-          zIndex: 10,
-        }}
-      >
-        <a
-          href="#"
-          className="flex flex-col items-start gap-1 no-underline"
-          style={{ textDecoration: "none" }}
-        >
-          {/* Title */}
-          <span
-            className="block font-bold whitespace-nowrap"
-            style={{
-              fontSize: 15,
-              color: "var(--navy)",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            {feature.title}
-          </span>
-
-          {/* "+" badge + Learn more row */}
-          <span className="flex items-center gap-0 relative">
-            {/* Green circle with + */}
-            <span
-              className="flex items-center justify-center shrink-0"
-              style={{
-                width: 29,
-                height: 29,
-                borderRadius: "50%",
-                background: "#1cc283",
-              }}
-            >
-              <PlusIcon />
-            </span>
-
-            {/* "Learn more" text — slides out on hover */}
-            <span
-              className="overflow-hidden whitespace-nowrap"
-              style={{
-                maxWidth: hovered ? 120 : 0,
-                opacity: hovered ? 1 : 0,
-                transition:
-                  "max-width 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease",
-                marginLeft: hovered ? 8 : 0,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "var(--navy)",
-                }}
-              >
-                Learn more
-              </span>
-            </span>
-          </span>
-        </a>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Features Section                                                   */
-/* ------------------------------------------------------------------ */
-
 export default function Features() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const banknoteRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isVisible, setIsVisible] = useState(false);
 
   // Intersection observer for entry animation
@@ -353,6 +50,44 @@ export default function Features() {
     );
     observer.observe(el);
     return () => observer.disconnect();
+  }, []);
+
+  // Banknote scatter animation
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const targets = [
+      { x: -300, y: -150, rotation: -25 },
+      { x: 250, y: -100, rotation: 15 },
+      { x: -200, y: 200, rotation: -40 },
+      { x: 300, y: 180, rotation: 30 },
+    ];
+
+    const ctx = gsap.context(() => {
+      banknoteRefs.current.forEach((el, i) => {
+        if (!el) return;
+        gsap.fromTo(
+          el,
+          { x: 0, y: 0, rotation: 0, opacity: 0, scale: 0.5 },
+          {
+            x: targets[i].x,
+            y: targets[i].y,
+            rotation: targets[i].rotation,
+            opacity: 1,
+            scale: 1,
+            scrollTrigger: {
+              trigger: section,
+              start: "top 30%",
+              end: "bottom 70%",
+              scrub: 1.5,
+            },
+          }
+        );
+      });
+    }, section);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -377,38 +112,186 @@ export default function Features() {
             className="text-sm font-bold uppercase tracking-widest mb-4"
             style={{ color: "var(--teal)" }}
           >
-            Platform
+            Network
           </p>
           <h2
             className="text-4xl md:text-5xl font-bold leading-tight mb-6"
             style={{ color: "var(--navy)" }}
           >
-            Flexible and scalable technology to meet your unique payment needs
+            One payoff. Every lender. Instant delivery.
           </h2>
           <p
             className="text-lg leading-relaxed"
             style={{ color: "var(--color-text-light)" }}
           >
-            Legacy payment solutions are slow, rigid, and lack control. Bring
-            the financial solutions to your customers at the point of need and
-            delight them in a whole new way.
+            Epic connects dealerships to thousands of lenders through a single
+            platform. Send payoffs to any bank, any lender, in seconds — not
+            days.
           </p>
         </div>
 
-        {/* Isometric Features Area */}
+        {/* Bank Buildings Grid */}
         <div
           className="relative mx-auto"
           style={{
             maxWidth: 1200,
-            aspectRatio: "1193 / 850",
+            minHeight: 700,
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? "translateY(0)" : "translateY(60px)",
             transition:
               "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.2s",
           }}
         >
-          {features.map((feature) => (
-            <FeatureCard key={feature.id} feature={feature} />
+          {/* Bank 1 - top left, large */}
+          <div
+            className="absolute"
+            style={{ top: "0%", left: "0%", width: "45%" }}
+          >
+            <div
+              className="rounded-2xl overflow-hidden shadow-2xl"
+              style={{ aspectRatio: "4/3" }}
+            >
+              <img
+                src={banks[0].image}
+                alt={banks[0].name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <p
+              className="mt-3 text-sm font-bold"
+              style={{ color: "var(--navy)" }}
+            >
+              {banks[0].name}
+            </p>
+          </div>
+
+          {/* Bank 2 - top right, medium, offset down */}
+          <div
+            className="absolute"
+            style={{ top: "8%", right: "0%", width: "35%" }}
+          >
+            <div
+              className="rounded-2xl overflow-hidden shadow-2xl"
+              style={{ aspectRatio: "3/4" }}
+            >
+              <img
+                src={banks[1].image}
+                alt={banks[1].name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <p
+              className="mt-3 text-sm font-bold"
+              style={{ color: "var(--navy)" }}
+            >
+              {banks[1].name}
+            </p>
+          </div>
+
+          {/* Bank 3 - bottom left, medium */}
+          <div
+            className="absolute"
+            style={{ top: "55%", left: "5%", width: "30%" }}
+          >
+            <div
+              className="rounded-2xl overflow-hidden shadow-xl"
+              style={{ aspectRatio: "4/3" }}
+            >
+              <img
+                src={banks[2].image}
+                alt={banks[2].name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <p
+              className="mt-3 text-sm font-bold"
+              style={{ color: "var(--navy)" }}
+            >
+              {banks[2].name}
+            </p>
+          </div>
+
+          {/* Bank 4 - bottom center */}
+          <div
+            className="absolute"
+            style={{ top: "60%", left: "38%", width: "28%" }}
+          >
+            <div
+              className="rounded-2xl overflow-hidden shadow-xl"
+              style={{ aspectRatio: "3/4" }}
+            >
+              <img
+                src={banks[3].image}
+                alt={banks[3].name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <p
+              className="mt-3 text-sm font-bold"
+              style={{ color: "var(--navy)" }}
+            >
+              {banks[3].name}
+            </p>
+          </div>
+
+          {/* Bank 5 - bottom right, small */}
+          <div
+            className="absolute"
+            style={{ top: "50%", right: "2%", width: "25%" }}
+          >
+            <div
+              className="rounded-2xl overflow-hidden shadow-xl"
+              style={{ aspectRatio: "1/1" }}
+            >
+              <img
+                src={banks[4].image}
+                alt={banks[4].name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <p
+              className="mt-3 text-sm font-bold"
+              style={{ color: "var(--navy)" }}
+            >
+              {banks[4].name}
+            </p>
+          </div>
+
+          {/* Scattered banknotes */}
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              key={i}
+              ref={(el) => {
+                if (el) banknoteRefs.current[i] = el;
+              }}
+              className="absolute pointer-events-none"
+              style={{
+                top: "40%",
+                left: "50%",
+                width: 80,
+                height: 50,
+                background: "linear-gradient(135deg, #85bb65, #5a8f3d)",
+                borderRadius: 4,
+                border: "1px solid rgba(255,255,255,0.3)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                zIndex: 20,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                opacity: 0,
+              }}
+            >
+              <span
+                style={{
+                  color: "rgba(255,255,255,0.4)",
+                  fontWeight: 900,
+                  fontSize: 14,
+                  fontFamily: "serif",
+                }}
+              >
+                $100
+              </span>
+            </div>
           ))}
         </div>
       </div>
