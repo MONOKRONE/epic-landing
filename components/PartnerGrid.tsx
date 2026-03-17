@@ -62,7 +62,7 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
       {/* PART 1: Stats — normal scrolling content */}
-      <div style={{ background: "#1e1b4b", padding: "120px 0" }}>
+      <div style={{ background: "#1e1b4b", padding: "120px 0 60px" }}>
         <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 40px" }}>
           <div
             style={{
@@ -179,6 +179,7 @@ export default function PartnerGrid() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 6,
+                paddingTop: 0,
               }}
             >
               <div style={{ background: "white", flex: "0 0 28%" }} />
@@ -192,6 +193,7 @@ export default function PartnerGrid() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 6,
+                paddingTop: 60,
               }}
             >
               <div style={{ background: "white", flex: "0 0 18%" }} />
@@ -205,6 +207,7 @@ export default function PartnerGrid() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 6,
+                paddingTop: 120,
               }}
             >
               <div style={{ background: "white", flex: "0 0 32%" }} />
@@ -218,6 +221,7 @@ export default function PartnerGrid() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 6,
+                paddingTop: 180,
               }}
             >
               <div style={{ background: "white", flex: "0 0 22%" }} />
@@ -231,6 +235,7 @@ export default function PartnerGrid() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 6,
+                paddingTop: 240,
               }}
             >
               <div style={{ background: "white", flex: "0 0 35%" }} />
