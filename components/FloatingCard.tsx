@@ -22,7 +22,7 @@ gsap.registerPlugin(ScrollTrigger);
 /*  Scattered bills: 6 bills fan out then fly to bank buildings        */
 /* ------------------------------------------------------------------ */
 
-const BILL_COUNT = 6;
+const BILL_COUNT = 5;
 
 export default function FloatingCard() {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -214,84 +214,82 @@ export default function FloatingCard() {
 
         /* --- Scattered bills: fan out then fly to banks --- */
         if (enterprisesEl && featuresEl) {
-          // Phase 1: Bills fan out gently from stack
-          const fanPositions = [
-            { x: -40, y: -30, rotation: -8 },
-            { x: -80, y: 10, rotation: -15 },
-            { x: -60, y: 50, rotation: -5 },
-            { x: 30, y: -40, rotation: 12 },
-            { x: 60, y: 20, rotation: 8 },
-            { x: 20, y: 60, rotation: 18 },
+          const spawnTop = "15%";
+          const spawnRight = "8%";
+
+          // Each bill gets a slight offset from the stack — fan out gently
+          const fanOffsets = [
+            { x: -60,  y: -50,  rot: -12 },
+            { x: -120, y: -10,  rot: -22 },
+            { x: -90,  y: 40,   rot: -8 },
+            { x: -30,  y: -70,  rot: 15 },
+            { x: -140, y: 30,   rot: -18 },
           ];
 
+          // Phase 1: Bills appear and fan out during Enterprises scroll
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
-            const fan = fanPositions[i];
 
-            gsap.fromTo(el,
-              {
-                top: "8%",
-                right: "4%",
-                x: 0,
-                y: 0,
-                rotation: 0,
-                opacity: 0,
-                scale: 0.9,
+            // Set initial position (at the stack)
+            gsap.set(el, {
+              top: spawnTop,
+              right: spawnRight,
+              x: 0,
+              y: 0,
+            });
+
+            // Phase 1: Fan out
+            gsap.to(el, {
+              x: fanOffsets[i].x,
+              y: fanOffsets[i].y,
+              rotation: fanOffsets[i].rot,
+              opacity: 1,
+              scrollTrigger: {
+                trigger: enterprisesEl,
+                start: "top 50%",
+                end: "bottom top",
+                scrub: 1,
               },
-              {
-                x: fan.x,
-                y: fan.y,
-                rotation: fan.rotation,
-                opacity: 1,
-                scale: 1,
-                scrollTrigger: {
-                  trigger: enterprisesEl,
-                  start: "top 40%",
-                  end: "bottom 60%",
-                  scrub: 1,
-                },
-              }
-            );
+            });
           });
 
-          // Phase 2: Bills fly to bank buildings (slow, visible the whole time)
-          const bankTargets = [
-            { x: -500, y: 200, rotation: -35 },   // Bank 1 (top-left)
-            { x: -300, y: 350, rotation: -20 },   // Bank 2 (bottom-left)
-            { x: -150, y: 300, rotation: 10 },    // Bank 3 (center)
-            { x: -400, y: 150, rotation: -45 },   // Bank 4 (mid-left)
-            { x: -100, y: 400, rotation: 25 },    // Bank 5 (bottom-center)
-            { x: -250, y: 250, rotation: -15 },   // Extra — toward center
+          // Phase 2: Bills fly toward the left side of the screen (where banks are)
+          const bankDestinations = [
+            { x: -600, y: 150,  rot: -45 },
+            { x: -500, y: 300,  rot: -30 },
+            { x: -700, y: 250,  rot: -55 },
+            { x: -550, y: 100,  rot: -35 },
+            { x: -650, y: 350,  rot: -25 },
           ];
 
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
-            const target = bankTargets[i];
+            const dest = bankDestinations[i];
 
-            // Timeline: 80% flight (visible) + 20% fade on arrival
-            const billTl = gsap.timeline({
+            // Main flight — bill moves toward bank, STAYS VISIBLE
+            const flightTl = gsap.timeline({
               scrollTrigger: {
                 trigger: featuresEl,
-                start: "top 90%",
-                end: "bottom 50%",
+                start: "top 80%",
+                end: "center center",
                 scrub: 1.5,
               },
             });
 
-            // First 80%: bill flies toward bank, fully visible
-            billTl.to(el, {
-              x: `+=${target.x}`,
-              y: `+=${target.y}`,
-              rotation: target.rotation,
-              duration: 0.8,
+            // 85% of journey: fly toward bank, fully visible
+            flightTl.to(el, {
+              x: dest.x,
+              y: dest.y,
+              rotation: dest.rot,
+              duration: 0.85,
               ease: "power1.inOut",
             });
 
-            // Last 20%: bill fades out as it "enters" the bank
-            billTl.to(el, {
+            // Last 15%: fade out as bill "enters" the bank
+            flightTl.to(el, {
               opacity: 0,
-              scale: 0.7,
-              duration: 0.2,
+              scale: 0.6,
+              duration: 0.15,
               ease: "power2.in",
             });
           });
@@ -353,26 +351,22 @@ export default function FloatingCard() {
           className="pointer-events-none"
           style={{
             position: "fixed",
-            width: 120,
-            height: 52,
-            zIndex: 48,
+            width: 140,
+            height: 60,
+            zIndex: 40,
             opacity: 0,
-            borderRadius: 3,
-            overflow: "hidden",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
             willChange: "transform, opacity",
           }}
         >
           <img
-            src="/png/money-stack.png"
+            src="/png/single-bill.jpg"
             alt=""
             style={{
-              width: "300%",
-              height: "300%",
-              objectFit: "cover",
-              objectPosition: "center 30%",
-              transform: "scale(0.5)",
-              transformOrigin: "center center",
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              borderRadius: 3,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
             }}
           />
         </div>
