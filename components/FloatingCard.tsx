@@ -21,7 +21,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function FloatingCard() {
   const cardRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const purpleBgRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -205,73 +205,20 @@ export default function FloatingCard() {
         opacity: 0,
       }}
     >
-      {/* Banknote stack */}
-      <div
+      {/* Money stack image */}
+      <img
         ref={imgRef}
+        src="/png/money-stack.png"
+        alt="Stack of hundred dollar bills"
         style={{
           position: "absolute",
-          inset: "8%",
-          background: "linear-gradient(135deg, #85bb65 0%, #5a8f3d 50%, #3d6b2e 100%)",
-          borderRadius: 8,
-          border: "2px solid rgba(255,255,255,0.3)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 2,
-          boxShadow: "inset 0 0 30px rgba(0,0,0,0.15), 0 4px 20px rgba(0,0,0,0.3)",
-        }}
-      >
-        {/* Decorative border frame */}
-        <div style={{
-          position: "absolute",
-          inset: "6%",
-          border: "1px solid rgba(255,255,255,0.2)",
-          borderRadius: 4,
-        }} />
-        {/* Dollar sign */}
-        <span style={{
-          fontSize: 64,
-          fontWeight: 900,
-          color: "rgba(255,255,255,0.25)",
-          fontFamily: "serif",
-          letterSpacing: -2,
-        }}>$100</span>
-        {/* Band across the middle */}
-        <div style={{
-          position: "absolute",
-          top: "42%",
-          left: 0,
-          right: 0,
-          height: "16%",
-          background: "rgba(255,255,255,0.12)",
-          backdropFilter: "blur(4px)",
-          borderTop: "1px solid rgba(255,255,255,0.25)",
-          borderBottom: "1px solid rgba(255,255,255,0.25)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-          <span style={{
-            color: "white",
-            fontFamily: "monospace",
-            fontWeight: 700,
-            fontSize: 18,
-            letterSpacing: 3,
-          }}>$10,000</span>
-        </div>
-        {/* Stack effect: multiple layers behind */}
-        <div style={{
-          position: "absolute",
           inset: 0,
-          borderRadius: 8,
-          zIndex: -1,
-        }}>
-          <div style={{ position: "absolute", top: 3, left: 3, right: -3, bottom: -3, background: "linear-gradient(135deg, #6fa352, #4a7a30)", borderRadius: 8, opacity: 0.7 }} />
-          <div style={{ position: "absolute", top: 6, left: 6, right: -6, bottom: -6, background: "linear-gradient(135deg, #5a8f3d, #3d6b2e)", borderRadius: 8, opacity: 0.5 }} />
-          <div style={{ position: "absolute", top: 9, left: 9, right: -9, bottom: -9, background: "linear-gradient(135deg, #4a7a30, #2d5520)", borderRadius: 8, opacity: 0.3 }} />
-        </div>
-      </div>
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          zIndex: 2,
+        }}
+      />
 
       {/* Purple background — revealed during expansion */}
       <div
