@@ -1,10 +1,6 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const banks = [
   {
@@ -31,7 +27,6 @@ const banks = [
 
 export default function Features() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const banknoteRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isVisible, setIsVisible] = useState(false);
 
   // Intersection observer for entry animation
@@ -50,44 +45,6 @@ export default function Features() {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
-
-  // Banknote scatter animation
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const targets = [
-      { x: -300, y: -150, rotation: -25 },
-      { x: 250, y: -100, rotation: 15 },
-      { x: -200, y: 200, rotation: -40 },
-      { x: 300, y: 180, rotation: 30 },
-    ];
-
-    const ctx = gsap.context(() => {
-      banknoteRefs.current.forEach((el, i) => {
-        if (!el) return;
-        gsap.fromTo(
-          el,
-          { x: 0, y: 0, rotation: 0, opacity: 0, scale: 0.5 },
-          {
-            x: targets[i].x,
-            y: targets[i].y,
-            rotation: targets[i].rotation,
-            opacity: 1,
-            scale: 1,
-            scrollTrigger: {
-              trigger: section,
-              start: "top 30%",
-              end: "bottom 70%",
-              scrub: 1.5,
-            },
-          }
-        );
-      });
-    }, section);
-
-    return () => ctx.revert();
   }, []);
 
   return (
@@ -257,42 +214,6 @@ export default function Features() {
             </p>
           </div>
 
-          {/* Scattered banknotes */}
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              ref={(el) => {
-                if (el) banknoteRefs.current[i] = el;
-              }}
-              className="absolute pointer-events-none"
-              style={{
-                top: "40%",
-                left: "50%",
-                width: 80,
-                height: 50,
-                background: "linear-gradient(135deg, #85bb65, #5a8f3d)",
-                borderRadius: 4,
-                border: "1px solid rgba(255,255,255,0.3)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                zIndex: 20,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                opacity: 0,
-              }}
-            >
-              <span
-                style={{
-                  color: "rgba(255,255,255,0.4)",
-                  fontWeight: 900,
-                  fontSize: 14,
-                  fontFamily: "serif",
-                }}
-              >
-                $100
-              </span>
-            </div>
-          ))}
         </div>
       </div>
     </section>

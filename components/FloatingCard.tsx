@@ -19,8 +19,10 @@ gsap.registerPlugin(ScrollTrigger);
 /*  WP5: Features end — expands to fill screen → Tailored bg           */
 /*                                                                     */
 /*  Band break: scrolling past Enterprises tears the rubber band       */
-/*  Scattered bills: 4 bills fly out toward bank buildings             */
+/*  Scattered bills: 6 bills fan out then fly to bank buildings        */
 /* ------------------------------------------------------------------ */
+
+const BILL_COUNT = 6;
 
 export default function FloatingCard() {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -57,6 +59,17 @@ export default function FloatingCard() {
           { opacity: 0, scale: 0.85, y: 30 },
           { opacity: 1, scale: 1, y: 0, duration: 1, ease: "expo.out", delay: 0.5 }
         );
+
+        /* --- Position scattered bills at stack location --- */
+        scatteredRefs.current.forEach((el) => {
+          if (!el) return;
+          gsap.set(el, {
+            top: "8%",
+            right: "4%",
+            left: "auto",
+            opacity: 0,
+          });
+        });
 
         /* --- Main scroll timeline --- */
         const cardTl = gsap.timeline({
@@ -199,52 +212,88 @@ export default function FloatingCard() {
           );
         }
 
-        /* --- Scattered bills fly to banks --- */
+        /* --- Scattered bills: fan out then fly to banks --- */
         if (enterprisesEl && featuresEl) {
-          const flyTargets = [
-            { x: "-60vw", y: "-20vh", rotation: -35, delay: 0 },    // top-left bank
-            { x: "-40vw", y: "30vh", rotation: 25, delay: 0.02 },   // bottom-left bank
-            { x: "10vw", y: "40vh", rotation: -15, delay: 0.04 },   // bottom-center bank
-            { x: "30vw", y: "-10vh", rotation: 40, delay: 0.06 },   // right bank
+          // Phase 1: Bills fan out gently from stack
+          const fanPositions = [
+            { x: -40, y: -30, rotation: -8 },
+            { x: -80, y: 10, rotation: -15 },
+            { x: -60, y: 50, rotation: -5 },
+            { x: 30, y: -40, rotation: 12 },
+            { x: 60, y: 20, rotation: 8 },
+            { x: 20, y: 60, rotation: 18 },
           ];
 
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
-            const target = flyTargets[i];
+            const fan = fanPositions[i];
 
-            // Bills appear (emerge from behind main stack)
             gsap.fromTo(el,
-              { opacity: 0, scale: 0.8, rotation: 0 },
               {
+                top: "8%",
+                right: "4%",
+                x: 0,
+                y: 0,
+                rotation: 0,
+                opacity: 0,
+                scale: 0.9,
+              },
+              {
+                x: fan.x,
+                y: fan.y,
+                rotation: fan.rotation,
                 opacity: 1,
                 scale: 1,
-                rotation: target.rotation * 0.3,
                 scrollTrigger: {
                   trigger: enterprisesEl,
-                  start: "top 30%",
-                  end: "top 10%",
+                  start: "top 40%",
+                  end: "bottom 60%",
                   scrub: 1,
-                }
+                },
               }
             );
+          });
 
-            // Bills fly away toward banks
-            gsap.fromTo(el,
-              { x: 0, y: 0, rotation: 0 },
-              {
-                x: target.x,
-                y: target.y,
-                rotation: target.rotation,
-                opacity: 0,
-                scale: 0.6,
-                scrollTrigger: {
-                  trigger: featuresEl,
-                  start: "top 80%",
-                  end: "top 20%",
-                  scrub: 1.5,
-                }
-              }
-            );
+          // Phase 2: Bills fly to bank buildings (slow, visible the whole time)
+          const bankTargets = [
+            { x: -500, y: 200, rotation: -35 },   // Bank 1 (top-left)
+            { x: -300, y: 350, rotation: -20 },   // Bank 2 (bottom-left)
+            { x: -150, y: 300, rotation: 10 },    // Bank 3 (center)
+            { x: -400, y: 150, rotation: -45 },   // Bank 4 (mid-left)
+            { x: -100, y: 400, rotation: 25 },    // Bank 5 (bottom-center)
+            { x: -250, y: 250, rotation: -15 },   // Extra — toward center
+          ];
+
+          scatteredRefs.current.forEach((el, i) => {
+            if (!el) return;
+            const target = bankTargets[i];
+
+            // Timeline: 80% flight (visible) + 20% fade on arrival
+            const billTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: featuresEl,
+                start: "top 90%",
+                end: "bottom 50%",
+                scrub: 1.5,
+              },
+            });
+
+            // First 80%: bill flies toward bank, fully visible
+            billTl.to(el, {
+              x: `+=${target.x}`,
+              y: `+=${target.y}`,
+              rotation: target.rotation,
+              duration: 0.8,
+              ease: "power1.inOut",
+            });
+
+            // Last 20%: bill fades out as it "enters" the bank
+            billTl.to(el, {
+              opacity: 0,
+              scale: 0.7,
+              duration: 0.2,
+              ease: "power2.in",
+            });
           });
         }
 
@@ -294,6 +343,41 @@ export default function FloatingCard() {
 
   return (
     <>
+      {/* Scattered bills — fly out from stack toward banks */}
+      {Array.from({ length: BILL_COUNT }).map((_, i) => (
+        <div
+          key={`bill-${i}`}
+          ref={(el) => {
+            scatteredRefs.current[i] = el;
+          }}
+          className="pointer-events-none"
+          style={{
+            position: "fixed",
+            width: 120,
+            height: 52,
+            zIndex: 48,
+            opacity: 0,
+            borderRadius: 3,
+            overflow: "hidden",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            willChange: "transform, opacity",
+          }}
+        >
+          <img
+            src="/png/money-stack.png"
+            alt=""
+            style={{
+              width: "300%",
+              height: "300%",
+              objectFit: "cover",
+              objectPosition: "center 30%",
+              transform: "scale(0.5)",
+              transformOrigin: "center center",
+            }}
+          />
+        </div>
+      ))}
+
       <div
         ref={cardRef}
         className="pointer-events-none"
@@ -398,39 +482,6 @@ export default function FloatingCard() {
           }}
         />
       </div>
-
-      {/* Scattered bills — fly out from stack toward banks */}
-      {[0, 1, 2, 3].map((i) => (
-        <div
-          key={i}
-          ref={(el) => {
-            if (el) scatteredRefs.current[i] = el;
-          }}
-          className="pointer-events-none"
-          style={{
-            position: "fixed",
-            top: "8%",
-            right: "4%",
-            width: 160,
-            height: 100,
-            zIndex: 49,
-            opacity: 0,
-            overflow: "hidden",
-            borderRadius: 4,
-          }}
-        >
-          <img
-            src="/png/money-stack.png"
-            alt=""
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center 40%",
-            }}
-          />
-        </div>
-      ))}
     </>
   );
 }
