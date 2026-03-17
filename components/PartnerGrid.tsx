@@ -1,14 +1,17 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, forwardRef, type ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
+
+const NUM_ROWS = 7;
 
 export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const whiteOverlayRef = useRef<HTMLDivElement>(null);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
@@ -16,17 +19,26 @@ export default function PartnerGrid() {
     const whiteOverlay = whiteOverlayRef.current;
     if (!gridWrapper || !grid || !whiteOverlay) return;
 
+    // Set initial row transforms
+    const bendObj = { intensity: 1 };
+    const updateRows = () => {
+      rowRefs.current.forEach((row, i) => {
+        if (!row) return;
+        const rx = i * i * 3 * bendObj.intensity;
+        const tz = i * i * 15 * bendObj.intensity;
+        row.style.transform = `rotateX(${rx}deg) translateZ(${tz}px)`;
+      });
+    };
+    updateRows();
+
     const ctx = gsap.context(() => {
-      // Tween 1: Zoom with slight 3D tilt
+      // Tween 1: Overall grid translateZ (zoom toward camera)
       gsap.fromTo(
         grid,
+        { z: 0, scale: 1 },
         {
-          scale: 1,
-          rotateX: 8,
-        },
-        {
-          scale: 20,
-          rotateX: 0,
+          z: 600,
+          scale: 3,
           ease: "none",
           scrollTrigger: {
             trigger: gridWrapper,
@@ -37,7 +49,20 @@ export default function PartnerGrid() {
         }
       );
 
-      // Tween 2: White overlay
+      // Tween 2: Bend intensity increases on scroll
+      gsap.to(bendObj, {
+        intensity: 3.5,
+        ease: "none",
+        scrollTrigger: {
+          trigger: gridWrapper,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.5,
+          onUpdate: updateRows,
+        },
+      });
+
+      // Tween 3: White overlay
       gsap.fromTo(
         whiteOverlay,
         { opacity: 0 },
@@ -145,74 +170,88 @@ export default function PartnerGrid() {
         </div>
       </div>
 
-      {/* PART 2: Carpet grid zoom — CSS 3D perspective */}
+      {/* PART 2: Carpet grid zoom — per-row 3D bend */}
       <div ref={gridWrapperRef} className="hidden lg:block h-[300vh]">
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{
             background: "#1e1b4b",
             perspective: "1000px",
-            perspectiveOrigin: "50% 40%",
+            perspectiveOrigin: "50% 30%",
           }}
         >
-          {/* 3D grid plane */}
+          {/* Grid container — translateZ + scale driven by scroll */}
           <div
             ref={gridRef}
             style={{
               position: "absolute",
               inset: 0,
               transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
-              transformOrigin: "48% 65%",
+              transformOrigin: "50% 0%",
               willChange: "transform",
-              display: "grid",
-              gridTemplateColumns: "repeat(5, 1fr)",
-              gap: 6,
-              padding: 6,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              padding: "20px 0",
               background: "#1e1b4b",
             }}
           >
+            {/* Row 0 */}
+            <GridRow ref={(el) => { rowRefs.current[0] = el; }} idx={0}>
+              <GridCell h={120} />
+              <GridCell h={180} label="CHASE" />
+              <GridCell h={150} label="ALLY FINANCIAL" />
+              <GridCell h={120} />
+              <GridCell h={160} label="WELLS FARGO" />
+            </GridRow>
             {/* Row 1 */}
-            <GridCell h={120} />
-            <GridCell h={180} label="CHASE" />
-            <GridCell h={150} label="ALLY FINANCIAL" />
-            <GridCell h={120} />
-            <GridCell h={160} label="WELLS FARGO" />
+            <GridRow ref={(el) => { rowRefs.current[1] = el; }} idx={1}>
+              <GridCell h={180} />
+              <GridCell h={120} label="BANK OF AMERICA" />
+              <GridCell h={160} />
+              <GridCell h={200} label="CAPITAL ONE" />
+              <GridCell h={140} />
+            </GridRow>
             {/* Row 2 */}
-            <GridCell h={180} />
-            <GridCell h={120} label="BANK OF AMERICA" />
-            <GridCell h={160} />
-            <GridCell h={200} label="CAPITAL ONE" />
-            <GridCell h={140} />
+            <GridRow ref={(el) => { rowRefs.current[2] = el; }} idx={2}>
+              <GridCell h={140} label="US BANK" />
+              <GridCell h={200} />
+              <GridCell h={120} label="TD BANK" />
+              <GridCell h={150} />
+              <GridCell h={180} label="CITIZENS" />
+            </GridRow>
             {/* Row 3 */}
-            <GridCell h={140} label="US BANK" />
-            <GridCell h={200} />
-            <GridCell h={120} label="TD BANK" />
-            <GridCell h={150} />
-            <GridCell h={180} label="CITIZENS" />
-            {/* Row 4 */}
-            <GridCell h={160} />
-            <GridCell h={140} label="PNC" />
-            <GridCell h={180} />
-            <GridCell h={120} label="NAVY FEDERAL" />
-            <GridCell h={160} />
+            <GridRow ref={(el) => { rowRefs.current[3] = el; }} idx={3}>
+              <GridCell h={160} />
+              <GridCell h={140} label="PNC" />
+              <GridCell h={180} />
+              <GridCell h={120} label="NAVY FEDERAL" />
+              <GridCell h={160} />
+            </GridRow>
+            {/* Row 4 — phantom */}
+            <GridRow ref={(el) => { rowRefs.current[4] = el; }} idx={4}>
+              <GridCell h={180} />
+              <GridCell h={150} />
+              <GridCell h={140} />
+              <GridCell h={170} />
+              <GridCell h={130} />
+            </GridRow>
             {/* Row 5 — phantom */}
-            <GridCell h={180} />
-            <GridCell h={150} />
-            <GridCell h={140} />
-            <GridCell h={170} />
-            <GridCell h={130} />
+            <GridRow ref={(el) => { rowRefs.current[5] = el; }} idx={5}>
+              <GridCell h={140} />
+              <GridCell h={170} />
+              <GridCell h={160} />
+              <GridCell h={140} />
+              <GridCell h={180} />
+            </GridRow>
             {/* Row 6 — phantom */}
-            <GridCell h={140} />
-            <GridCell h={170} />
-            <GridCell h={160} />
-            <GridCell h={140} />
-            <GridCell h={180} />
-            {/* Row 7 — phantom */}
-            <GridCell h={160} />
-            <GridCell h={130} />
-            <GridCell h={180} />
-            <GridCell h={150} />
-            <GridCell h={140} />
+            <GridRow ref={(el) => { rowRefs.current[6] = el; }} idx={6}>
+              <GridCell h={160} />
+              <GridCell h={130} />
+              <GridCell h={180} />
+              <GridCell h={150} />
+              <GridCell h={140} />
+            </GridRow>
           </div>
 
           {/* White overlay */}
@@ -239,7 +278,31 @@ export default function PartnerGrid() {
   );
 }
 
-// ── Grid cell subcomponent ─────────────────────────────────────────
+// ── Grid row — each row bends independently ────────────────────────
+const GridRow = forwardRef<HTMLDivElement, { idx: number; children: ReactNode }>(
+  ({ idx, children }, ref) => (
+    <div
+      ref={ref}
+      style={{
+        display: "flex",
+        gap: 8,
+        width: "120%",
+        marginLeft: "-10%",
+        padding: "0 8px",
+        transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
+        transformOrigin: "50% 0%",
+        willChange: "transform",
+        // Initial bend set by useEffect
+        transform: `rotateX(${idx * idx * 3}deg) translateZ(${idx * idx * 15}px)`,
+      }}
+    >
+      {children}
+    </div>
+  )
+);
+GridRow.displayName = "GridRow";
+
+// ── Grid cell ──────────────────────────────────────────────────────
 function GridCell({ h, label }: { h: number; label?: string }) {
   return (
     <div
@@ -247,6 +310,7 @@ function GridCell({ h, label }: { h: number; label?: string }) {
         background: "white",
         borderRadius: 16,
         minHeight: h,
+        flex: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
