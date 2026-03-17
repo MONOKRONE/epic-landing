@@ -62,7 +62,7 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
       {/* PART 1: Stats — normal scrolling content */}
-      <div style={{ background: "#ffffff", padding: "120px 0" }}>
+      <div style={{ background: "#1e1b4b", padding: "120px 0" }}>
         <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 40px" }}>
           <div
             style={{
@@ -99,7 +99,7 @@ export default function PartnerGrid() {
                 style={{
                   fontSize: 48,
                   fontWeight: 700,
-                  color: "#1e1b4b",
+                  color: "#ffffff",
                   lineHeight: 1.1,
                   marginBottom: 48,
                 }}
@@ -115,26 +115,26 @@ export default function PartnerGrid() {
                 }}
               >
                 <div>
-                  <p style={{ fontSize: 56, fontWeight: 900, color: "#4f46e5" }}>
+                  <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>
                     $290B+
                   </p>
-                  <p style={{ fontSize: 14, color: "#6b7280" }}>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
                     volume processed in 2024
                   </p>
                 </div>
                 <div>
-                  <p style={{ fontSize: 56, fontWeight: 900, color: "#4f46e5" }}>
+                  <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>
                     99.99%
                   </p>
-                  <p style={{ fontSize: 14, color: "#6b7280" }}>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
                     platform uptime in 2024
                   </p>
                 </div>
                 <div>
-                  <p style={{ fontSize: 56, fontWeight: 900, color: "#4f46e5" }}>
+                  <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>
                     40+
                   </p>
-                  <p style={{ fontSize: 14, color: "#6b7280" }}>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
                     countries certified to operate
                   </p>
                 </div>
@@ -144,7 +144,7 @@ export default function PartnerGrid() {
                 <img
                   src="/svg/static_img_Awards_Updated-logo.svg"
                   alt="Awards"
-                  style={{ height: 64, opacity: 0.7 }}
+                  style={{ height: 64, opacity: 1.0 }}
                 />
               </div>
             </div>
