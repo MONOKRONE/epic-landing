@@ -538,6 +538,7 @@ export default function ScrollAnimation() {
                       zIndex: 20,
                       opacity: 0,
                       cursor: "pointer",
+                      pointerEvents: "auto",
                     }}
                     onClick={() => setVideoModalOpen(true)}
                   >
