@@ -49,10 +49,10 @@ const CELLS: Cell[] = [
 ];
 
 const NUM_COLS = 5;
-const SCREEN_GAP = 4; // FIXED gap in screen pixels — never scales
-const BORDER_RADIUS = 20;
+const SCREEN_GAP = 6; // FIXED gap in screen pixels — never scales
+const BORDER_RADIUS = 40;
 const FOCAL_LENGTH = 800;
-const MAX_CAMERA_Z = 740;
+const MAX_CAMERA_Z = 780;
 
 // Column top offsets in base units (masonry stagger)
 const COL_OFFSETS = [0, 0.4, 0.8, 1.2, 1.6];
@@ -167,7 +167,7 @@ export default function PartnerGrid() {
       if (pw < 0.5 || ph < 0.5) continue;
 
       // Border radius scales but caps at 60px
-      const r = Math.min(60, Math.max(1, BORDER_RADIUS * Math.min(scale, 3)));
+      const r = Math.min(100, Math.max(1, BORDER_RADIUS * Math.min(scale, 3)));
 
       ctx.fillStyle = "#ffffff";
       roundedRect(ctx, px, py, pw, ph, r);
@@ -244,8 +244,8 @@ export default function PartnerGrid() {
           opacity: 1,
           scrollTrigger: {
             trigger: wrapper,
-            start: "65% top",
-            end: "80% top",
+            start: "75% top",
+            end: "92% top",
             scrub: 1,
           },
         }
