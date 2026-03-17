@@ -1,57 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
-
 export default function PartnerGrid() {
-  const gridWrapperRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const whiteOverlayRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const gridWrapper = gridWrapperRef.current;
-    const grid = gridRef.current;
-    const whiteOverlay = whiteOverlayRef.current;
-    if (!gridWrapper || !grid || !whiteOverlay) return;
-
-    const ctx = gsap.context(() => {
-      // Tween 1: Zoom
-      gsap.fromTo(
-        grid,
-        { scale: 1 },
-        {
-          scale: 20,
-          ease: "none",
-          scrollTrigger: {
-            trigger: gridWrapper,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.5,
-          },
-        }
-      );
-
-      // Tween 2: White overlay
-      gsap.fromTo(
-        whiteOverlay,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          scrollTrigger: {
-            trigger: gridWrapper,
-            start: "70% top",
-            end: "85% top",
-            scrub: 1,
-          },
-        }
-      );
-    }, gridWrapper);
-
-    return () => ctx.revert();
-  }, []);
-
   const logos = [
     { src: "/svg/static_svg_logo-uber.svg", alt: "Uber" },
     { src: "/svg/static_svg_logo-square.svg", alt: "Square" },
@@ -141,110 +90,20 @@ export default function PartnerGrid() {
         </div>
       </div>
 
-      {/* PART 2: Grid + Zoom — sticky with scroll animation */}
-      <div ref={gridWrapperRef} className="h-[180vh] lg:h-[300vh]">
-        <div
-          className="sticky top-0 h-screen w-full overflow-hidden"
-          style={{ background: "#1e1b4b" }}
+      {/* PART 2: Curved wave transition — navy to white */}
+      <div style={{ background: "white" }}>
+        <svg
+          viewBox="0 0 1440 200"
+          preserveAspectRatio="none"
+          className="w-full block"
+          style={{ height: "clamp(80px, 12vw, 200px)", marginTop: -1 }}
+          xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Masonry grid */}
-          <div
-            ref={gridRef}
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              gap: 6,
-              padding: 6,
-              background: "#1e1b4b",
-              transformOrigin: "55% 75%",
-              willChange: "transform",
-            }}
-          >
-            {/* Column 1 */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 0,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 28%" }} />
-              <div style={{ background: "white", flex: "0 0 38%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-            {/* Column 2 */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 60,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 18%" }} />
-              <div style={{ background: "white", flex: "0 0 42%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-            {/* Column 3 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 120,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 32%" }} />
-              <div style={{ background: "white", flex: "0 0 28%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-            {/* Column 4 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 180,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 22%" }} />
-              <div style={{ background: "white", flex: "0 0 45%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-            {/* Column 5 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 240,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 35%" }} />
-              <div style={{ background: "white", flex: "0 0 22%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-          </div>
-
-          {/* White overlay */}
-          <div
-            ref={whiteOverlayRef}
-            className="absolute inset-0"
-            style={{
-              background: "#ffffff",
-              opacity: 0,
-              zIndex: 10,
-              pointerEvents: "none",
-            }}
+          <path
+            d="M0,0 C240,0 480,140 720,140 C960,140 1200,40 1440,0 L1440,0 L0,0 Z"
+            fill="#1e1b4b"
           />
-        </div>
+        </svg>
       </div>
     </section>
   );
