@@ -23,26 +23,15 @@ const stats = [
 ];
 
 /*
- * Asymmetric mosaic grid matching Marqeta's layout.
- * Values are % of viewport: { top, left, w, h, row }
- * "row" groups cells for the arc motion phase.
+ * Asymmetric grid rows — each row has cells with fr-based widths.
+ * Using CSS Grid (not absolute positioning) so cells share borders
+ * and create natural grid lines that curve under 3D perspective.
  */
-const gridCells = [
-  // Row 0 — top
-  { top: 0, left: 0, w: 20, h: 28, row: 0 },
-  { top: 0, left: 20, w: 30, h: 40, row: 0 },
-  { top: 0, left: 50, w: 28, h: 32, row: 0 },
-  { top: 0, left: 78, w: 22, h: 24, row: 0 },
-  // Row 1 — middle
-  { top: 28, left: 0, w: 20, h: 38, row: 1 },
-  { top: 40, left: 20, w: 30, h: 32, row: 1 },
-  { top: 32, left: 50, w: 28, h: 38, row: 1 },
-  { top: 24, left: 78, w: 22, h: 40, row: 1 },
-  // Row 2 — bottom
-  { top: 66, left: 0, w: 20, h: 34, row: 2 },
-  { top: 72, left: 20, w: 30, h: 28, row: 2 },
-  { top: 70, left: 50, w: 28, h: 30, row: 2 },
-  { top: 64, left: 78, w: 22, h: 36, row: 2 },
+const gridRows = [
+  { cells: [{ fr: 2 }, { fr: 4 }, { fr: 4 }], height: "22%" },
+  { cells: [{ fr: 3 }, { fr: 3 }, { fr: 4 }], height: "28%" },
+  { cells: [{ fr: 1 }, { fr: 1 }, { fr: 1 }, { fr: 1 }], height: "26%" },
+  { cells: [{ fr: 6 }, { fr: 4 }], height: "24%" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -53,6 +42,7 @@ export default function PartnerGrid() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
+  const perspectiveRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const whiteOverlayRef = useRef<HTMLDivElement>(null);
 
@@ -60,9 +50,11 @@ export default function PartnerGrid() {
     const section = sectionRef.current;
     const sticky = stickyRef.current;
     const showcase = showcaseRef.current;
+    const perspective = perspectiveRef.current;
     const grid = gridRef.current;
     const whiteOverlay = whiteOverlayRef.current;
-    if (!section || !sticky || !showcase || !grid || !whiteOverlay) return;
+    if (!section || !sticky || !showcase || !perspective || !grid || !whiteOverlay)
+      return;
 
     const cards = showcase.querySelectorAll<HTMLElement>(".partner-card");
     const statsEls = showcase.querySelectorAll<HTMLElement>(".stat-item");
@@ -80,20 +72,24 @@ export default function PartnerGrid() {
       });
 
       /*
-       * Timeline positions are in "seconds". GSAP normalizes
-       * 0 → totalDuration to 0% → 100% scroll progress.
-       * We pad to 1.0 so positions map ~1:1 to scroll %.
-       * Sticky unpins at ~67% scroll, so all visible animation
-       * must complete before position 0.60.
+       * Timeline positions = "seconds". GSAP normalizes 0→totalDuration
+       * to 0%→100% scroll. We pad to 1.0 so positions ≈ scroll %.
+       * Sticky unpins at ~67%, so visible animation must end by ~0.60.
        */
 
-      /* ---- Phase A (0 → 0.15): Showcase — cards cascade + stats ---- */
+      /* ---- Phase A (0 → 0.15): Showcase ---- */
 
       cards.forEach((card, i) => {
         tl.fromTo(
           card,
           { x: -300, opacity: 0, rotateZ: -15 + i * 3 },
-          { x: 0, opacity: 1, rotateZ: -8 + i * 4, duration: 0.08, ease: "power2.out" },
+          {
+            x: 0,
+            opacity: 1,
+            rotateZ: -8 + i * 4,
+            duration: 0.08,
+            ease: "power2.out",
+          },
           i * 0.025
         );
       });
@@ -116,95 +112,105 @@ export default function PartnerGrid() {
         );
       });
 
-      /* ---- Phase B (0.15 → 0.22): Transition to grid ---- */
+      /* ---- Phase B (0.15 → 0.22): Grid appears flat ---- */
 
-      // Fade out showcase
       tl.to(showcase, { opacity: 0, duration: 0.04 }, 0.15);
+      tl.fromTo(
+        perspective,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.04 },
+        0.17
+      );
 
-      // Fade in grid — cells start at opacity 0 individually
-      tl.fromTo(grid, { opacity: 0 }, { opacity: 1, duration: 0.03 }, 0.17);
-      cells.forEach((cell, i) => {
-        tl.fromTo(
-          cell,
-          { opacity: 0, scale: 0.92 },
-          { opacity: 1, scale: 1, duration: 0.04, ease: "power2.out" },
-          0.18 + i * 0.003
-        );
-      });
-
-      /* ---- Phase C (0.24 → 0.38): Arc/curve motion ---- */
+      /* ---- Phase C (0.22 → 0.40): 3D perspective curve ---- */
       /*
-       * Each row translates downward at a different rate.
-       * Row 0 (top) moves most, row 2 (bottom) moves least.
-       * This creates a curved/arc/bending effect like a sheet
-       * of paper falling, matching the Marqeta reference.
+       * Animate rotateX on the grid container. With perspective on
+       * the parent, straight grid borders APPEAR curved — this is
+       * the exact technique Marqeta uses.
        */
 
-      const arcOffsets = [120, 60, 20]; // px offset per row
+      tl.to(
+        grid,
+        {
+          rotateX: 50,
+          translateY: -80,
+          translateZ: -200,
+          duration: 0.18,
+          ease: "power1.inOut",
+        },
+        0.22
+      );
 
-      cells.forEach((cell, i) => {
-        const cellRow = gridCells[i].row;
-        const yOffset = arcOffsets[cellRow];
-        // Also shift horizontally for organic feel
-        const xShift = (cellRow === 0 ? -10 : cellRow === 1 ? 5 : 15);
+      /* ---- Phase D (0.38 → 0.52): Borders grow thick ---- */
 
+      // Stage 1: 4px → 20px
+      cells.forEach((cell) => {
         tl.to(
           cell,
-          {
-            y: yOffset,
-            x: xShift,
-            duration: 0.12,
-            ease: "power1.inOut",
-          },
-          0.24
+          { borderWidth: 20, duration: 0.06, ease: "power2.in" },
+          0.38
         );
       });
 
-      /* ---- Phase D (0.36 → 0.50): Borders consume cells ---- */
-
-      // Stage 1: borders 4px → 20px
-      cells.forEach((cell, i) => {
+      // Stage 2: 20px → 60px
+      cells.forEach((cell) => {
         tl.to(
           cell,
-          { borderWidth: 20, borderRadius: 4, duration: 0.06, ease: "power2.in" },
-          0.36 + i * 0.002
+          { borderWidth: 60, duration: 0.05, ease: "power2.in" },
+          0.44
         );
       });
 
-      // Stage 2: borders 20px → 60px
-      cells.forEach((cell, i) => {
+      // Stage 3: 60px → 120px — cells become mostly solid purple
+      cells.forEach((cell) => {
         tl.to(
           cell,
-          { borderWidth: 60, borderRadius: 2, duration: 0.05, ease: "power2.in" },
-          0.42 + i * 0.002
-        );
-      });
-
-      // Stage 3: borders 60px → 150px — cells become solid purple
-      cells.forEach((cell, i) => {
-        tl.to(
-          cell,
-          { borderWidth: 150, borderRadius: 0, duration: 0.05, ease: "power3.in" },
-          0.47 + i * 0.001
+          { borderWidth: 120, duration: 0.04, ease: "power3.in" },
+          0.49
         );
       });
 
       /* ---- Phase E (0.52 → 0.58): White takeover ---- */
 
-      // All borders: purple → white
+      // Flatten the grid back while transitioning to white
+      tl.to(
+        grid,
+        {
+          rotateX: 0,
+          translateY: 0,
+          translateZ: 0,
+          duration: 0.06,
+          ease: "power2.out",
+        },
+        0.52
+      );
+
+      // All borders → white
       cells.forEach((cell) => {
-        tl.to(cell, { borderColor: "#ffffff", duration: 0.04, ease: "none" }, 0.52);
+        tl.to(
+          cell,
+          { borderColor: "#ffffff", duration: 0.04, ease: "none" },
+          0.52
+        );
       });
-      // Sticky bg: navy → white
-      tl.to(sticky, { backgroundColor: "#ffffff", duration: 0.04, ease: "none" }, 0.52);
-      // White overlay for guaranteed solid coverage
-      tl.to(whiteOverlay, { opacity: 1, duration: 0.03, ease: "power2.in" }, 0.54);
 
-      /* ---- Phase F (0.58 → 1.0): Clean exit — solid white hold ---- */
-      tl.to(grid, { opacity: 0, duration: 0.02 }, 0.58);
-      // Spacer: pad timeline to 1.0 so white hold persists through scroll
-      tl.set({}, {}, 1.0);
+      // Sticky bg → white
+      tl.to(
+        sticky,
+        { backgroundColor: "#ffffff", duration: 0.04, ease: "none" },
+        0.52
+      );
 
+      // White overlay for guaranteed coverage
+      tl.to(
+        whiteOverlay,
+        { opacity: 1, duration: 0.03, ease: "power2.in" },
+        0.55
+      );
+
+      /* ---- Phase F (0.58 → 1.0): Clean exit ---- */
+      tl.to(perspective, { opacity: 0, duration: 0.02 }, 0.58);
+      tl.set({}, {}, 1.0); // pad timeline
     }, section);
 
     return () => ctx.revert();
@@ -239,7 +245,8 @@ export default function PartnerGrid() {
                       height: 175,
                       background: "white",
                       borderRadius: 16,
-                      boxShadow: "0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1)",
+                      boxShadow:
+                        "0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -297,29 +304,52 @@ export default function PartnerGrid() {
           </div>
         </div>
 
-        {/* Phase B→E: Asymmetric mosaic grid */}
+        {/* Perspective wrapper — creates the 3D space */}
         <div
-          ref={gridRef}
+          ref={perspectiveRef}
           className="absolute inset-0"
-          style={{ opacity: 0 }}
+          style={{
+            perspective: "1200px",
+            perspectiveOrigin: "center 30%",
+            opacity: 0,
+          }}
         >
-          {gridCells.map((cell, i) => (
-            <div
-              key={i}
-              className="grid-cell"
-              style={{
-                position: "absolute",
-                top: `${cell.top}%`,
-                left: `${cell.left}%`,
-                width: `${cell.w}%`,
-                height: `${cell.h}%`,
-                background: "white",
-                border: "4px solid #3730a3",
-                borderRadius: 8,
-                opacity: 0,
-              }}
-            />
-          ))}
+          {/* Grid container — gets rotateX animated for curved effect */}
+          <div
+            ref={gridRef}
+            style={{
+              transformStyle: "preserve-3d",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {gridRows.map((row, ri) => (
+              <div
+                key={ri}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: row.cells
+                    .map((c) => `${c.fr}fr`)
+                    .join(" "),
+                  height: row.height,
+                  flex: "none",
+                }}
+              >
+                {row.cells.map((_, ci) => (
+                  <div
+                    key={ci}
+                    className="grid-cell"
+                    style={{
+                      background: "white",
+                      border: "4px solid #3730a3",
+                    }}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* White overlay — clean fill at end */}
