@@ -74,7 +74,7 @@ export default function PartnerGrid() {
                   key={i}
                   style={{
                     background: "white",
-                    borderRadius: 12,
+                    borderRadius: 20,
                     boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
                     padding: "24px 32px",
                   }}
@@ -157,7 +157,7 @@ export default function PartnerGrid() {
               gap: 8,
               padding: 8,
               background: "#1e1b4b",
-              transformOrigin: "50% 60%",
+              transformOrigin: "45% 65%",
               willChange: "transform",
             }}
           >
@@ -171,9 +171,12 @@ export default function PartnerGrid() {
                 paddingTop: 0,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: "0 0 38%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
+              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 38%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 24%", borderRadius: 20 }} />
+              {/* Phantom rows */}
+              <div style={{ background: "white", flex: "0 0 30%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 25%", borderRadius: 20 }} />
             </div>
             {/* Column 2 */}
             <div
@@ -185,11 +188,14 @@ export default function PartnerGrid() {
                 paddingTop: 60,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 18%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ background: "white", flex: "0 0 18%", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CHASE</span>
               </div>
-              <div style={{ background: "white", flex: "0 0 42%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
+              <div style={{ background: "white", flex: "0 0 42%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 20%", borderRadius: 20 }} />
+              {/* Phantom rows */}
+              <div style={{ background: "white", flex: "0 0 35%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 20 }} />
             </div>
             {/* Column 3 */}
             <div
@@ -201,11 +207,14 @@ export default function PartnerGrid() {
                 paddingTop: 120,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 32%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ background: "white", flex: "0 0 32%", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>ALLY FINANCIAL</span>
               </div>
-              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
+              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 20 }} />
+              {/* Phantom rows */}
+              <div style={{ background: "white", flex: "0 0 32%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 26%", borderRadius: 20 }} />
             </div>
             {/* Column 4 */}
             <div
@@ -217,11 +226,14 @@ export default function PartnerGrid() {
                 paddingTop: 180,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: "0 0 45%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 45%", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CAPITAL ONE</span>
               </div>
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
+              <div style={{ background: "white", flex: "0 0 18%", borderRadius: 20 }} />
+              {/* Phantom rows */}
+              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 34%", borderRadius: 20 }} />
             </div>
             {/* Column 5 */}
             <div
@@ -233,9 +245,12 @@ export default function PartnerGrid() {
                 paddingTop: 240,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 35%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
+              <div style={{ background: "white", flex: "0 0 35%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 18%", borderRadius: 20 }} />
+              {/* Phantom rows */}
+              <div style={{ background: "white", flex: "0 0 30%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: "0 0 24%", borderRadius: 20 }} />
             </div>
           </div>
 
