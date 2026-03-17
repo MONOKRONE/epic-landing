@@ -219,11 +219,11 @@ export default function FloatingCard() {
 
           // Each bill gets a slight offset from the stack — fan out gently
           const fanOffsets = [
-            { x: -60,  y: -50,  rot: -12 },
-            { x: -120, y: -10,  rot: -22 },
-            { x: -90,  y: 40,   rot: -8 },
-            { x: -30,  y: -70,  rot: 15 },
-            { x: -140, y: 30,   rot: -18 },
+            { x: -100, y: -80,  rot: -20 },
+            { x: -200, y: 20,   rot: -35 },
+            { x: -50,  y: 80,   rot: 10 },
+            { x: -160, y: -40,  rot: -28 },
+            { x: -250, y: 60,   rot: -15 },
           ];
 
           // Phase 1: Bills appear and fan out during Enterprises scroll
@@ -255,11 +255,11 @@ export default function FloatingCard() {
 
           // Phase 2: Bills fly toward the left side of the screen (where banks are)
           const bankDestinations = [
-            { x: -600, y: 150,  rot: -45 },
-            { x: -500, y: 300,  rot: -30 },
-            { x: -700, y: 250,  rot: -55 },
-            { x: -550, y: 100,  rot: -35 },
-            { x: -650, y: 350,  rot: -25 },
+            { x: -900, y: 80,   rot: -25 },  // Bank 1: far left, top area
+            { x: -400, y: 350,  rot: 15 },   // Bank 2: center-left, bottom
+            { x: -700, y: 300,  rot: -40 },  // Bank 3: left, mid-bottom
+            { x: -200, y: 450,  rot: 30 },   // Bank 4: center, far bottom
+            { x: -550, y: 150,  rot: -10 },  // Bank 5: mid-left, top
           ];
 
           scatteredRefs.current.forEach((el, i) => {
@@ -351,22 +351,20 @@ export default function FloatingCard() {
           className="pointer-events-none"
           style={{
             position: "fixed",
-            width: 140,
-            height: 60,
+            width: 150,
+            height: 64,
             zIndex: 40,
             opacity: 0,
             willChange: "transform, opacity",
           }}
         >
           <img
-            src="/png/single-bill.jpg"
+            src="/png/single-bill.png"
             alt=""
             style={{
               width: "100%",
               height: "100%",
               objectFit: "contain",
-              borderRadius: 3,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
             }}
           />
         </div>
