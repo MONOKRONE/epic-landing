@@ -122,6 +122,7 @@ export default function PartnerGrid() {
     const H = sizeRef.current.h;
     const dpr = window.devicePixelRatio || 1;
     const cameraZ = cameraZRef.current;
+    console.log("DRAW called, cameraZ:", cameraZ, "canvas:", canvas.width, "x", canvas.height, "logical:", W, "x", H);
 
     // Center of canvas — offset slightly so a gap intersection is at center
     const cx = W * 0.48;
@@ -205,11 +206,14 @@ export default function PartnerGrid() {
 
   // ── Setup GSAP + canvas ──────────────────────────────────────────
   useEffect(() => {
+    console.log("CANVAS INIT");
     const wrapper = wrapperRef.current;
     const overlay = overlayRef.current;
     if (!wrapper || !overlay) return;
 
     handleResize();
+    const canvas = canvasRef.current;
+    console.log("CANVAS SIZE:", canvas?.width, canvas?.height, canvas?.clientWidth, canvas?.clientHeight);
     window.addEventListener("resize", handleResize);
 
     const progressObj = { value: 0 };
@@ -227,6 +231,7 @@ export default function PartnerGrid() {
           onUpdate: (self) => {
             progressObj.value = self.progress;
             cameraZRef.current = self.progress * MAX_CAMERA_Z;
+            console.log("SCROLL progress:", self.progress.toFixed(3), "cameraZ:", cameraZRef.current.toFixed(1));
             cancelAnimationFrame(rafRef.current);
             rafRef.current = requestAnimationFrame(draw);
           },
