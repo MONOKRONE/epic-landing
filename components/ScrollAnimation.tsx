@@ -251,7 +251,7 @@ export default function ScrollAnimation() {
           className="fixed inset-0 z-[200] flex items-start justify-center pointer-events-none overflow-hidden"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-10 w-full">
-            <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-start" style={{ paddingTop: "12vh" }}>
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-start pt-[14vh] lg:pt-[12vh]">
 
               {/* ===== LEFT SIDE: Stacked content blocks ===== */}
               <div className="relative min-h-[250px] lg:min-h-[400px]">
