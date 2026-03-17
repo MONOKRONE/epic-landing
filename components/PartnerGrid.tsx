@@ -57,16 +57,18 @@ function cellPos(row: number, col: number) {
 
 export default function PartnerGrid() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const whiteOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
+    const sticky = stickyRef.current;
     const showcase = showcaseRef.current;
     const grid = gridRef.current;
     const whiteOverlay = whiteOverlayRef.current;
-    if (!section || !showcase || !grid || !whiteOverlay) return;
+    if (!section || !sticky || !showcase || !grid || !whiteOverlay) return;
 
     const cards = showcase.querySelectorAll<HTMLElement>(".partner-card");
     const statsEls = showcase.querySelectorAll<HTMLElement>(".stat-item");
@@ -218,49 +220,46 @@ export default function PartnerGrid() {
         );
       });
 
-      /* ---- Phase D (0.70 → 0.85): White fill ---- */
+      /* ---- Phase D (0.70 → 0.85): Borders consume cells → purple → white ---- */
 
-      // Pick center cell (row 1, col 1 or 2) to grow and fill viewport
-      const centerIdx = 1 * COLS + 1; // row 1, col 1
-      const centerCell = cells[centerIdx];
-
-      // Fade out all cells except center
+      // Stage 3: borders grow so thick they consume ALL white inner space
       cells.forEach((cell, i) => {
-        if (i === centerIdx) return;
         tl.to(
           cell,
-          { opacity: 0, duration: 0.06, ease: "power2.in" },
-          0.70 + (i % 4) * 0.005
+          {
+            borderWidth: 200,
+            duration: 0.08,
+            ease: "power2.in",
+          },
+          0.70 + i * 0.003
         );
       });
 
-      // Grow center cell to fill viewport
-      if (centerCell) {
+      // Crossfade: cell borders #3730a3 → white, sticky bg #1e1b4b → white
+      cells.forEach((cell, i) => {
         tl.to(
-          centerCell,
-          {
-            top: "-5%",
-            left: "-5%",
-            width: "110%",
-            height: "110%",
-            borderWidth: 0,
-            borderRadius: 0,
-            duration: 0.15,
-            ease: "power2.inOut",
-          },
-          0.72
+          cell,
+          { borderColor: "#ffffff", duration: 0.06, ease: "none" },
+          0.78
         );
-      }
+      });
 
-      // White overlay for clean fill
+      // Change sticky container background to white
+      tl.to(
+        sticky,
+        { backgroundColor: "#ffffff", duration: 0.06, ease: "none" },
+        0.78
+      );
+
+      // White overlay fades in to guarantee solid white coverage
       tl.to(
         whiteOverlay,
         { opacity: 1, duration: 0.06, ease: "power2.in" },
-        0.82
+        0.80
       );
 
-      /* ---- Phase E (0.85 → 1.0): Hold white — clean exit ---- */
-      // White screen holds, naturally transitions to next section
+      /* ---- Phase E (0.90 → 1.0): Solid white, fade out grid ---- */
+      tl.to(grid, { opacity: 0, duration: 0.04 }, 0.90);
 
     }, section);
 
@@ -274,6 +273,7 @@ export default function PartnerGrid() {
       style={{ height: "300vh", zIndex: 52, position: "relative" }}
     >
       <div
+        ref={stickyRef}
         className="sticky top-0 h-screen w-full overflow-hidden"
         style={{ background: "#1e1b4b" }}
       >
