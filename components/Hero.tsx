@@ -279,7 +279,7 @@ export default function Hero() {
       {/* ---- Background gradient orbs ---- */}
       <div
         ref={bgOrbsRef}
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none overflow-hidden"
       >
         <div
           className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full opacity-[0.07] blur-[120px]"
