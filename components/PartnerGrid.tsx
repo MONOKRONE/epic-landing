@@ -81,17 +81,24 @@ export default function PartnerGrid() {
           trigger: section,
           start: "top top",
           end: "bottom top",
-          scrub: 1.5,
+          scrub: true,
         },
       });
 
-      /* ---- Phase A (0 → 0.25): Showcase — cards cascade + stats ---- */
+      /*
+       * Position values below are in "timeline seconds". GSAP maps
+       * 0 → totalDuration to 0% → 100% scroll. We scale so that
+       * the white fill completes by position ~0.55 out of total ~0.90,
+       * which equals ~61% scroll — safely before the sticky unpins (~67%).
+       */
+
+      /* ---- Phase A (0 → 0.20): Showcase — cards cascade + stats ---- */
 
       cards.forEach((card, i) => {
         tl.fromTo(
           card,
           { x: -300, opacity: 0, rotateZ: -15 + i * 3 },
-          { x: 0, opacity: 1, rotateZ: -8 + i * 4, duration: 0.12, ease: "power2.out" },
+          { x: 0, opacity: 1, rotateZ: -8 + i * 4, duration: 0.10, ease: "power2.out" },
           i * 0.03
         );
       });
@@ -100,7 +107,7 @@ export default function PartnerGrid() {
         tl.fromTo(
           titleEl,
           { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.1, ease: "power2.out" },
+          { y: 0, opacity: 1, duration: 0.08, ease: "power2.out" },
           0.02
         );
       }
@@ -109,20 +116,16 @@ export default function PartnerGrid() {
         tl.fromTo(
           stat,
           { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.08, ease: "power2.out" },
-          0.06 + i * 0.03
+          { y: 0, opacity: 1, duration: 0.06, ease: "power2.out" },
+          0.05 + i * 0.03
         );
       });
 
-      /* ---- Phase B (0.25 → 0.45): Waterfall cascade ---- */
+      /* ---- Phase B (0.20 → 0.40): Waterfall cascade ---- */
 
-      // Fade out showcase
-      tl.to(showcase, { opacity: 0, duration: 0.06 }, 0.25);
-      // Show grid container
-      tl.fromTo(grid, { opacity: 0 }, { opacity: 1, duration: 0.04 }, 0.27);
+      tl.to(showcase, { opacity: 0, duration: 0.05 }, 0.20);
+      tl.fromTo(grid, { opacity: 0 }, { opacity: 1, duration: 0.04 }, 0.22);
 
-      // Cells cascade from top-center in a waterfall arc
-      // Order: top-left to bottom-right, row by row for waterfall feel
       const cascadeOrder = [...gridCells].sort((a, b) =>
         a.row !== b.row ? a.row - b.row : a.col - b.col
       );
@@ -132,134 +135,78 @@ export default function PartnerGrid() {
         if (!cell) return;
 
         const final = cellPos(cellDef.row, cellDef.col);
-
-        // Start position: top center
         const startTop = -15;
-        const startLeft = 38 + (Math.random() * 8); // slight horizontal spread
-
-        // Midpoint: arc outward
+        const startLeft = 38 + (Math.random() * 8);
         const midTop = final.top * 0.4;
         const midLeft = final.left + (final.left < 50 ? -8 : 8);
+        const staggerStart = 0.24 + i * 0.010;
+        const dur = 0.08;
 
-        const staggerStart = 0.29 + i * 0.012;
-        const dur = 0.10;
-
-        // Animate top (with eased curve)
         tl.fromTo(
           cell,
           { top: `${startTop}%`, opacity: 0, scale: 0.7 },
-          {
-            top: `${midTop}%`,
-            opacity: 1,
-            scale: 0.85,
-            duration: dur * 0.5,
-            ease: "power1.in",
-          },
+          { top: `${midTop}%`, opacity: 1, scale: 0.85, duration: dur * 0.5, ease: "power1.in" },
           staggerStart
         );
         tl.to(
           cell,
-          {
-            top: `${final.top}%`,
-            scale: 1,
-            duration: dur * 0.5,
-            ease: "power2.out",
-          },
+          { top: `${final.top}%`, scale: 1, duration: dur * 0.5, ease: "power2.out" },
           staggerStart + dur * 0.5
         );
-
-        // Animate left (smooth arc)
         tl.fromTo(
           cell,
           { left: `${startLeft}%` },
-          {
-            left: `${midLeft}%`,
-            duration: dur * 0.5,
-            ease: "sine.out",
-          },
+          { left: `${midLeft}%`, duration: dur * 0.5, ease: "sine.out" },
           staggerStart
         );
         tl.to(
           cell,
-          {
-            left: `${final.left}%`,
-            duration: dur * 0.5,
-            ease: "power2.out",
-          },
+          { left: `${final.left}%`, duration: dur * 0.5, ease: "power2.out" },
           staggerStart + dur * 0.5
         );
       });
 
-      /* ---- Phase C (0.45 → 0.70): Grid settle + borders grow ---- */
+      /* ---- Phase C (0.40 → 0.55): Borders grow ---- */
 
-      // Stage 1: borders 4px → 40px
       cells.forEach((cell, i) => {
         tl.to(
           cell,
-          {
-            borderWidth: 40,
-            borderRadius: 2,
-            duration: 0.12,
-            ease: "power2.in",
-          },
-          0.48 + i * 0.005
+          { borderWidth: 40, borderRadius: 2, duration: 0.08, ease: "power2.in" },
+          0.40 + i * 0.003
         );
       });
 
-      // Stage 2: borders 40px → 100px — white inner area shrinks
       cells.forEach((cell, i) => {
         tl.to(
           cell,
-          {
-            borderWidth: 100,
-            borderRadius: 0,
-            duration: 0.10,
-            ease: "power3.in",
-          },
-          0.60 + i * 0.004
+          { borderWidth: 100, borderRadius: 0, duration: 0.07, ease: "power3.in" },
+          0.48 + i * 0.003
         );
       });
 
-      /* ---- Phase D (0.70 → 0.85): Borders consume cells → purple → white ---- */
+      /* ---- Phase D (0.52 → 0.60): Borders consume → purple → white ---- */
 
-      // Stage 3: borders grow so thick they consume ALL white inner space
       cells.forEach((cell, i) => {
         tl.to(
           cell,
-          {
-            borderWidth: 200,
-            duration: 0.08,
-            ease: "power2.in",
-          },
-          0.70 + i * 0.003
+          { borderWidth: 200, duration: 0.04, ease: "power2.in" },
+          0.52 + i * 0.001
         );
       });
 
-      // Crossfade: cell borders #3730a3 → white, sticky bg #1e1b4b → white
-      cells.forEach((cell, i) => {
-        tl.to(
-          cell,
-          { borderColor: "#ffffff", duration: 0.06, ease: "none" },
-          0.78
-        );
+      // Crossfade to white
+      cells.forEach((cell) => {
+        tl.to(cell, { borderColor: "#ffffff", duration: 0.03, ease: "none" }, 0.56);
       });
+      tl.to(sticky, { backgroundColor: "#ffffff", duration: 0.03, ease: "none" }, 0.56);
 
-      // Change sticky container background to white
-      tl.to(
-        sticky,
-        { backgroundColor: "#ffffff", duration: 0.06, ease: "none" },
-        0.78
-      );
+      // White overlay for guaranteed coverage
+      tl.to(whiteOverlay, { opacity: 1, duration: 0.03, ease: "power2.in" }, 0.57);
 
-      // White overlay fades in to guarantee solid white coverage
-      tl.to(
-        whiteOverlay,
-        { opacity: 1, duration: 0.06, ease: "power2.in" },
-        0.80
-      );
-
-      /* ---- Phase E (0.90 → 1.0): Solid white, fade out grid ---- */
-      tl.to(grid, { opacity: 0, duration: 0.04 }, 0.90);
+      /* ---- Phase E: Solid white hold — pad timeline to 1.0 ---- */
+      tl.to(grid, { opacity: 0, duration: 0.02 }, 0.60);
+      // Spacer: extends timeline so white hold fills remaining scroll distance
+      tl.set({}, {}, 1.0);
 
     }, section);
 
