@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 /* ------------------------------------------------------------------ */
-/*  The single credit card that travels through the entire page        */
+/*  The single money stack that travels through the entire page        */
 /*  position: fixed, z-index: 50                                      */
 /*  5 Waypoints controlled by GSAP ScrollTrigger (scrub: 2)           */
 /*                                                                     */
@@ -17,12 +17,19 @@ gsap.registerPlugin(ScrollTrigger);
 /*  WP3: Features header — diagonal, rotateZ:-30 rotateX:15            */
 /*  WP4: Features mid — straightened, sliding to center                */
 /*  WP5: Features end — expands to fill screen → Tailored bg           */
+/*                                                                     */
+/*  Band break: scrolling past Enterprises tears the rubber band       */
+/*  Scattered bills: 4 bills fly out toward bank buildings             */
 /* ------------------------------------------------------------------ */
 
 export default function FloatingCard() {
   const cardRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const purpleBgRef = useRef<HTMLDivElement>(null);
+  const bandLeftRef = useRef<HTMLDivElement>(null);
+  const bandRightRef = useRef<HTMLDivElement>(null);
+  const bandTextRef = useRef<HTMLDivElement>(null);
+  const scatteredRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const card = cardRef.current;
@@ -143,6 +150,104 @@ export default function FloatingCard() {
           },
         });
 
+        /* --- Band break animation --- */
+        if (enterprisesEl) {
+          // Band text fades out first
+          gsap.fromTo(bandTextRef.current,
+            { opacity: 1 },
+            {
+              opacity: 0,
+              scrollTrigger: {
+                trigger: enterprisesEl,
+                start: "top 60%",
+                end: "top 40%",
+                scrub: 1,
+              }
+            }
+          );
+
+          // Left band half tears away to the left and behind
+          gsap.fromTo(bandLeftRef.current,
+            { x: 0, scaleX: 1, opacity: 1 },
+            {
+              x: -80,
+              scaleX: 0.3,
+              opacity: 0,
+              scrollTrigger: {
+                trigger: enterprisesEl,
+                start: "top 50%",
+                end: "top 20%",
+                scrub: 1,
+              }
+            }
+          );
+
+          // Right band half tears away to the right and behind
+          gsap.fromTo(bandRightRef.current,
+            { x: 0, scaleX: 1, opacity: 1 },
+            {
+              x: 80,
+              scaleX: 0.3,
+              opacity: 0,
+              scrollTrigger: {
+                trigger: enterprisesEl,
+                start: "top 50%",
+                end: "top 20%",
+                scrub: 1,
+              }
+            }
+          );
+        }
+
+        /* --- Scattered bills fly to banks --- */
+        if (enterprisesEl && featuresEl) {
+          const flyTargets = [
+            { x: "-60vw", y: "-20vh", rotation: -35, delay: 0 },    // top-left bank
+            { x: "-40vw", y: "30vh", rotation: 25, delay: 0.02 },   // bottom-left bank
+            { x: "10vw", y: "40vh", rotation: -15, delay: 0.04 },   // bottom-center bank
+            { x: "30vw", y: "-10vh", rotation: 40, delay: 0.06 },   // right bank
+          ];
+
+          scatteredRefs.current.forEach((el, i) => {
+            if (!el) return;
+            const target = flyTargets[i];
+
+            // Bills appear (emerge from behind main stack)
+            gsap.fromTo(el,
+              { opacity: 0, scale: 0.8, rotation: 0 },
+              {
+                opacity: 1,
+                scale: 1,
+                rotation: target.rotation * 0.3,
+                scrollTrigger: {
+                  trigger: enterprisesEl,
+                  start: "top 30%",
+                  end: "top 10%",
+                  scrub: 1,
+                }
+              }
+            );
+
+            // Bills fly away toward banks
+            gsap.fromTo(el,
+              { x: 0, y: 0, rotation: 0 },
+              {
+                x: target.x,
+                y: target.y,
+                rotation: target.rotation,
+                opacity: 0,
+                scale: 0.6,
+                scrollTrigger: {
+                  trigger: featuresEl,
+                  start: "top 80%",
+                  end: "top 20%",
+                  scrub: 1.5,
+                }
+              }
+            );
+          });
+        }
+
         /* --- Keep card as Tailored background --- */
         if (tailoredEl) {
           ScrollTrigger.create({
@@ -188,48 +293,144 @@ export default function FloatingCard() {
   }, []);
 
   return (
-    <div
-      ref={cardRef}
-      className="pointer-events-none"
-      style={{
-        position: "fixed",
-        top: "8%",
-        right: "4%",
-        width: 480,
-        height: 370,
-        zIndex: 1,
-        willChange: "transform, width, height, top, right, left, border-radius",
-        transformStyle: "preserve-3d",
-        borderRadius: 16,
-        overflow: "hidden",
-        opacity: 0,
-      }}
-    >
-      {/* Money stack image */}
-      <img
-        ref={imgRef}
-        src="/png/money-stack.png"
-        alt="Stack of hundred dollar bills"
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
-          zIndex: 2,
-        }}
-      />
-
-      {/* Purple background — revealed during expansion */}
+    <>
       <div
-        ref={purpleBgRef}
-        className="absolute inset-0"
+        ref={cardRef}
+        className="pointer-events-none"
         style={{
-          background: "#1e1b4b",
-          opacity: 0,
+          position: "fixed",
+          top: "8%",
+          right: "4%",
+          width: 480,
+          height: 370,
           zIndex: 1,
+          willChange: "transform, width, height, top, right, left, border-radius",
+          transformStyle: "preserve-3d",
+          borderRadius: 16,
+          overflow: "hidden",
+          opacity: 0,
         }}
-      />
-    </div>
+      >
+        {/* Money stack image */}
+        <img
+          ref={imgRef}
+          src="/png/money-stack.png"
+          alt="Stack of hundred dollar bills"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            zIndex: 2,
+          }}
+        />
+
+        {/* Band - two halves that split on scroll */}
+        <div
+          ref={bandLeftRef}
+          style={{
+            position: "absolute",
+            top: "42%",
+            left: 0,
+            width: "50%",
+            height: "14%",
+            background:
+              "linear-gradient(to bottom, rgba(210,180,100,0.9), rgba(180,150,70,0.95), rgba(210,180,100,0.9))",
+            borderLeft: "2px solid rgba(160,130,50,0.4)",
+            zIndex: 5,
+            transformOrigin: "left center",
+          }}
+        />
+        <div
+          ref={bandRightRef}
+          style={{
+            position: "absolute",
+            top: "42%",
+            right: 0,
+            width: "50%",
+            height: "14%",
+            background:
+              "linear-gradient(to bottom, rgba(210,180,100,0.9), rgba(180,150,70,0.95), rgba(210,180,100,0.9))",
+            borderRight: "2px solid rgba(160,130,50,0.4)",
+            zIndex: 5,
+            transformOrigin: "right center",
+          }}
+        />
+
+        {/* Band center text "$10,000" */}
+        <div
+          ref={bandTextRef}
+          style={{
+            position: "absolute",
+            top: "42%",
+            left: 0,
+            right: 0,
+            height: "14%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 6,
+            pointerEvents: "none",
+          }}
+        >
+          <span
+            style={{
+              color: "rgba(100,80,30,0.7)",
+              fontFamily: "monospace",
+              fontWeight: 700,
+              fontSize: "14px",
+              letterSpacing: "2px",
+            }}
+          >
+            $10,000
+          </span>
+        </div>
+
+        {/* Purple background — revealed during expansion */}
+        <div
+          ref={purpleBgRef}
+          className="absolute inset-0"
+          style={{
+            background: "#1e1b4b",
+            opacity: 0,
+            zIndex: 1,
+          }}
+        />
+      </div>
+
+      {/* Scattered bills — fly out from stack toward banks */}
+      {[0, 1, 2, 3].map((i) => (
+        <div
+          key={i}
+          ref={(el) => {
+            if (el) scatteredRefs.current[i] = el;
+          }}
+          className="pointer-events-none"
+          style={{
+            position: "fixed",
+            top: "8%",
+            right: "4%",
+            width: 160,
+            height: 100,
+            zIndex: 49,
+            opacity: 0,
+            overflow: "hidden",
+            borderRadius: 4,
+          }}
+        >
+          <img
+            src="/png/money-stack.png"
+            alt=""
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center 40%",
+            }}
+          />
+        </div>
+      ))}
+    </>
   );
 }
