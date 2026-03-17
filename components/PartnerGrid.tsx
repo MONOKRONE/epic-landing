@@ -23,45 +23,25 @@ const stats = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  SVG Grid geometry                                                  */
+/*  Grid line definitions (normalized 0–1)                             */
 /* ------------------------------------------------------------------ */
 
-// Asymmetric grid intersection points
-const COLS = [0, 300, 600, 1000, 1400];
-const ROWS = [0, 220, 430, 630, 800];
-const N_COLS = COLS.length - 1; // 4
-const N_ROWS = ROWS.length - 1; // 4
-const TOTAL = N_COLS * N_ROWS; // 16
+const hLines = [
+  { y: 0 },
+  { y: 0.22 },
+  { y: 0.45 },
+  { y: 0.70 },
+  { y: 1.0 },
+];
 
-// Build SVG path for one cell from animated curve state
-function cellPath(
-  r: number,
-  c: number,
-  hc: number[], // horizontal curve offsets per row line (5 values)
-  vc: number[], // vertical curve offsets per col line (5 values)
-  g: number // gap (half the purple line width)
-): string {
-  const x1 = COLS[c] + g;
-  const x2 = COLS[c + 1] - g;
-  const y1 = ROWS[r] + g;
-  const y2 = ROWS[r + 1] - g;
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2;
-
-  // Each edge is a quadratic bezier (Q). Control point shifts create curves.
-  // Top edge (left→right): control Y shifts down by hc[r]
-  // Right edge (top→bottom): control X shifts by vc[c+1]
-  // Bottom edge (right→left): control Y shifts down by hc[r+1]
-  // Left edge (bottom→top): control X shifts by vc[c]
-  return [
-    `M${x1},${y1}`,
-    `Q${mx},${y1 + hc[r]},${x2},${y1}`,
-    `Q${x2 + vc[c + 1]},${my},${x2},${y2}`,
-    `Q${mx},${y2 + hc[r + 1]},${x1},${y2}`,
-    `Q${x1 + vc[c]},${my},${x1},${y1}`,
-    "Z",
-  ].join(" ");
-}
+const vLines = [
+  { x: 0 },
+  { x: 0.20 },
+  { x: 0.42 },
+  { x: 0.65 },
+  { x: 0.85 },
+  { x: 1.0 },
+];
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -71,62 +51,118 @@ export default function PartnerGrid() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
-  const svgWrapRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
+  const canvasWrapRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const whiteOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     const sticky = stickyRef.current;
     const showcase = showcaseRef.current;
-    const svgWrap = svgWrapRef.current;
-    const svg = svgRef.current;
+    const canvasWrap = canvasWrapRef.current;
+    const canvas = canvasRef.current;
     const whiteOverlay = whiteOverlayRef.current;
-    if (!section || !sticky || !showcase || !svgWrap || !svg || !whiteOverlay)
+    if (!section || !sticky || !showcase || !canvasWrap || !canvas || !whiteOverlay)
       return;
+
+    const c2d = canvas.getContext("2d");
+    if (!c2d) return;
 
     const cards = showcase.querySelectorAll<HTMLElement>(".partner-card");
     const statsEls = showcase.querySelectorAll<HTMLElement>(".stat-item");
     const titleEl = showcase.querySelector<HTMLElement>(".results-title");
-    const paths = svg.querySelectorAll<SVGPathElement>(".cell-path");
 
-    // Animated state — GSAP tweens these values, onUpdate rebuilds paths
-    const st = {
-      h0: 0, h1: 0, h2: 0, h3: 0, h4: 0, // horiz curve per row-line
-      v0: 0, v1: 0, v2: 0, v3: 0, v4: 0, // vert curve per col-line
-      gap: 3,
-    };
+    /* ---- Canvas sizing ---- */
+    let w = 0;
+    let h = 0;
+    const dpr = window.devicePixelRatio || 1;
 
-    function rebuild() {
-      const hc = [st.h0, st.h1, st.h2, st.h3, st.h4];
-      const vc = [st.v0, st.v1, st.v2, st.v3, st.v4];
-      let i = 0;
-      for (let r = 0; r < N_ROWS; r++) {
-        for (let c = 0; c < N_COLS; c++) {
-          paths[i].setAttribute("d", cellPath(r, c, hc, vc, st.gap));
-          i++;
-        }
-      }
+    function sizeCanvas() {
+      w = canvas.offsetWidth;
+      h = canvas.offsetHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      c2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    sizeCanvas();
+
+    /* ---- Animated proxy ---- */
+    const anim = { progress: 0 };
+
+    /* ---- Draw function ---- */
+    // p goes from 0 (straight grid) → 1 (maximum curve + thick)
+    function drawGrid(p: number) {
+      c2d.clearRect(0, 0, w, h);
+
+      // White background
+      c2d.fillStyle = "#ffffff";
+      c2d.fillRect(0, 0, w, h);
+
+      // Curve amount (0→1): ramps over first 60% of progress
+      const curveP = Math.min(1, p / 0.6);
+      // Thicken amount (0→1): ramps over last 40% of progress
+      const thickP = Math.max(0, Math.min(1, (p - 0.5) / 0.5));
+
+      // Smoothstep easing
+      const easedCurve = curveP * curveP * (3 - 2 * curveP);
+      const easedThick = thickP * thickP * (3 - 2 * thickP);
+
+      // Line width: 4px straight → 20px curved → 150px thick
+      const lineWidth = 4 + easedCurve * 16 + easedThick * 130;
+
+      c2d.strokeStyle = "#1e1b4b";
+      c2d.lineWidth = lineWidth;
+      c2d.lineCap = "round";
+      c2d.lineJoin = "round";
+
+      // Draw horizontal lines
+      hLines.forEach((line, i) => {
+        const baseY = line.y * h;
+        // Middle lines (index 2) sag most, edges sag least
+        const distFromCenter = Math.abs(i - 2) / 2;
+        const maxSag = 180 - distFromCenter * 100;
+        const sag = easedCurve * maxSag;
+
+        c2d.beginPath();
+        c2d.moveTo(-lineWidth, baseY);
+        c2d.quadraticCurveTo(w * 0.5, baseY + sag, w + lineWidth, baseY);
+        c2d.stroke();
+      });
+
+      // Draw vertical lines
+      vLines.forEach((line) => {
+        const baseX = line.x * w;
+        // Outer lines lean more, direction depends on side
+        const normalizedDist = (baseX - w / 2) / (w / 2 || 1);
+        const lean = easedCurve * normalizedDist * 80;
+
+        c2d.beginPath();
+        c2d.moveTo(baseX, -lineWidth);
+        c2d.quadraticCurveTo(baseX + lean, h * 0.5, baseX, h + lineWidth);
+        c2d.stroke();
+      });
     }
 
-    // Initial straight render
-    rebuild();
+    // Initial draw (straight lines, but canvas is hidden)
+    drawGrid(0);
 
+    /* ---- Resize handler ---- */
+    function handleResize() {
+      sizeCanvas();
+      drawGrid(anim.progress);
+    }
+    window.addEventListener("resize", handleResize);
+
+    /* ---- GSAP animation ---- */
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: "bottom top",
-          scrub: true,
+          scrub: 1.5,
         },
       });
-
-      /*
-       * 400vh section → sticky unpins at 75% scroll.
-       * All visible animation must finish by ~0.70.
-       * Timeline padded to 1.0 via spacer.
-       */
 
       /* ---- Phase A (0 → 0.12): Showcase ---- */
 
@@ -163,106 +199,57 @@ export default function PartnerGrid() {
         );
       });
 
-      /* ---- Phase B (0.12 → 0.18): Grid appears (straight lines) ---- */
+      /* ---- Phase B (0.12 → 0.25): Transition to grid ---- */
 
+      // Fade out showcase
       tl.to(showcase, { opacity: 0, duration: 0.03 }, 0.12);
-      tl.fromTo(
-        svgWrap,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.04 },
-        0.14
+
+      // Sticky bg → white for the canvas phase
+      tl.to(
+        sticky,
+        { backgroundColor: "#ffffff", duration: 0.06, ease: "none" },
+        0.12
       );
 
-      /* ---- Phase C (0.18 → 0.40): Curves develop ---- */
-      /*
-       * Horizontal lines bow downward (hN > 0).
-       * Middle lines curve most, edges curve least — gravity feel.
-       * Vertical lines lean slightly (vN shifts X).
-       */
-
-      tl.to(
-        st,
-        {
-          h0: 15,
-          h1: 70,
-          h2: 140,
-          h3: 100,
-          h4: 40,
-          v0: -10,
-          v1: -25,
-          v2: 15,
-          v3: 20,
-          v4: 10,
-          duration: 0.22,
-          ease: "power1.inOut",
-          onUpdate: rebuild,
-        },
+      // Fade in canvas
+      tl.fromTo(
+        canvasWrap,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.06 },
         0.18
       );
 
-      /* ---- Phase D (0.40 → 0.55): Lines thicken ---- */
-      /*
-       * Gap grows from 3 → 60, making purple "rivers" between cells
-       * much thicker. Curves intensify slightly more.
-       */
+      /* ---- Phase C–E (0.25 → 0.75): Canvas animation via progress ---- */
 
       tl.to(
-        st,
+        anim,
         {
-          gap: 60,
-          h0: 25,
-          h1: 100,
-          h2: 190,
-          h3: 140,
-          h4: 60,
-          v0: -15,
-          v1: -40,
-          v2: 20,
-          v3: 35,
-          v4: 15,
-          duration: 0.15,
-          ease: "power2.in",
-          onUpdate: rebuild,
+          progress: 1,
+          duration: 0.50, // 0.25 → 0.75
+          ease: "none",
+          onUpdate: () => drawGrid(anim.progress),
         },
-        0.40
+        0.25
       );
 
-      /* ---- Phase E (0.55 → 0.64): White takeover ---- */
+      /* ---- White takeover (0.68 → 0.75) ---- */
 
-      // Sticky bg → white
-      tl.to(
-        sticky,
-        { backgroundColor: "#ffffff", duration: 0.05, ease: "none" },
-        0.55
-      );
-
-      // Cell fills → white (they're already white, but change stroke-like appearance)
-      // Shrink cells to nothing by maxing gap
-      tl.to(
-        st,
-        {
-          gap: 400,
-          duration: 0.06,
-          ease: "power2.in",
-          onUpdate: rebuild,
-        },
-        0.56
-      );
-
-      // White overlay guarantee
       tl.to(
         whiteOverlay,
-        { opacity: 1, duration: 0.03, ease: "power2.in" },
-        0.60
+        { opacity: 1, duration: 0.07, ease: "power2.in" },
+        0.68
       );
 
-      /* ---- Phase F (0.64 → 1.0): Clean exit ---- */
-      tl.to(svgWrap, { opacity: 0, duration: 0.02 }, 0.64);
+      /* ---- Clean exit ---- */
+      tl.to(canvasWrap, { opacity: 0, duration: 0.02 }, 0.75);
       tl.set({}, {}, 1.0); // pad timeline
 
     }, section);
 
-    return () => ctx.revert();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -346,24 +333,16 @@ export default function PartnerGrid() {
           </div>
         </div>
 
-        {/* SVG Grid — cells are white paths, purple bg shows as "lines" */}
+        {/* Canvas Grid */}
         <div
-          ref={svgWrapRef}
+          ref={canvasWrapRef}
           className="absolute inset-0"
           style={{ opacity: 0 }}
         >
-          <svg
-            ref={svgRef}
-            viewBox="0 0 1400 800"
-            preserveAspectRatio="none"
-            width="100%"
-            height="100%"
-            style={{ display: "block" }}
-          >
-            {Array.from({ length: TOTAL }, (_, i) => (
-              <path key={i} className="cell-path" fill="white" />
-            ))}
-          </svg>
+          <canvas
+            ref={canvasRef}
+            style={{ width: "100%", height: "100%", display: "block" }}
+          />
         </div>
 
         {/* White overlay */}
