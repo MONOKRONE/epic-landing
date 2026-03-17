@@ -51,7 +51,7 @@ export default function Features() {
     <section
       id="features"
       ref={sectionRef}
-      className="py-24 lg:py-32"
+      className="py-12 lg:py-32"
       style={{ background: "#f7f7f8" }}
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
@@ -72,7 +72,7 @@ export default function Features() {
             Network
           </p>
           <h2
-            className="text-4xl md:text-5xl font-bold leading-tight mb-6"
+            className="text-2xl sm:text-3xl md:text-5xl font-bold leading-tight mb-4 lg:mb-6"
             style={{ color: "var(--navy)" }}
           >
             One payoff. Every lender. Instant delivery.
@@ -87,9 +87,9 @@ export default function Features() {
           </p>
         </div>
 
-        {/* Bank Buildings Grid */}
+        {/* Bank Buildings Grid — Desktop: absolute positioned */}
         <div
-          className="relative mx-auto"
+          className="relative mx-auto hidden lg:block"
           style={{
             maxWidth: 1200,
             minHeight: 700,
@@ -214,6 +214,32 @@ export default function Features() {
             </p>
           </div>
 
+        </div>
+
+        {/* Mobile: simple grid */}
+        <div className="lg:hidden grid grid-cols-2 gap-4 mt-8">
+          {banks.map((bank, i) => (
+            <div
+              key={bank.name}
+              className="rounded-xl overflow-hidden shadow-lg"
+              style={{
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? "translateY(0)" : "translateY(20px)",
+                transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s ease ${i * 0.1}s`,
+              }}
+            >
+              <img
+                src={bank.image}
+                alt={bank.name}
+                className="w-full h-32 object-cover"
+              />
+              <div className="p-3" style={{ background: "white" }}>
+                <p className="text-xs font-bold" style={{ color: "var(--navy)" }}>
+                  {bank.name}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

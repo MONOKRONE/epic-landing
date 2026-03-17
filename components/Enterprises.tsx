@@ -48,7 +48,7 @@ export default function Enterprises() {
               Trusted by leaders
             </p>
             <h2
-              className="text-3xl md:text-4xl lg:text-[44px] font-bold leading-tight mb-6"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-[44px] font-bold leading-tight mb-4 lg:mb-6"
               style={{ color: "var(--navy)", letterSpacing: "-0.02em" }}
             >
               From franchise groups to single-point dealers, top performers count on

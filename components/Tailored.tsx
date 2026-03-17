@@ -231,19 +231,19 @@ export default function Tailored() {
     <section
       id="tailored"
       ref={sectionRef}
-      className="relative"
-      style={{ height: "500vh", zIndex: 51, position: "relative" }}
+      className="relative h-[300vh] lg:h-[500vh]"
+      style={{ zIndex: 51, position: "relative" }}
     >
       <div
         className="sticky top-0 h-screen overflow-hidden"
         style={{ background: "var(--navy)", zIndex: 51 }}
       >
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 h-full flex items-center">
-          <div className="grid lg:grid-cols-2 gap-16 items-center w-full">
+        <div className="max-w-[1400px] mx-auto px-4 lg:px-10 h-full flex items-center">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center w-full">
 
             {/* LEFT: Document cards */}
-            <div className="flex justify-center items-center">
-              <div className="relative" style={{ width: "100%", maxWidth: 400, aspectRatio: "3/4" }}>
+            <div className="flex justify-center items-center mx-auto lg:mx-0">
+              <div className="relative w-full max-w-[280px] lg:max-w-[400px]" style={{ aspectRatio: "3/4" }}>
                 {docComponents.map((DocComponent, i) => (
                   <div
                     key={i}
@@ -265,7 +265,7 @@ export default function Tailored() {
 
             {/* RIGHT: Title + accumulating items */}
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-4">
                 The complete loan payoff platform
               </h2>
 

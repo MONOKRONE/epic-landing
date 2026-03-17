@@ -62,15 +62,10 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
       {/* PART 1: Stats — normal scrolling content */}
-      <div style={{ background: "#1e1b4b", padding: "120px 0 60px" }}>
-        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 40px" }}>
+      <div style={{ background: "#1e1b4b" }} className="py-16 lg:py-[120px] pb-8 lg:pb-[60px]">
+        <div style={{ maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 64,
-              alignItems: "center",
-            }}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
           >
             {/* Left: Partner logo cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -96,13 +91,7 @@ export default function PartnerGrid() {
             {/* Right: Title + Stats + Awards */}
             <div>
               <h2
-                style={{
-                  fontSize: 48,
-                  fontWeight: 700,
-                  color: "#ffffff",
-                  lineHeight: 1.1,
-                  marginBottom: 48,
-                }}
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8 lg:mb-12"
               >
                 The results speak for themselves
               </h2>
@@ -115,7 +104,7 @@ export default function PartnerGrid() {
                 }}
               >
                 <div>
-                  <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>
+                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
                     $290B+
                   </p>
                   <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
@@ -123,7 +112,7 @@ export default function PartnerGrid() {
                   </p>
                 </div>
                 <div>
-                  <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>
+                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
                     99.99%
                   </p>
                   <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
@@ -131,7 +120,7 @@ export default function PartnerGrid() {
                   </p>
                 </div>
                 <div>
-                  <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>
+                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
                     2,500+
                   </p>
                   <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
@@ -153,7 +142,7 @@ export default function PartnerGrid() {
       </div>
 
       {/* PART 2: Grid + Zoom — sticky with scroll animation */}
-      <div ref={gridWrapperRef} style={{ height: "300vh" }}>
+      <div ref={gridWrapperRef} className="h-[180vh] lg:h-[300vh]">
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{ background: "#1e1b4b" }}
@@ -202,9 +191,9 @@ export default function PartnerGrid() {
             </div>
             {/* Column 3 */}
             <div
+              className="hidden lg:flex"
               style={{
                 flex: 1,
-                display: "flex",
                 flexDirection: "column",
                 gap: 6,
                 paddingTop: 120,
@@ -216,9 +205,9 @@ export default function PartnerGrid() {
             </div>
             {/* Column 4 */}
             <div
+              className="hidden lg:flex"
               style={{
                 flex: 1,
-                display: "flex",
                 flexDirection: "column",
                 gap: 6,
                 paddingTop: 180,
@@ -230,9 +219,9 @@ export default function PartnerGrid() {
             </div>
             {/* Column 5 */}
             <div
+              className="hidden lg:flex"
               style={{
                 flex: 1,
-                display: "flex",
                 flexDirection: "column",
                 gap: 6,
                 paddingTop: 240,

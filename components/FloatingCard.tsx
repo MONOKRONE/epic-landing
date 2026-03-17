@@ -340,7 +340,7 @@ export default function FloatingCard() {
   }, []);
 
   return (
-    <>
+    <div className="hidden lg:block">
       {/* Scattered bills — fly out from stack toward banks */}
       {Array.from({ length: BILL_COUNT }).map((_, i) => (
         <div
@@ -474,6 +474,6 @@ export default function FloatingCard() {
           }}
         />
       </div>
-    </>
+    </div>
   );
 }

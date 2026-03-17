@@ -236,7 +236,7 @@ export default function ScrollAnimation() {
   }, []);
 
   return (
-    <div ref={containerRef} className="h-[500vh] relative">
+    <div ref={containerRef} className="h-[300vh] lg:h-[500vh] relative">
       {/* Sticky Viewport */}
       <div
         className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden"
@@ -251,15 +251,15 @@ export default function ScrollAnimation() {
           className="fixed inset-0 z-[200] flex items-start justify-center pointer-events-none overflow-hidden"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-10 w-full">
-            <div className="grid lg:grid-cols-2 gap-16 items-start" style={{ paddingTop: "12vh" }}>
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-start" style={{ paddingTop: "12vh" }}>
 
               {/* ===== LEFT SIDE: Stacked content blocks ===== */}
-              <div className="relative" style={{ minHeight: 400 }}>
+              <div className="relative min-h-[250px] lg:min-h-[400px]">
 
                 {/* Block 0: Intro — title + desc + checklist */}
                 <div ref={leftIntroRef} className="absolute inset-0">
                   <h2
-                    className="text-4xl md:text-5xl font-bold mb-6"
+                    className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4 lg:mb-6"
                     style={{ color: "var(--navy)" }}
                   >
                     We are your
@@ -394,7 +394,7 @@ export default function ScrollAnimation() {
               {/* ===== RIGHT SIDE: Card stack + video ===== */}
               <div className="flex flex-col items-center justify-center">
                 {/* Card container — fixed height, cards stacked absolutely */}
-                <div className="relative" style={{ width: 360, height: 440 }}>
+                <div className="relative w-[280px] lg:w-[360px] h-[340px] lg:h-[440px] mx-auto">
 
                   {/* Card 0: Epic branded document */}
                   <div
@@ -532,8 +532,8 @@ export default function ScrollAnimation() {
                 {/* Video spotlight — appears below card in Step 3 */}
                 <div
                   ref={cardVideoRef}
-                  className="mt-6"
-                  style={{ width: 360, opacity: 0 }}
+                  className="mt-6 w-[280px] lg:w-[360px] mx-auto"
+                  style={{ opacity: 0 }}
                 >
                   <div className="relative rounded-2xl overflow-hidden shadow-xl">
                     <img
@@ -574,10 +574,10 @@ export default function ScrollAnimation() {
               className="relative rounded-3xl overflow-hidden"
               style={{ background: "var(--navy)" }}
             >
-              <div className="grid lg:grid-cols-2 gap-12 items-center p-12 lg:p-20">
+              <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center p-6 lg:p-20">
                 {/* Left: Text */}
                 <div ref={phase7TextRef}>
-                  <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-4 lg:mb-6">
                     Start closing deals
                     <br />
                     faster with Epic
@@ -603,12 +603,7 @@ export default function ScrollAnimation() {
                   <img
                     src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=80"
                     alt="Vehicle"
-                    className="relative z-10 rounded-2xl shadow-2xl"
-                    style={{
-                      width: "400px",
-                      height: "260px",
-                      objectFit: "cover",
-                    }}
+                    className="relative z-10 rounded-2xl shadow-2xl w-[280px] lg:w-[400px] h-[180px] lg:h-[260px] object-cover"
                   />
 
                   {/* "For Sale" badge — visible initially, fades out */}

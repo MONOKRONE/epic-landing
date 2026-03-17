@@ -295,13 +295,13 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-0 items-center min-h-[calc(100vh-72px)]">
           {/* ============ Left: Content ============ */}
           <div ref={leftContentRef} className="pt-12 lg:pt-0">
-            <h1 className="text-5xl md:text-6xl lg:text-[72px] font-bold leading-[1.05] tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-[72px] font-bold leading-[1.05] tracking-tight">
               <span style={{ color: "var(--navy)" }}>The next era of</span>
               <br />
               <span
                 ref={wordContainerRef}
-                className="relative inline-block overflow-hidden align-bottom"
-                style={{ height: "1.2em", minWidth: "500px" }}
+                className="relative inline-block overflow-hidden align-bottom w-full lg:min-w-[500px]"
+                style={{ height: "1.2em" }}
               >
                 {rotatingWords.map((word, i) => {
                   const isCurrent = i === wordIndex;
@@ -340,7 +340,7 @@ export default function Hero() {
               the nation's largest dealer-to-lender payoff network.
             </p>
 
-            <div className="mt-10 flex flex-wrap gap-4">
+            <div className="mt-6 lg:mt-10 flex flex-wrap gap-3 lg:gap-4">
               <a
                 href="#"
                 className="inline-flex items-center px-7 py-3.5 text-base font-medium text-white rounded-full transition-all hover:opacity-90 hover:shadow-xl"
@@ -370,17 +370,15 @@ export default function Hero() {
             className="relative flex items-center justify-center lg:justify-end"
           >
             <div
-              className="relative"
+              className="relative w-full lg:w-[580px] h-[350px] lg:h-[520px]"
               style={{
-                width: "580px",
-                height: "520px",
                 maxWidth: "100%",
               }}
             >
               {/* --- Decorative flowing ribbon SVG --- */}
               <svg
                 ref={svgRibbonRef}
-                className="absolute pointer-events-none"
+                className="absolute pointer-events-none hidden lg:block"
                 style={{
                   top: "-70%",
                   left: "-90%",
@@ -451,7 +449,7 @@ export default function Hero() {
               {/* --- 1. Lien Released Notification (top-left) --- */}
               <div
                 ref={notifRef}
-                className="absolute"
+                className="absolute hidden md:block"
                 style={{
                   top: -10,
                   left: -30,
@@ -500,7 +498,7 @@ export default function Hero() {
               {/* --- 2. Recent Payoffs Ledger (bottom-left) --- */}
               <div
                 ref={ledgerRef}
-                className="absolute"
+                className="absolute hidden md:block"
                 style={{
                   bottom: -20,
                   left: -40,
@@ -596,7 +594,7 @@ export default function Hero() {
               {/* --- 3. Monthly Payoffs Chart (right) --- */}
               <div
                 ref={graphRef}
-                className="absolute"
+                className="absolute hidden md:block"
                 style={{
                   top: 120,
                   right: -40,
