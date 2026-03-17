@@ -17,9 +17,9 @@ const partners = [
 ];
 
 const stats = [
-  { number: "$383B+", label: "volume processed" },
-  { number: "99.99%", label: "platform uptime" },
-  { number: "40+", label: "countries certified" },
+  { number: "$383B+", label: "volume processed in 2025" },
+  { number: "99.99%", label: "platform uptime in 2025" },
+  { number: "40+", label: "countries certified to operate" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -55,7 +55,8 @@ export default function PartnerGrid() {
         },
       });
 
-      /* ---- Phase A (0 → 0.12): Showcase ---- */
+      /* ---- Phase A (0 → 0.25): Showcase on top of grid ---- */
+      /* Grid is already visible (opacity 1) behind the showcase */
 
       cards.forEach((card, i) => {
         tl.fromTo(
@@ -90,49 +91,32 @@ export default function PartnerGrid() {
         );
       });
 
-      /* ---- Phase B (0.12 → 0.35): Grid appears with settle ---- */
+      /* Showcase fades out revealing grid behind (0.20 → 0.30) */
+      tl.to(showcase, { opacity: 0, duration: 0.10 }, 0.20);
 
-      // Fade out showcase
-      tl.to(showcase, { opacity: 0, duration: 0.05 }, 0.12);
-
-      // Grid fades in with slight scale settle (0.95 → 1.0)
-      tl.fromTo(
-        grid,
-        { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1, duration: 0.15, ease: "power2.out" },
-        0.18
-      );
-
-      /* ---- Phase C (0.35 → 0.85): The Zoom ---- */
+      /* ---- Phase B (0.30 → 0.85): Zoom into grid ---- */
 
       tl.to(
         grid,
         {
           scale: 20,
-          duration: 0.50,
+          duration: 0.55,
           ease: "power2.in",
         },
-        0.35
+        0.30
       );
 
-      // Sticky bg → white during zoom
-      tl.to(
-        sticky,
-        { backgroundColor: "#ffffff", duration: 0.15, ease: "none" },
-        0.65
-      );
-
-      /* ---- Phase D (0.80 → 0.88): White overlay ---- */
+      /* ---- Phase C (0.82 → 0.90): White overlay ---- */
 
       tl.to(
         whiteOverlay,
         { opacity: 1, duration: 0.08, ease: "power2.in" },
-        0.80
+        0.82
       );
 
-      /* ---- Phase E (0.88 → 1.0): Clean exit ---- */
+      /* ---- Phase D (0.90 → 1.0): Clean exit ---- */
 
-      tl.to(grid, { opacity: 0, duration: 0.02 }, 0.88);
+      tl.to(grid, { opacity: 0, duration: 0.02 }, 0.90);
       tl.set({}, {}, 1.0); // pad timeline
 
     }, section);
@@ -151,10 +135,60 @@ export default function PartnerGrid() {
         className="sticky top-0 h-screen w-full overflow-hidden"
         style={{ background: "#1e1b4b" }}
       >
-        {/* Phase A: Showcase */}
+        {/* Masonry grid — always visible behind showcase */}
+        <div
+          ref={gridRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            gap: 6,
+            background: "#1e1b4b",
+            padding: 6,
+            transformOrigin: "55% 70%",
+            willChange: "transform",
+          }}
+        >
+          {/* Column 1 */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ background: "white", flex: "0 0 25%" }} />
+            <div style={{ background: "white", flex: "0 0 35%" }} />
+            <div style={{ background: "white", flex: "0 0 20%" }} />
+            <div style={{ background: "white", flex: 1 }} />
+          </div>
+          {/* Column 2 */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ background: "white", flex: "0 0 15%" }} />
+            <div style={{ background: "white", flex: "0 0 40%" }} />
+            <div style={{ background: "white", flex: 1 }} />
+          </div>
+          {/* Column 3 */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ background: "white", flex: "0 0 30%" }} />
+            <div style={{ background: "white", flex: "0 0 25%" }} />
+            <div style={{ background: "white", flex: "0 0 30%" }} />
+            <div style={{ background: "white", flex: 1 }} />
+          </div>
+          {/* Column 4 */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ background: "white", flex: "0 0 20%" }} />
+            <div style={{ background: "white", flex: "0 0 45%" }} />
+            <div style={{ background: "white", flex: 1 }} />
+          </div>
+          {/* Column 5 */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ background: "white", flex: "0 0 35%" }} />
+            <div style={{ background: "white", flex: "0 0 20%" }} />
+            <div style={{ background: "white", flex: "0 0 25%" }} />
+            <div style={{ background: "white", flex: 1 }} />
+          </div>
+        </div>
+
+        {/* Showcase — on top of grid with solid bg */}
         <div
           ref={showcaseRef}
           className="absolute inset-0 flex items-center"
+          style={{ zIndex: 5, background: "#1e1b4b" }}
         >
           <div className="max-w-[1400px] mx-auto px-6 lg:px-10 w-full">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -201,16 +235,31 @@ export default function PartnerGrid() {
                 >
                   The results speak for themselves
                 </h2>
-                <div className="space-y-8">
-                  {stats.map((stat, i) => (
+
+                {/* Main stat */}
+                <div className="stat-item mb-10" style={{ opacity: 0 }}>
+                  <div
+                    className="text-5xl md:text-6xl font-bold mb-2"
+                    style={{ color: "#20A472" }}
+                  >
+                    {stats[0].number}
+                  </div>
+                  <div className="text-base text-white/60">
+                    {stats[0].label}
+                  </div>
+                </div>
+
+                {/* Secondary stats row */}
+                <div className="flex gap-12 mb-10">
+                  {stats.slice(1).map((stat, i) => (
                     <div key={i} className="stat-item" style={{ opacity: 0 }}>
                       <div
-                        className="text-4xl md:text-5xl font-bold mb-1"
+                        className="text-3xl md:text-4xl font-bold mb-1"
                         style={{ color: "#20A472" }}
                       >
                         {stat.number}
                       </div>
-                      <div className="text-base text-white/60">
+                      <div className="text-sm text-white/60">
                         {stat.label}
                       </div>
                     </div>
@@ -219,44 +268,6 @@ export default function PartnerGrid() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Phase B-C: Zoomable Grid — organic layout */}
-        <div
-          ref={gridRef}
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "grid",
-            gridTemplateColumns: "0.7fr 1.6fr 1.2fr 0.8fr 1.1fr",
-            gridTemplateRows: "0.6fr 1.3fr 0.9fr 1.2fr",
-            gap: "6px",
-            background: "#1e1b4b",
-            transformOrigin: "38% 45%",
-            opacity: 0,
-            willChange: "transform",
-          }}
-        >
-          {/* Row 1: 5 cells, cell 2 spans 2 cols */}
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white", gridColumn: "span 2" }} />
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
-          {/* Row 2: 4 cells, cell 1 spans 2 rows */}
-          <div style={{ background: "white", gridRow: "span 2" }} />
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white", gridColumn: "span 2" }} />
-          {/* Row 3: 4 cells (col 1 occupied by row-span) */}
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white", gridColumn: "span 2" }} />
-          <div style={{ background: "white" }} />
-          {/* Row 4: 5 cells */}
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
         </div>
 
         {/* White overlay */}
