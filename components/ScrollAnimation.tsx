@@ -21,6 +21,9 @@ export default function ScrollAnimation() {
   const phase7Ref = useRef<HTMLDivElement>(null);
   const phase7TextRef = useRef<HTMLDivElement>(null);
   const phase7PhoneRef = useRef<HTMLDivElement>(null);
+  const forSaleRef = useRef<HTMLDivElement>(null);
+  const soldRef = useRef<HTMLDivElement>(null);
+  const miniDocRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -111,6 +114,40 @@ export default function ScrollAnimation() {
         phase7PhoneRef.current,
         { x: 100, opacity: 0 },
         { x: 0, opacity: 1, scrollTrigger: pct(62, 75) }
+      );
+
+      // Mini document slides in from left
+      gsap.fromTo(
+        miniDocRef.current,
+        { x: -100, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          scrollTrigger: pct(65, 80),
+        }
+      );
+
+      // "For Sale" badge fades out
+      gsap.fromTo(
+        forSaleRef.current,
+        { opacity: 1, scale: 1 },
+        {
+          opacity: 0,
+          scale: 0.8,
+          scrollTrigger: pct(70, 80),
+        }
+      );
+
+      // "SOLD" badge pops in
+      gsap.fromTo(
+        soldRef.current,
+        { opacity: 0, scale: 0.5 },
+        {
+          opacity: 1,
+          scale: 1,
+          ease: "back.out(1.7)",
+          scrollTrigger: pct(78, 88),
+        }
       );
     }, containerRef);
 
@@ -334,37 +371,86 @@ export default function ScrollAnimation() {
                 {/* Left: Text */}
                 <div ref={phase7TextRef}>
                   <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                    Start closing faster
+                    Start closing deals
                     <br />
-                    with Epic today
+                    faster with Epic
                   </h2>
                   <p className="text-lg text-white/60 mb-8">
-                    See how Epic can cut your payoff time from days to seconds.
+                    See how Epic can streamline your loan payoff process and get your deals to the finish line.
                   </p>
                   <a
                     href="#"
                     className="inline-flex items-center px-8 py-4 text-base font-medium rounded-full transition-all hover:opacity-90 hover:shadow-xl"
                     style={{ background: "var(--teal)", color: "white" }}
                   >
-                    Request a demo
+                    Schedule a demo
                   </a>
                 </div>
 
-                {/* Right: Phone + Card */}
+                {/* Right: Vehicle + Badges */}
                 <div
                   ref={phase7PhoneRef}
                   className="flex justify-center items-center relative"
                 >
+                  {/* Vehicle image */}
                   <img
-                    src="/png/static_img_innovating_footer-phone.png"
-                    alt="Phone"
-                    className="relative z-10 h-[400px] object-contain"
+                    src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=80"
+                    alt="Vehicle"
+                    className="relative z-10 rounded-2xl shadow-2xl"
+                    style={{
+                      width: "400px",
+                      height: "260px",
+                      objectFit: "cover",
+                    }}
                   />
-                  <img
-                    src="/png/static_img_innovating_card-shadow.png"
-                    alt="Card"
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-8 h-[250px] object-contain opacity-80"
-                  />
+
+                  {/* "For Sale" badge — visible initially, fades out */}
+                  <div
+                    ref={forSaleRef}
+                    className="absolute top-4 right-4 z-20 px-4 py-2 rounded-full text-sm font-bold shadow-lg"
+                    style={{
+                      background: "#fbbf24",
+                      color: "#1e1b4b",
+                    }}
+                  >
+                    For Sale
+                  </div>
+
+                  {/* "SOLD" badge — hidden initially, fades in */}
+                  <div
+                    ref={soldRef}
+                    className="absolute top-4 right-4 z-20 px-6 py-3 rounded-full text-base font-black shadow-lg tracking-wider"
+                    style={{
+                      background: "#20A472",
+                      color: "white",
+                      opacity: 0,
+                    }}
+                  >
+                    SOLD ✓
+                  </div>
+
+                  {/* Mini lien release document — slides in from left */}
+                  <div
+                    ref={miniDocRef}
+                    className="absolute -left-8 bottom-4 z-20"
+                    style={{ opacity: 0 }}
+                  >
+                    <div className="w-20 h-28 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col items-center justify-center p-2">
+                      <div
+                        className="w-3 h-3 rounded-full mb-1"
+                        style={{ background: "#20A472" }}
+                      />
+                      <div className="w-10 h-0.5 bg-slate-200 mb-1" />
+                      <div className="w-8 h-0.5 bg-slate-200 mb-1" />
+                      <div className="w-10 h-0.5 bg-slate-200" />
+                      <p
+                        className="text-[6px] font-bold mt-1"
+                        style={{ color: "var(--navy)" }}
+                      >
+                        LIEN RELEASE
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
