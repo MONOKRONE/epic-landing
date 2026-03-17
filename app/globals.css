@@ -2,7 +2,7 @@
 
 /* Epic Fonts */
 @font-face {
-  font-family: 'MarqetaSans';
+  font-family: 'EpicSans';
   src: url('/woff2/_next_static_media_5a3e756d8944f1d8-s.p.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
@@ -10,7 +10,7 @@
 }
 
 @font-face {
-  font-family: 'MarqetaSans';
+  font-family: 'EpicSans';
   src: url('/woff2/_next_static_media_ff834fbfdde0c889-s.p.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
@@ -18,7 +18,7 @@
 }
 
 @font-face {
-  font-family: 'MarqetaSans';
+  font-family: 'EpicSans';
   src: url('/woff2/_next_static_media_3389ba149401b4e1-s.p.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
@@ -80,7 +80,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'MarqetaSans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'EpicSans', system-ui, -apple-system, sans-serif;
 }
 
 html {
@@ -88,7 +88,7 @@ html {
 }
 
 body {
-  font-family: 'MarqetaSans', system-ui, -apple-system, sans-serif;
+  font-family: 'EpicSans', system-ui, -apple-system, sans-serif;
   color: var(--color-text);
   background: var(--color-bg);
   -webkit-font-smoothing: antialiased;

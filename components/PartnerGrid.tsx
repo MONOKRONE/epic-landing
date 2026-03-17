@@ -132,10 +132,10 @@ export default function PartnerGrid() {
                 </div>
                 <div>
                   <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>
-                    40+
+                    2,500+
                   </p>
                   <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
-                    countries certified to operate
+                    lender connections nationwide
                   </p>
                 </div>
               </div>

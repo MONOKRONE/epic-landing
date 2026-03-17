@@ -144,21 +144,21 @@ export default function ScrollAnimation() {
                 >
                   We are your
                   <br />
-                  trusted partner
+                  payoff partner
                 </h2>
                 <p
                   className="text-lg mb-8"
                   style={{ color: "var(--color-text-light)" }}
                 >
-                  Our team of experts provide guidance from setup to launch &
-                  scale. Making you successful is our priority.
+                  Our team handles onboarding, lender connections, and ongoing
+                  support. Getting you funded faster is our priority.
                 </p>
 
                 <div className="space-y-4 mb-10">
                   {[
-                    "10+ years of modern card issuing experience",
-                    "Compliance & risk experts",
-                    "80x volume growth since 2017",
+                    "10+ years streamlining dealer loan payoffs",
+                    "2,500+ lender connections nationwide",
+                    "$290B+ in payoff volume processed",
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
                       <div
@@ -198,9 +198,9 @@ export default function ScrollAnimation() {
                       className="text-sm leading-relaxed mb-4 italic"
                       style={{ color: "var(--color-text-light)" }}
                     >
-                      "We have seen Epic be the trusted advisor for us on not
-                      just issuing the card, but doing the card processing and
-                      the card management."
+                      "Epic eliminated our payoff backlog overnight. What used
+                      to take three days of phone calls now happens in
+                      seconds."
                     </p>
                     <div className="flex items-center gap-3">
                       <img
@@ -219,7 +219,7 @@ export default function ScrollAnimation() {
                           className="text-xs"
                           style={{ color: "var(--color-text-light)" }}
                         >
-                          Chief Data and Innovation Officer, Western Union
+                          VP of Operations, AutoNation
                         </p>
                       </div>
                     </div>
@@ -266,21 +266,21 @@ export default function ScrollAnimation() {
                           className="text-sm leading-relaxed mb-4"
                           style={{ color: "var(--color-text-light)" }}
                         >
-                          "Epic's unique technology provides us the platform
-                          and services to help build innovative products that
-                          people love."
+                          "Epic's platform lets us close deals faster and get
+                          titles cleared in record time — our F&I team loves
+                          it."
                         </p>
                         <p
                           className="text-sm font-bold"
                           style={{ color: "var(--navy)" }}
                         >
-                          Max Levchin
+                          Sarah Chen
                         </p>
                         <p
                           className="text-xs"
                           style={{ color: "var(--color-text-light)" }}
                         >
-                          CEO of Affirm
+                          F&I Director, Hendrick Automotive
                         </p>
                       </div>
                     </div>
@@ -334,19 +334,19 @@ export default function ScrollAnimation() {
                 {/* Left: Text */}
                 <div ref={phase7TextRef}>
                   <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                    Start innovating
+                    Start closing faster
                     <br />
                     with Epic today
                   </h2>
                   <p className="text-lg text-white/60 mb-8">
-                    Let's talk about your use case and how we can help.
+                    See how Epic can cut your payoff time from days to seconds.
                   </p>
                   <a
                     href="#"
                     className="inline-flex items-center px-8 py-4 text-base font-medium rounded-full transition-all hover:opacity-90 hover:shadow-xl"
                     style={{ background: "var(--teal)", color: "white" }}
                   >
-                    Contact us
+                    Request a demo
                   </a>
                 </div>
 

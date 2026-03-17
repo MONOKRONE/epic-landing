@@ -51,24 +51,23 @@ export default function Enterprises() {
               className="text-3xl md:text-4xl lg:text-[44px] font-bold leading-tight mb-6"
               style={{ color: "var(--navy)", letterSpacing: "-0.02em" }}
             >
-              From global enterprises to booming startups, innovators count on
-              Marqeta
+              From franchise groups to single-point dealers, top performers count on
+              Epic
             </h2>
             <p
               className="text-lg leading-relaxed mb-8"
               style={{ color: "var(--color-text-light)" }}
             >
-              Industry leaders across on-demand delivery, expense management,
-              retail, digital banking, and more use Marqeta to deliver
-              exceptional customer card experiences that elevate their brands
-              and build lasting customer loyalty.
+              Dealerships of every size use Epic to eliminate manual payoff
+              calls, accelerate lien releases, and get funded faster — turning
+              a days-long back-office headache into a single click.
             </p>
             <a
               href="#"
               className="inline-flex items-center text-base font-semibold"
               style={{ color: "var(--navy)" }}
             >
-              See how Square uses Marqeta
+              See how top dealers use Epic
               <svg
                 width="20"
                 height="20"

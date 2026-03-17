@@ -8,11 +8,11 @@ import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger);
 
 const rotatingWords = [
-  "credit",
-  "payroll",
-  "lending",
-  "expense",
-  "embedded finance",
+  "loan payoffs",
+  "lien releases",
+  "dealer funding",
+  "title processing",
+  "payoff automation",
 ];
 
 /* ------------------------------------------------------------------ */
@@ -336,8 +336,8 @@ export default function Hero() {
               className="mt-6 text-lg md:text-xl leading-relaxed max-w-lg"
               style={{ color: "var(--color-text-light)" }}
             >
-              Integrate end to end credit and payment solutions into your
-              business processes using our modern card issuing platform.
+              Streamline every loan payoff from quote to funding with
+              the nation's largest dealer-to-lender payoff network.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -349,7 +349,7 @@ export default function Hero() {
                   boxShadow: "0 4px 14px rgba(42,32,106,0.25)",
                 }}
               >
-                Contact sales
+                Request a demo
               </a>
               <a
                 href="#"
@@ -377,7 +377,7 @@ export default function Hero() {
                 maxWidth: "100%",
               }}
             >
-              {/* --- Decorative flowing ribbon SVG (Marqeta-style) --- */}
+              {/* --- Decorative flowing ribbon SVG --- */}
               <svg
                 ref={svgRibbonRef}
                 className="absolute pointer-events-none"

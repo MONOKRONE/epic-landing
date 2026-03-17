@@ -6,27 +6,27 @@ gsap.registerPlugin(ScrollTrigger);
 
 const items = [
   {
-    title: "Craft new card products",
+    title: "Instant payoff quotes",
     description:
-      "Use open APIs to create new payment products or streamline supplier and workforce payments.",
+      "Pull real-time payoff amounts from any lender in seconds — no phone calls, no faxes, no waiting.",
     video: "/mp4/static_marqeta-videos_img_tailored_tailor_0.mp4",
   },
   {
-    title: "Accelerate time to market",
+    title: "Automated lien releases",
     description:
-      "Leverage existing relationships with issuing banks, networks, and card fulfillment providers to go live in days not months.",
+      "Track every title from payoff to release with automated status updates and lender confirmations.",
     video: "/mp4/static_marqeta-videos_img_tailored_tailor_1.mp4",
   },
   {
-    title: "Trust",
+    title: "Secure & compliant",
     description:
-      "Detect fraud, control your spend, and ensure the highest levels of compliance and uptime.",
+      "Bank-grade encryption, SOC 2 certified, and full audit trails keep every transaction protected.",
     video: "/mp4/static_marqeta-videos_img_tailored_tailor_2.mp4",
   },
   {
-    title: "Scale globally",
+    title: "One platform, every lender",
     description:
-      "Easily expand across the United States, Europe, and Asia with our global-ready platform.",
+      "Connect to 2,500+ lenders through a single integration — from national banks to local credit unions.",
     video: "/mp4/static_marqeta-videos_img_tailored_tailor_3.mp4",
   },
 ];
@@ -121,7 +121,7 @@ export default function Tailored() {
                 />
               ))}
 
-              {/* Green SVG overlay — network/constellation effect from Marqeta source */}
+              {/* Green SVG overlay — network/constellation effect */}
               <svg
                 viewBox="0 0 595.28 841.89"
                 xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +175,7 @@ export default function Tailored() {
             {/* Right: Content */}
             <div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Create a tailored payment experience
+                The complete loan payoff platform
               </h2>
 
               <div className="mt-12 space-y-0">
