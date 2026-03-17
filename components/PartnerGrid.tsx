@@ -90,49 +90,49 @@ export default function PartnerGrid() {
         );
       });
 
-      /* ---- Phase B (0.12 → 0.25): Grid appears ---- */
+      /* ---- Phase B (0.12 → 0.35): Grid appears with settle ---- */
 
       // Fade out showcase
-      tl.to(showcase, { opacity: 0, duration: 0.03 }, 0.12);
+      tl.to(showcase, { opacity: 0, duration: 0.05 }, 0.12);
 
-      // Sticky bg → white
-      tl.to(
-        sticky,
-        { backgroundColor: "#ffffff", duration: 0.06, ease: "none" },
-        0.12
-      );
-
-      // Fade in grid
+      // Grid fades in with slight scale settle (0.95 → 1.0)
       tl.fromTo(
         grid,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.06 },
+        { opacity: 0, scale: 0.95 },
+        { opacity: 1, scale: 1, duration: 0.15, ease: "power2.out" },
         0.18
       );
 
-      /* ---- Phase C (0.25 → 0.85): The Zoom ---- */
+      /* ---- Phase C (0.35 → 0.85): The Zoom ---- */
 
       tl.to(
         grid,
         {
           scale: 20,
-          duration: 0.60,
+          duration: 0.50,
           ease: "power2.in",
         },
-        0.25
+        0.35
       );
 
-      /* ---- Phase D (0.82 → 0.90): White overlay ---- */
+      // Sticky bg → white during zoom
+      tl.to(
+        sticky,
+        { backgroundColor: "#ffffff", duration: 0.15, ease: "none" },
+        0.65
+      );
+
+      /* ---- Phase D (0.80 → 0.88): White overlay ---- */
 
       tl.to(
         whiteOverlay,
         { opacity: 1, duration: 0.08, ease: "power2.in" },
-        0.82
+        0.80
       );
 
-      /* ---- Phase E (0.90 → 1.0): Clean exit ---- */
+      /* ---- Phase E (0.88 → 1.0): Clean exit ---- */
 
-      tl.to(grid, { opacity: 0, duration: 0.02 }, 0.90);
+      tl.to(grid, { opacity: 0, duration: 0.02 }, 0.88);
       tl.set({}, {}, 1.0); // pad timeline
 
     }, section);
@@ -221,15 +221,15 @@ export default function PartnerGrid() {
           </div>
         </div>
 
-        {/* Phase B-C: Zoomable Grid */}
+        {/* Phase B-C: Zoomable Grid — organic layout */}
         <div
           ref={gridRef}
           style={{
             position: "absolute",
             inset: 0,
             display: "grid",
-            gridTemplateColumns: "1.2fr 1.8fr 1.5fr 1fr",
-            gridTemplateRows: "0.8fr 1.2fr 1fr 0.7fr",
+            gridTemplateColumns: "0.7fr 1.6fr 1.2fr 0.8fr 1.1fr",
+            gridTemplateRows: "0.6fr 1.3fr 0.9fr 1.2fr",
             gap: "6px",
             background: "#1e1b4b",
             transformOrigin: "38% 45%",
@@ -237,18 +237,26 @@ export default function PartnerGrid() {
             willChange: "transform",
           }}
         >
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
+          {/* Row 1: 5 cells, cell 2 spans 2 cols */}
           <div style={{ background: "white" }} />
           <div style={{ background: "white", gridColumn: "span 2" }} />
           <div style={{ background: "white" }} />
           <div style={{ background: "white" }} />
-          <div style={{ background: "white" }} />
+          {/* Row 2: 4 cells, cell 1 spans 2 rows */}
+          <div style={{ background: "white", gridRow: "span 2" }} />
           <div style={{ background: "white" }} />
           <div style={{ background: "white" }} />
           <div style={{ background: "white", gridColumn: "span 2" }} />
+          {/* Row 3: 4 cells (col 1 occupied by row-span) */}
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white", gridColumn: "span 2" }} />
+          <div style={{ background: "white" }} />
+          {/* Row 4: 5 cells */}
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
         </div>
 
         {/* White overlay */}
