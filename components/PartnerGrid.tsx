@@ -49,29 +49,13 @@ const CELLS: Cell[] = [
 ];
 
 const NUM_COLS = 5;
-const GAP = 8; // px gap between cells
+const SCREEN_GAP = 4; // FIXED gap in screen pixels — never scales
 const BORDER_RADIUS = 20;
 const FOCAL_LENGTH = 800;
-const MAX_CAMERA_Z = 750;
+const MAX_CAMERA_Z = 740;
 
-// Column top offsets for masonry stagger (px)
-const COL_OFFSETS = [0, 60, 120, 180, 240];
-
-// ── Perspective projection ─────────────────────────────────────────
-function project(
-  x: number,
-  y: number,
-  cameraZ: number,
-  cx: number,
-  cy: number
-) {
-  const scale = FOCAL_LENGTH / (FOCAL_LENGTH - cameraZ);
-  return {
-    x: cx + (x - cx) * scale,
-    y: cy + (y - cy) * scale,
-    scale,
-  };
-}
+// Column top offsets in base units (masonry stagger)
+const COL_OFFSETS = [0, 0.4, 0.8, 1.2, 1.6];
 
 // ── Rounded rect helper ────────────────────────────────────────────
 function roundedRect(
@@ -120,69 +104,87 @@ export default function PartnerGrid() {
 
     const W = sizeRef.current.w;
     const H = sizeRef.current.h;
+    if (W === 0 || H === 0) return;
     const dpr = window.devicePixelRatio || 1;
     const cameraZ = cameraZRef.current;
-    console.log("DRAW called, cameraZ:", cameraZ, "canvas:", canvas.width, "x", canvas.height, "logical:", W, "x", H);
 
-    // Center of canvas — offset slightly so a gap intersection is at center
-    const cx = W * 0.48;
-    const cy = H * 0.55;
+    // Zoom scale from perspective
+    const scale = FOCAL_LENGTH / (FOCAL_LENGTH - cameraZ);
+
+    // Base cell sizes (at scale 1, how big is one cell in logical px)
+    const baseCellW = W / (NUM_COLS + 1.5); // leave room for gaps + edges
+    const baseUnitH = H / 6; // one height unit
+
+    // Screen-space cell sizes (scaled by perspective)
+    const cellW = baseCellW * scale;
+
+    // Canvas center — offset so a gap intersection sits here
+    // At scale 1, col 2 right edge + gap/2 = center X
+    // We compute where that point is and offset the grid so it lands at W/2
+    const col2RightAtScale1 =
+      SCREEN_GAP + 2.5 * baseCellW + 2.5 * SCREEN_GAP;
+    const gridOffsetX = W / 2 - col2RightAtScale1 * scale;
+
+    // Vertically: put a gap crossing at ~55% height
+    // Row 1 bottom in col 2 = colOffset + cell0.h + cell1.h heights
+    const row1BottomAtScale1 =
+      SCREEN_GAP + COL_OFFSETS[2] * baseUnitH + 1.6 * baseUnitH + 1.4 * baseUnitH;
+    const gridOffsetY = H * 0.55 - row1BottomAtScale1 * scale;
 
     // Clear
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = "#1e1b4b";
     ctx.fillRect(0, 0, W, H);
 
-    // Cell layout constants (in screen px at cameraZ=0)
-    const totalGap = GAP * (NUM_COLS + 1);
-    const colW = (W - totalGap) / NUM_COLS;
-    const unitH = (H - GAP) / 5.5; // rough height unit
-
-    // Sort cells by projected scale (back-to-front isn't needed since all at z=0,
-    // but we draw in order)
     for (const cell of CELLS) {
-      // Cell position in unprojected screen coords
-      const cellX = GAP + cell.col * (colW + GAP);
-      // Accumulate Y from previous cells in same column
-      let cellY = GAP + COL_OFFSETS[cell.col];
+      // Accumulate Y offset for this cell within its column
+      let yUnits = COL_OFFSETS[cell.col];
       for (const prev of CELLS) {
         if (prev.col === cell.col && prev.row < cell.row) {
-          cellY += prev.h * unitH + GAP;
+          yUnits += prev.h;
         }
       }
-      const cellW = colW;
-      const cellH = cell.h * unitH;
+      // Count how many gaps precede this cell vertically
+      const gapsBefore = cell.row;
 
-      // Project all 4 corners
-      const tl = project(cellX, cellY, cameraZ, cx, cy);
-      const br = project(cellX + cellW, cellY + cellH, cameraZ, cx, cy);
+      // Screen-space position with FIXED gaps
+      const px =
+        gridOffsetX +
+        cell.col * cellW +
+        cell.col * SCREEN_GAP +
+        SCREEN_GAP;
+      const py =
+        gridOffsetY +
+        yUnits * baseUnitH * scale +
+        gapsBefore * SCREEN_GAP +
+        SCREEN_GAP;
+      const pw = cellW;
+      const ph = cell.h * baseUnitH * scale;
 
-      const px = tl.x;
-      const py = tl.y;
-      const pw = br.x - tl.x;
-      const ph = br.y - tl.y;
-
-      // Skip if entirely off-screen
-      if (px + pw < -200 || px > W + 200 || py + ph < -200 || py > H + 200)
+      // Skip if entirely off-screen (with margin)
+      if (px + pw < -100 || px > W + 100 || py + ph < -100 || py > H + 100)
         continue;
       if (pw < 0.5 || ph < 0.5) continue;
 
-      // Draw rounded rect
-      const r = Math.max(1, BORDER_RADIUS * tl.scale);
+      // Border radius scales but caps at 60px
+      const r = Math.min(60, Math.max(1, BORDER_RADIUS * Math.min(scale, 3)));
+
       ctx.fillStyle = "#ffffff";
       roundedRect(ctx, px, py, pw, ph, r);
       ctx.fill();
 
-      // Draw label if present and still readable
-      if (cell.label && tl.scale > 0.3 && tl.scale < 4) {
-        const fontSize = Math.max(8, 14 * tl.scale);
-        const labelOpacity = tl.scale > 3 ? Math.max(0, 1 - (tl.scale - 3)) : 1;
-        ctx.fillStyle = `rgba(156, 163, 175, ${labelOpacity})`;
-        ctx.font = `700 ${fontSize}px system-ui, -apple-system, sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.letterSpacing = `${2 * tl.scale}px`;
-        ctx.fillText(cell.label, px + pw / 2, py + ph / 2);
+      // Draw label if present and readable
+      if (cell.label && scale < 5) {
+        const fontSize = Math.max(8, Math.min(24, 14 * scale));
+        const labelOpacity =
+          scale > 3 ? Math.max(0, 1 - (scale - 3) / 2) : 1;
+        if (labelOpacity > 0.01) {
+          ctx.fillStyle = `rgba(156, 163, 175, ${labelOpacity})`;
+          ctx.font = `700 ${fontSize}px system-ui, -apple-system, sans-serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(cell.label, px + pw / 2, py + ph / 2);
+        }
       }
     }
   }, []);
@@ -206,14 +208,11 @@ export default function PartnerGrid() {
 
   // ── Setup GSAP + canvas ──────────────────────────────────────────
   useEffect(() => {
-    console.log("CANVAS INIT");
     const wrapper = wrapperRef.current;
     const overlay = overlayRef.current;
     if (!wrapper || !overlay) return;
 
     handleResize();
-    const canvas = canvasRef.current;
-    console.log("CANVAS SIZE:", canvas?.width, canvas?.height, canvas?.clientWidth, canvas?.clientHeight);
     window.addEventListener("resize", handleResize);
 
     const progressObj = { value: 0 };
@@ -231,7 +230,6 @@ export default function PartnerGrid() {
           onUpdate: (self) => {
             progressObj.value = self.progress;
             cameraZRef.current = self.progress * MAX_CAMERA_Z;
-            console.log("SCROLL progress:", self.progress.toFixed(3), "cameraZ:", cameraZRef.current.toFixed(1));
             cancelAnimationFrame(rafRef.current);
             rafRef.current = requestAnimationFrame(draw);
           },
