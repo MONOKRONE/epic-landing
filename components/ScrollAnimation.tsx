@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CheckCircle2 } from "lucide-react";
@@ -8,6 +8,7 @@ import { CheckCircle2 } from "lucide-react";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ScrollAnimation() {
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Phase 6 — master container
@@ -66,14 +67,14 @@ export default function ScrollAnimation() {
         { opacity: 0, immediateRender: false, scrollTrigger: pct(53, 55) }
       );
 
-      // --- STEP 0: Epic card + intro text appear (0% → 12%) ---
+      // --- STEP 0: Epic card + intro text appear (0% → 15%) ---
 
       // Left intro appears
       gsap.set(leftIntroRef.current, { opacity: 0, y: 30 });
       gsap.fromTo(
         leftIntroRef.current,
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, scrollTrigger: pct(0, 5) }
+        { opacity: 1, y: 0, scrollTrigger: pct(0, 6) }
       );
 
       // Epic card appears with scale
@@ -81,16 +82,16 @@ export default function ScrollAnimation() {
       gsap.fromTo(
         cardEpicRef.current,
         { opacity: 0, scale: 0.85 },
-        { opacity: 1, scale: 1, scrollTrigger: pct(2, 7) }
+        { opacity: 1, scale: 1, scrollTrigger: pct(2, 8) }
       );
 
-      // --- STEP 1: Transition to Western Union (12% → 28%) ---
+      // --- STEP 1: Transition to Western Union (15% → 35%) ---
 
       // Left intro fades out
       gsap.fromTo(
         leftIntroRef.current,
         { opacity: 1 },
-        { opacity: 0, immediateRender: false, scrollTrigger: pct(12, 16) }
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(13, 17) }
       );
 
       // Left WU testimonial fades in
@@ -98,14 +99,14 @@ export default function ScrollAnimation() {
       gsap.fromTo(
         leftWURef.current,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, scrollTrigger: pct(15, 20) }
+        { opacity: 1, y: 0, scrollTrigger: pct(16, 22) }
       );
 
       // Epic card fades out
       gsap.fromTo(
         cardEpicRef.current,
         { opacity: 1 },
-        { opacity: 0, immediateRender: false, scrollTrigger: pct(13, 18) }
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(14, 19) }
       );
 
       // WU card fades in
@@ -113,16 +114,24 @@ export default function ScrollAnimation() {
       gsap.fromTo(
         cardWURef.current,
         { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1, scrollTrigger: pct(15, 20) }
+        { opacity: 1, scale: 1, scrollTrigger: pct(16, 22) }
       );
 
-      // --- STEP 2: Transition to Affirm (28% → 42%) ---
+      // Video thumbnail fades in with WU card
+      gsap.set(cardVideoRef.current, { opacity: 0, scale: 0.9 });
+      gsap.fromTo(
+        cardVideoRef.current,
+        { opacity: 0, scale: 0.9 },
+        { opacity: 1, scale: 1, scrollTrigger: pct(16, 22) }
+      );
+
+      // --- STEP 2: Transition to Affirm (35% → 55%) ---
 
       // Left WU fades out
       gsap.fromTo(
         leftWURef.current,
         { opacity: 1 },
-        { opacity: 0, immediateRender: false, scrollTrigger: pct(28, 32) }
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(33, 37) }
       );
 
       // Left Affirm fades in
@@ -130,14 +139,21 @@ export default function ScrollAnimation() {
       gsap.fromTo(
         leftAffirmRef.current,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, scrollTrigger: pct(30, 35) }
+        { opacity: 1, y: 0, scrollTrigger: pct(35, 40) }
       );
 
       // WU card fades out
       gsap.fromTo(
         cardWURef.current,
         { opacity: 1 },
-        { opacity: 0, immediateRender: false, scrollTrigger: pct(28, 33) }
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(33, 38) }
+      );
+
+      // Video fades out with WU card
+      gsap.fromTo(
+        cardVideoRef.current,
+        { opacity: 1 },
+        { opacity: 0, immediateRender: false, scrollTrigger: pct(33, 38) }
       );
 
       // Affirm card fades in
@@ -145,24 +161,7 @@ export default function ScrollAnimation() {
       gsap.fromTo(
         cardAffirmRef.current,
         { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1, scrollTrigger: pct(30, 35) }
-      );
-
-      // --- STEP 3: Video appears (42% → 55%) ---
-
-      // Affirm card slides up slightly to make room
-      gsap.fromTo(
-        cardAffirmRef.current,
-        { y: 0 },
-        { y: -60, immediateRender: false, scrollTrigger: pct(42, 47) }
-      );
-
-      // Video fades in below
-      gsap.set(cardVideoRef.current, { opacity: 0, y: 40 });
-      gsap.fromTo(
-        cardVideoRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, scrollTrigger: pct(44, 50) }
+        { opacity: 1, scale: 1, scrollTrigger: pct(35, 40) }
       );
 
       // ═══════════════════════════════════════════════════
@@ -527,34 +526,42 @@ export default function ScrollAnimation() {
                       </p>
                     </div>
                   </div>
-                </div>
 
-                {/* Video spotlight — appears below card in Step 3 */}
-                <div
-                  ref={cardVideoRef}
-                  className="mt-6 w-[280px] lg:w-[360px] mx-auto"
-                  style={{ opacity: 0 }}
-                >
-                  <div className="relative rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src="/png/static_img_partners_partners-video-3.png"
-                      alt="Customer spotlight video"
-                      className="w-full"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                      <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-xl">
-                        <svg
-                          className="w-6 h-6 ml-1"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          style={{ color: "var(--teal)" }}
-                        >
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
+                  {/* Video thumbnail — overlaps cards from bottom-left */}
+                  <div
+                    ref={cardVideoRef}
+                    className="absolute hidden lg:block"
+                    style={{
+                      bottom: -20,
+                      left: -60,
+                      width: 200,
+                      zIndex: 20,
+                      opacity: 0,
+                      cursor: "pointer",
+                    }}
+                    onClick={() => setVideoModalOpen(true)}
+                  >
+                    <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20">
+                      <img
+                        src="/png/static_img_partners_partners-video-3.png"
+                        alt="Customer spotlight video"
+                        className="w-full"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                        <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-xl">
+                          <svg
+                            className="w-5 h-5 ml-0.5"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            style={{ color: "var(--teal)" }}
+                          >
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
                       </div>
-                    </div>
-                    <div className="absolute bottom-4 left-4 right-4 text-white">
-                      <p className="text-xs font-medium">Watch video</p>
+                      <div className="absolute bottom-3 left-3 text-white">
+                        <p className="text-[10px] font-medium">Watch video</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -669,6 +676,35 @@ export default function ScrollAnimation() {
           </div>
         </div>
       </div>
+
+      {/* Video Modal */}
+      {videoModalOpen && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm cursor-pointer"
+          onClick={() => setVideoModalOpen(false)}
+          style={{ pointerEvents: "auto" }}
+        >
+          <div
+            className="relative w-[90vw] max-w-[1000px] aspect-video rounded-2xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src="/png/static_img_partners_partners-video-3.png"
+              alt="Customer spotlight"
+              className="w-full h-full object-cover"
+            />
+            <button
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+              onClick={() => setVideoModalOpen(false)}
+              style={{ pointerEvents: "auto" }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
