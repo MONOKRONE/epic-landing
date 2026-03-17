@@ -1,42 +1,212 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
-import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gsap from "gsap";
 gsap.registerPlugin(ScrollTrigger);
 
 const items = [
   {
-    title: "Instant payoff quotes",
+    title: "Instant lender connections",
     description:
-      "Pull real-time payoff amounts from any lender in seconds — no phone calls, no faxes, no waiting.",
-    video: "/mp4/static_marqeta-videos_img_tailored_tailor_0.mp4",
+      "Connect to 2,500+ lenders through a single integration. No more phone calls, faxes, or manual lookups.",
   },
   {
-    title: "Automated lien releases",
+    title: "Same-day lien releases",
     description:
-      "Track every title from payoff to release with automated status updates and lender confirmations.",
-    video: "/mp4/static_marqeta-videos_img_tailored_tailor_1.mp4",
+      "Automate the entire lien release process. What used to take weeks now happens in hours.",
   },
   {
-    title: "Secure & compliant",
+    title: "Accuracy guaranteed",
     description:
-      "Bank-grade encryption, SOC 2 certified, and full audit trails keep every transaction protected.",
-    video: "/mp4/static_marqeta-videos_img_tailored_tailor_2.mp4",
+      "Eliminate payoff errors with real-time validation. Every dollar goes to the right place, every time.",
   },
   {
-    title: "One platform, every lender",
+    title: "Scale effortlessly",
     description:
-      "Connect to 2,500+ lenders through a single integration — from national banks to local credit unions.",
-    video: "/mp4/static_marqeta-videos_img_tailored_tailor_3.mp4",
+      "Whether you process 10 payoffs or 10,000 per month, Epic scales with your business.",
   },
 ];
+
+/* ── Document card components ─────────────────────────────────── */
+
+function DocLienRelease() {
+  return (
+    <>
+      <div
+        className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center"
+        style={{ background: "#20A472" }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 6L9 17l-5-5" />
+        </svg>
+      </div>
+      <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#94a3b8" }}>
+        Official Document
+      </p>
+      <h3 className="text-2xl font-black mt-1" style={{ color: "#1e1b4b" }}>
+        Lien Release
+      </h3>
+      <p className="text-xs font-mono mt-1" style={{ color: "#94a3b8" }}>
+        DOC-EP-48291
+      </p>
+      <div className="h-px my-5" style={{ background: "#f1f5f9" }} />
+      {[
+        ["Dealership", "Elk Grove Toyota"],
+        ["Lender", "Chase Auto Finance"],
+        ["Vehicle", "2024 Honda Accord"],
+        ["Payoff", "$24,850.00"],
+      ].map(([label, value]) => (
+        <div key={label} className="flex justify-between items-end py-2 border-b" style={{ borderColor: "#f1f5f9" }}>
+          <span className="text-[10px] font-bold uppercase" style={{ color: "#94a3b8" }}>{label}</span>
+          <span className="text-sm font-bold" style={{ color: "#1e1b4b" }}>{value}</span>
+        </div>
+      ))}
+      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#20A472", color: "white" }}>
+        RELEASED — March 15, 2026
+      </div>
+    </>
+  );
+}
+
+function DocTitleCertificate() {
+  return (
+    <>
+      <div
+        className="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center"
+        style={{ border: "2px solid #1e1b4b" }}
+      >
+        <span className="text-[8px] font-black tracking-wider" style={{ color: "#1e1b4b" }}>SEAL</span>
+      </div>
+      <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#94a3b8" }}>
+        State of California
+      </p>
+      <h3 className="text-2xl font-black mt-1" style={{ color: "#1e1b4b" }}>
+        Title Certificate
+      </h3>
+      <p className="text-xs font-mono mt-1" style={{ color: "#94a3b8" }}>
+        TITLE-CA-2026-07841
+      </p>
+      <div className="h-px my-5" style={{ background: "#f1f5f9" }} />
+      {[
+        ["Owner", "Elk Grove Toyota"],
+        ["VIN", "1HGCV1F34R...8472"],
+        ["Make/Model", "2024 Honda Accord"],
+        ["Status", "Clear Title"],
+      ].map(([label, value]) => (
+        <div key={label} className="flex justify-between items-end py-2 border-b" style={{ borderColor: "#f1f5f9" }}>
+          <span className="text-[10px] font-bold uppercase" style={{ color: "#94a3b8" }}>{label}</span>
+          <span className="text-sm font-bold" style={{ color: "#1e1b4b" }}>{value}</span>
+        </div>
+      ))}
+      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#1e1b4b", color: "white" }}>
+        TITLE TRANSFERRED
+      </div>
+    </>
+  );
+}
+
+function DocPayoffConfirmation() {
+  return (
+    <>
+      <div
+        className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center"
+        style={{ background: "#3b82f6" }}
+      >
+        <span className="text-white font-bold text-lg">$</span>
+      </div>
+      <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#94a3b8" }}>
+        Payment Verified
+      </p>
+      <h3 className="text-2xl font-black mt-1" style={{ color: "#1e1b4b" }}>
+        Payoff Confirmation
+      </h3>
+      <p className="text-xs font-mono mt-1" style={{ color: "#94a3b8" }}>
+        PAY-2026-03-15-001
+      </p>
+      <div className="h-px my-5" style={{ background: "#f1f5f9" }} />
+      {[
+        ["From", "Elk Grove Toyota"],
+        ["To", "Chase Auto Finance"],
+        ["Amount", "$24,850.00"],
+        ["Method", "ACH Same-Day"],
+      ].map(([label, value]) => (
+        <div key={label} className="flex justify-between items-end py-2 border-b" style={{ borderColor: "#f1f5f9" }}>
+          <span className="text-[10px] font-bold uppercase" style={{ color: "#94a3b8" }}>{label}</span>
+          <span className="text-sm font-bold" style={{ color: "#1e1b4b" }}>{value}</span>
+        </div>
+      ))}
+      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#20A472", color: "white" }}>
+        CONFIRMED — Funds Delivered
+      </div>
+    </>
+  );
+}
+
+function DocLenderDashboard() {
+  const bars = [
+    { label: "National Banks", pct: 95 },
+    { label: "Credit Unions", pct: 87 },
+    { label: "Captive Lenders", pct: 92 },
+  ];
+  return (
+    <>
+      <div
+        className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center"
+        style={{ background: "#7c3aed" }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="2" />
+          <circle cx="12" cy="5" r="2" />
+          <circle cx="19" cy="12" r="2" />
+          <circle cx="5" cy="12" r="2" />
+          <circle cx="12" cy="19" r="2" />
+          <line x1="12" y1="7" x2="12" y2="10" />
+          <line x1="14" y1="12" x2="17" y2="12" />
+          <line x1="7" y1="12" x2="10" y2="12" />
+          <line x1="12" y1="14" x2="12" y2="17" />
+        </svg>
+      </div>
+      <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#94a3b8" }}>
+        Epic Network
+      </p>
+      <h3 className="text-2xl font-black mt-1" style={{ color: "#1e1b4b" }}>
+        Connected Lenders
+      </h3>
+      <p className="text-xs font-mono mt-1" style={{ color: "#94a3b8" }}>
+        2,500+ Active
+      </p>
+      <div className="h-px my-5" style={{ background: "#f1f5f9" }} />
+      <div className="space-y-5">
+        {bars.map((bar) => (
+          <div key={bar.label}>
+            <div className="flex justify-between mb-1.5">
+              <span className="text-xs font-bold" style={{ color: "#1e1b4b" }}>{bar.label}</span>
+              <span className="text-xs font-bold" style={{ color: "#20A472" }}>{bar.pct}%</span>
+            </div>
+            <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#f1f5f9" }}>
+              <div
+                className="h-full rounded-full"
+                style={{ width: `${bar.pct}%`, background: "#20A472" }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#7c3aed", color: "white" }}>
+        ALL LENDERS CONNECTED
+      </div>
+    </>
+  );
+}
+
+const docComponents = [DocLienRelease, DocTitleCertificate, DocPayoffConfirmation, DocLenderDashboard];
+
+/* ── Main component ───────────────────────────────────────────── */
 
 export default function Tailored() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
-  /* Scroll-driven index switching via GSAP ScrollTrigger */
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -57,36 +227,12 @@ export default function Tailored() {
     return () => trigger.kill();
   }, []);
 
-  /* Ensure all videos autoplay */
-  useEffect(() => {
-    videoRefs.current.forEach((v) => {
-      if (v) {
-        v.muted = true;
-        v.play().catch(() => {});
-      }
-    });
-  }, []);
-
-  /* Re-trigger play on active index change */
-  useEffect(() => {
-    const v = videoRefs.current[activeIndex];
-    if (v) {
-      v.muted = true;
-      v.currentTime = 0;
-      v.play().catch(() => {});
-    }
-  }, [activeIndex]);
-
-  const handleItemClick = (index: number) => {
-    setActiveIndex(index);
-  };
-
   return (
     <section
       id="tailored"
       ref={sectionRef}
       className="relative"
-      style={{ height: `${items.length * 100 + 100}vh`, zIndex: 51, position: "relative" }}
+      style={{ height: "500vh", zIndex: 51, position: "relative" }}
     >
       <div
         className="sticky top-0 h-screen overflow-hidden"
@@ -94,119 +240,76 @@ export default function Tailored() {
       >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 h-full flex items-center">
           <div className="grid lg:grid-cols-2 gap-16 items-center w-full">
-            {/* Left: Video */}
-            <div
-              className="relative overflow-hidden bg-slate-900"
-              style={{ borderRadius: "12px", aspectRatio: "4/3" }}
-            >
-              {items.map((item, i) => (
-                <video
-                  key={i}
-                  ref={(el) => {
-                    videoRefs.current[i] = el;
-                  }}
-                  src={item.video}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  style={{
-                    opacity: i === activeIndex ? 1 : 0,
-                    transition: "opacity 0.5s ease",
-                    willChange: "opacity",
-                    transform: "translateZ(0)",
-                  }}
-                />
-              ))}
 
-              {/* Green SVG overlay — network/constellation effect */}
-              <svg
-                viewBox="0 0 595.28 841.89"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  zIndex: 10,
-                  pointerEvents: "none",
-                  opacity: 0.7,
-                }}
-              >
-                <g fill="none">
-                  {/* Dashed orbit paths */}
-                  <path d="m489.25 544.57c2.94-8.91 21.87-69.72-14.19-130.07-34.54-57.81-93.23-71.14-102.86-73.16" stroke="#3cb982" strokeDasharray="3 2" strokeWidth="1.5" />
-                  <path d="m406.23 413.5c-1.19-8.84-5.62-49.21 21.61-86.46 21.86-29.9 51.36-40.31 61.52-43.39" stroke="#3cb982" strokeDasharray="3 2" strokeWidth="1.5" />
-                  <path d="m491.86 523.07c-8.7 17.47-43.09 81.29-120.55 113.57-95.63 39.84-181.53.2-195.09-6.34" stroke="#3cb982" strokeDasharray="3 2" strokeWidth="1.5" />
-                  <path d="m181.1 652.77c9.19-11.6 34.34-46.43 36.35-97.72a168.65 168.65 0 0 0-22.89-91.17" stroke="#3cb982" strokeDasharray="3 2" strokeWidth="1.5" />
-                  <path d="m490.7 285.89c-6.85 3.82-27.17 16.3-37.59 41.93a83.5 83.5 0 0 0-5.76 37.91" stroke="#3cb982" strokeDasharray="3 2" strokeWidth="1.5" />
-                  <path d="m174.78 255.38a269.85 269.85 0 0 0 135.34 15.91 269.17 269.17 0 0 0 112.88-43.58" stroke="#3cb982" strokeDasharray="3 2" strokeWidth="1.5" />
-
-                  {/* Dot pairs: inner filled circle + outer ring */}
-                  <g strokeMiterlimit="10">
-                    {[
-                      [201.65,232.71],[461.03,262.3],[174.61,255.31],[211.08,222.71],
-                      [99.96,466.22],[98.82,302.61],[169.61,426.03],[378.12,387.16],
-                      [401.21,321.72],[447.29,365.73],[464.9,418.44],[483.52,422.31],
-                      [406.21,413.44],[421.89,403.44],[512.59,474.93],[496.75,461.22],
-                      [554.87,434.61],[543.5,408.44],[491.75,522.85],[519.56,560.74],
-                      [508.95,576.53],[489.25,547.07],[505.09,328.48],[530.93,373.23],
-                      [518.2,452.15],[480.79,597.62],[426.89,308.97],[417.03,254.17],
-                      [407.35,240.69],[431.89,250.31],[424.39,227.71],[482.16,325.98],
-                      [371.76,341.34],[543.5,509.76],[522.1,388.52],[399.85,281.36],
-                      [123.81,278.86],[114.37,508.4],[116.87,447.15],[81.49,392.16],
-                      [489.25,283.86],[194.56,463.72],[126.31,428.53],[111.87,418.44],
-                      [126.31,478.56],[163.23,584.03],[148.13,581.53],[167.11,558.24],
-                      [151.99,525.35],[176.22,628.94],[181.22,652.6],
-                    ].map(([cx, cy], i) => (
-                      <g key={i}>
-                        <circle cx={cx} cy={cy} r={0.5} stroke="#3cb982" strokeWidth="2.73" />
-                        <circle cx={cx} cy={cy} r={1.5} stroke="#8ed0be" strokeWidth="0.83" />
-                      </g>
-                    ))}
-                  </g>
-                </g>
-              </svg>
+            {/* LEFT: Document cards */}
+            <div className="flex justify-center items-center">
+              <div className="relative" style={{ width: "100%", maxWidth: 400, aspectRatio: "3/4" }}>
+                {docComponents.map((DocComponent, i) => (
+                  <div
+                    key={i}
+                    className="absolute inset-0"
+                    style={{
+                      background: "white",
+                      borderRadius: 12,
+                      padding: 32,
+                      boxShadow: "0 25px 50px -12px rgba(0,0,0,0.15)",
+                      opacity: i === activeIndex ? 1 : 0,
+                      transition: "opacity 0.5s ease",
+                    }}
+                  >
+                    <DocComponent />
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Right: Content */}
+            {/* RIGHT: Title + accumulating items */}
             <div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 The complete loan payoff platform
               </h2>
 
               <div className="mt-12 space-y-0">
-                {items.map((item, i) => (
-                  <div
-                    key={i}
-                    className="py-6 border-t border-white/10 relative cursor-pointer"
-                    onClick={() => handleItemClick(i)}
-                    style={{
-                      opacity: i === activeIndex ? 1 : 0.4,
-                      transition: "opacity 0.4s ease",
-                    }}
-                  >
+                {items.map((item, i) => {
+                  const hasAppeared = i <= activeIndex;
+                  const isActive = i === activeIndex;
+
+                  return (
                     <div
-                      className="absolute left-0 top-0 h-[2px] w-full"
+                      key={i}
+                      className="border-t border-white/10 overflow-hidden relative"
                       style={{
-                        opacity: i === activeIndex ? 1 : 0.2,
-                        background: "var(--teal)",
-                        transition: "opacity 0.4s ease",
+                        maxHeight: hasAppeared ? 200 : 0,
+                        opacity: hasAppeared ? (isActive ? 1 : 0.4) : 0,
+                        paddingTop: hasAppeared ? 24 : 0,
+                        paddingBottom: hasAppeared ? 24 : 0,
+                        transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
                       }}
-                    />
-                    <h3 className="text-lg font-bold text-white mb-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm text-white/50 leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: 0,
+                          top: 0,
+                          height: 2,
+                          width: "100%",
+                          background: "var(--teal)",
+                          opacity: isActive ? 1 : 0.2,
+                          transition: "opacity 0.4s ease",
+                        }}
+                      />
+                      <h3 className="text-lg font-bold text-white mb-2">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-white/50 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
+
           </div>
         </div>
       </div>

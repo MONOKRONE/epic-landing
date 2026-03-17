@@ -6,7 +6,6 @@ import PartnerLogos from "@/components/PartnerLogos";
 import Enterprises from "@/components/Enterprises";
 import Features from "@/components/Features";
 import Tailored from "@/components/Tailored";
-import DocumentTransform from "@/components/DocumentTransform";
 import ScrollAnimation from "@/components/ScrollAnimation";
 import PartnerGrid from "@/components/PartnerGrid";
 import Footer from "@/components/Footer";
@@ -22,7 +21,6 @@ export default function Home() {
       <Enterprises />
       <Features />
       <Tailored />
-      <DocumentTransform />
       <PartnerGrid />
       <ScrollAnimation />
       <Footer />
