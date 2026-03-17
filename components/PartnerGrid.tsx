@@ -17,12 +17,12 @@ export default function PartnerGrid() {
     if (!gridWrapper || !grid || !whiteOverlay) return;
 
     const ctx = gsap.context(() => {
-      // Tween 1: Zoom
+      // Tween 1: 3D camera zoom
       gsap.fromTo(
         grid,
-        { scale: 1 },
+        { z: 0 },
         {
-          scale: 20,
+          z: 1150,
           ease: "none",
           scrollTrigger: {
             trigger: gridWrapper,
@@ -145,7 +145,7 @@ export default function PartnerGrid() {
       <div ref={gridWrapperRef} className="hidden lg:block h-[300vh]">
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
-          style={{ background: "#1e1b4b" }}
+          style={{ background: "#1e1b4b", perspective: "1200px", perspectiveOrigin: "50% 50%" }}
         >
           {/* Masonry grid */}
           <div
@@ -157,7 +157,8 @@ export default function PartnerGrid() {
               gap: 8,
               padding: 8,
               background: "#1e1b4b",
-              transformOrigin: "45% 65%",
+              transformOrigin: "50% 50%",
+              transformStyle: "preserve-3d" as const,
               willChange: "transform",
             }}
           >
@@ -173,10 +174,7 @@ export default function PartnerGrid() {
             >
               <div style={{ background: "white", flex: "0 0 28%", borderRadius: 20 }} />
               <div style={{ background: "white", flex: "0 0 38%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 24%", borderRadius: 20 }} />
-              {/* Phantom rows */}
-              <div style={{ background: "white", flex: "0 0 30%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 25%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 20 }} />
             </div>
             {/* Column 2 */}
             <div
@@ -192,10 +190,7 @@ export default function PartnerGrid() {
                 <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CHASE</span>
               </div>
               <div style={{ background: "white", flex: "0 0 42%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 20%", borderRadius: 20 }} />
-              {/* Phantom rows */}
-              <div style={{ background: "white", flex: "0 0 35%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 20 }} />
             </div>
             {/* Column 3 */}
             <div
@@ -211,10 +206,7 @@ export default function PartnerGrid() {
                 <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>ALLY FINANCIAL</span>
               </div>
               <div style={{ background: "white", flex: "0 0 28%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 20 }} />
-              {/* Phantom rows */}
-              <div style={{ background: "white", flex: "0 0 32%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 26%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 20 }} />
             </div>
             {/* Column 4 */}
             <div
@@ -230,10 +222,7 @@ export default function PartnerGrid() {
               <div style={{ background: "white", flex: "0 0 45%", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CAPITAL ONE</span>
               </div>
-              <div style={{ background: "white", flex: "0 0 18%", borderRadius: 20 }} />
-              {/* Phantom rows */}
-              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 34%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 20 }} />
             </div>
             {/* Column 5 */}
             <div
@@ -247,10 +236,7 @@ export default function PartnerGrid() {
             >
               <div style={{ background: "white", flex: "0 0 35%", borderRadius: 20 }} />
               <div style={{ background: "white", flex: "0 0 22%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 18%", borderRadius: 20 }} />
-              {/* Phantom rows */}
-              <div style={{ background: "white", flex: "0 0 30%", borderRadius: 20 }} />
-              <div style={{ background: "white", flex: "0 0 24%", borderRadius: 20 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 20 }} />
             </div>
           </div>
 
