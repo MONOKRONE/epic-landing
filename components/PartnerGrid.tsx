@@ -22,19 +22,34 @@ const stats = [
   { number: "40+", label: "countries certified" },
 ];
 
-/* Grid cell positions — asymmetric mosaic layout (% of viewport) */
+/* 4-column, 3-row clean grid — positions as % */
 const gridCells = [
-  { top: 0, left: 0, w: 25, h: 40 },
-  { top: 0, left: 25, w: 35, h: 55 },
-  { top: 0, left: 60, w: 25, h: 35 },
-  { top: 0, left: 85, w: 15, h: 35 },
-  { top: 40, left: 0, w: 20, h: 60 },
-  { top: 55, left: 20, w: 30, h: 45 },
-  { top: 35, left: 60, w: 25, h: 35 },
-  { top: 35, left: 85, w: 15, h: 30 },
-  { top: 70, left: 50, w: 35, h: 30 },
-  { top: 65, left: 85, w: 15, h: 35 },
+  { row: 0, col: 0 },
+  { row: 0, col: 1 },
+  { row: 0, col: 2 },
+  { row: 0, col: 3 },
+  { row: 1, col: 0 },
+  { row: 1, col: 1 },
+  { row: 1, col: 2 },
+  { row: 1, col: 3 },
+  { row: 2, col: 0 },
+  { row: 2, col: 1 },
+  { row: 2, col: 2 },
+  { row: 2, col: 3 },
 ];
+
+const COLS = 4;
+const ROWS = 3;
+const GAP = 1.2; // % gap between cells
+const CELL_W = (100 - GAP * (COLS + 1)) / COLS; // ~23.5%
+const CELL_H = (100 - GAP * (ROWS + 1)) / ROWS; // ~31.7%
+
+function cellPos(row: number, col: number) {
+  return {
+    top: GAP + row * (CELL_H + GAP),
+    left: GAP + col * (CELL_W + GAP),
+  };
+}
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -44,14 +59,14 @@ export default function PartnerGrid() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const purpleOverlayRef = useRef<HTMLDivElement>(null);
+  const whiteOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     const showcase = showcaseRef.current;
     const grid = gridRef.current;
-    const purpleOverlay = purpleOverlayRef.current;
-    if (!section || !showcase || !grid || !purpleOverlay) return;
+    const whiteOverlay = whiteOverlayRef.current;
+    if (!section || !showcase || !grid || !whiteOverlay) return;
 
     const cards = showcase.querySelectorAll<HTMLElement>(".partner-card");
     const statsEls = showcase.querySelectorAll<HTMLElement>(".stat-item");
@@ -68,9 +83,8 @@ export default function PartnerGrid() {
         },
       });
 
-      /* ---- Phase A (0 → 0.30): Showcase — cards cascade + stats ---- */
+      /* ---- Phase A (0 → 0.25): Showcase — cards cascade + stats ---- */
 
-      // Cards cascade in from left with stagger
       cards.forEach((card, i) => {
         tl.fromTo(
           card,
@@ -80,7 +94,6 @@ export default function PartnerGrid() {
         );
       });
 
-      // Title fades in
       if (titleEl) {
         tl.fromTo(
           titleEl,
@@ -90,7 +103,6 @@ export default function PartnerGrid() {
         );
       }
 
-      // Stats fade in staggered
       statsEls.forEach((stat, i) => {
         tl.fromTo(
           stat,
@@ -100,109 +112,156 @@ export default function PartnerGrid() {
         );
       });
 
-      /* ---- Phase B (0.30 → 0.45): Crossfade — showcase out, grid in ---- */
+      /* ---- Phase B (0.25 → 0.45): Waterfall cascade ---- */
 
-      tl.to(showcase, { opacity: 0, duration: 0.08 }, 0.30);
-      tl.fromTo(grid, { opacity: 0 }, { opacity: 1, duration: 0.08 }, 0.32);
+      // Fade out showcase
+      tl.to(showcase, { opacity: 0, duration: 0.06 }, 0.25);
+      // Show grid container
+      tl.fromTo(grid, { opacity: 0 }, { opacity: 1, duration: 0.04 }, 0.27);
 
-      // Grid cells explode from center
-      cells.forEach((cell, i) => {
-        const finalTop = gridCells[i]?.top ?? 0;
-        const finalLeft = gridCells[i]?.left ?? 0;
+      // Cells cascade from top-center in a waterfall arc
+      // Order: top-left to bottom-right, row by row for waterfall feel
+      const cascadeOrder = [...gridCells].sort((a, b) =>
+        a.row !== b.row ? a.row - b.row : a.col - b.col
+      );
 
+      cascadeOrder.forEach((cellDef, i) => {
+        const cell = cells[cellDef.row * COLS + cellDef.col];
+        if (!cell) return;
+
+        const final = cellPos(cellDef.row, cellDef.col);
+
+        // Start position: top center
+        const startTop = -15;
+        const startLeft = 38 + (Math.random() * 8); // slight horizontal spread
+
+        // Midpoint: arc outward
+        const midTop = final.top * 0.4;
+        const midLeft = final.left + (final.left < 50 ? -8 : 8);
+
+        const staggerStart = 0.29 + i * 0.012;
+        const dur = 0.10;
+
+        // Animate top (with eased curve)
         tl.fromTo(
           cell,
+          { top: `${startTop}%`, opacity: 0, scale: 0.7 },
           {
-            top: "45%",
-            left: "45%",
-            width: "10%",
-            height: "10%",
-            opacity: 0,
-            borderWidth: 2,
-          },
-          {
-            top: `${finalTop}%`,
-            left: `${finalLeft}%`,
-            width: `${gridCells[i]?.w ?? 20}%`,
-            height: `${gridCells[i]?.h ?? 20}%`,
+            top: `${midTop}%`,
             opacity: 1,
-            borderWidth: 4,
-            duration: 0.25,
-            ease: "power3.out",
+            scale: 0.85,
+            duration: dur * 0.5,
+            ease: "power1.in",
           },
-          0.34 + i * 0.015
+          staggerStart
+        );
+        tl.to(
+          cell,
+          {
+            top: `${final.top}%`,
+            scale: 1,
+            duration: dur * 0.5,
+            ease: "power2.out",
+          },
+          staggerStart + dur * 0.5
+        );
+
+        // Animate left (smooth arc)
+        tl.fromTo(
+          cell,
+          { left: `${startLeft}%` },
+          {
+            left: `${midLeft}%`,
+            duration: dur * 0.5,
+            ease: "sine.out",
+          },
+          staggerStart
+        );
+        tl.to(
+          cell,
+          {
+            left: `${final.left}%`,
+            duration: dur * 0.5,
+            ease: "power2.out",
+          },
+          staggerStart + dur * 0.5
         );
       });
 
-      /* ---- Phase C (0.65 → 0.88): Borders grow thick, purple dominates ---- */
+      /* ---- Phase C (0.45 → 0.70): Grid settle + borders grow ---- */
 
-      // Stage 1: borders grow from 4px → 60px
+      // Stage 1: borders 4px → 40px
       cells.forEach((cell, i) => {
         tl.to(
           cell,
           {
-            borderWidth: 60,
+            borderWidth: 40,
             borderRadius: 2,
             duration: 0.12,
             ease: "power2.in",
           },
-          0.65 + i * 0.008
+          0.48 + i * 0.005
         );
       });
 
-      // Stage 2: borders grow from 60px → 120px — white space nearly gone
+      // Stage 2: borders 40px → 100px — white inner area shrinks
       cells.forEach((cell, i) => {
         tl.to(
           cell,
           {
-            borderWidth: 120,
+            borderWidth: 100,
             borderRadius: 0,
-            duration: 0.1,
+            duration: 0.10,
             ease: "power3.in",
           },
-          0.78 + i * 0.005
+          0.60 + i * 0.004
         );
       });
 
-      /* ---- Phase D (0.88 → 1.0): Cells scale up + purple overlay fills screen ---- */
+      /* ---- Phase D (0.70 → 0.85): White fill ---- */
 
-      // Cells scale up slightly to close remaining gaps
+      // Pick center cell (row 1, col 1 or 2) to grow and fill viewport
+      const centerIdx = 1 * COLS + 1; // row 1, col 1
+      const centerCell = cells[centerIdx];
+
+      // Fade out all cells except center
       cells.forEach((cell, i) => {
+        if (i === centerIdx) return;
         tl.to(
           cell,
-          {
-            scale: 1.3,
-            duration: 0.08,
-            ease: "power2.in",
-          },
-          0.88 + i * 0.003
+          { opacity: 0, duration: 0.06, ease: "power2.in" },
+          0.70 + (i % 4) * 0.005
         );
       });
 
-      // Purple overlay fades in to solid purple — clean transition
+      // Grow center cell to fill viewport
+      if (centerCell) {
+        tl.to(
+          centerCell,
+          {
+            top: "-5%",
+            left: "-5%",
+            width: "110%",
+            height: "110%",
+            borderWidth: 0,
+            borderRadius: 0,
+            duration: 0.15,
+            ease: "power2.inOut",
+          },
+          0.72
+        );
+      }
+
+      // White overlay for clean fill
       tl.to(
-        purpleOverlay,
-        {
-          opacity: 1,
-          clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          duration: 0.08,
-          ease: "power2.in",
-        },
-        0.92
+        whiteOverlay,
+        { opacity: 1, duration: 0.06, ease: "power2.in" },
+        0.82
       );
 
-      /* ---- Phase E (0.95 → 1.0): Diagonal wipe — purple peels away ---- */
+      /* ---- Phase E (0.85 → 1.0): Hold white — clean exit ---- */
+      // White screen holds, naturally transitions to next section
 
-      // Diagonal clip-path wipe: full screen → swept away top-right
-      tl.to(
-        purpleOverlay,
-        {
-          clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          duration: 0.05,
-          ease: "power2.out",
-        },
-        0.95
-      );
     }, section);
 
     return () => ctx.revert();
@@ -294,41 +353,43 @@ export default function PartnerGrid() {
           </div>
         </div>
 
-        {/* Phase B+C: Grid explosion */}
+        {/* Phase B+C+D: Grid waterfall → borders grow → white fill */}
         <div
           ref={gridRef}
           className="absolute inset-0"
           style={{ opacity: 0 }}
         >
-          {gridCells.map((cell, i) => (
-            <div
-              key={i}
-              className="grid-cell"
-              style={{
-                position: "absolute",
-                top: `${cell.top}%`,
-                left: `${cell.left}%`,
-                width: `${cell.w}%`,
-                height: `${cell.h}%`,
-                background: "white",
-                border: "4px solid #3730a3",
-                borderRadius: 8,
-                opacity: 0,
-              }}
-            />
-          ))}
+          {gridCells.map((cell, i) => {
+            const pos = cellPos(cell.row, cell.col);
+            return (
+              <div
+                key={i}
+                className="grid-cell"
+                style={{
+                  position: "absolute",
+                  top: `${pos.top}%`,
+                  left: `${pos.left}%`,
+                  width: `${CELL_W}%`,
+                  height: `${CELL_H}%`,
+                  background: "white",
+                  border: "4px solid #3730a3",
+                  borderRadius: 8,
+                  opacity: 0,
+                }}
+              />
+            );
+          })}
         </div>
 
-        {/* Phase D: Purple overlay — fills screen at end of animation */}
+        {/* White overlay — clean fill at end */}
         <div
-          ref={purpleOverlayRef}
+          ref={whiteOverlayRef}
           className="absolute inset-0"
           style={{
-            background: "#3730a3",
+            background: "white",
             opacity: 0,
             zIndex: 10,
             pointerEvents: "none",
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           }}
         />
       </div>
