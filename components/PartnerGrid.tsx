@@ -23,27 +23,6 @@ const stats = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Grid line definitions (normalized 0–1)                             */
-/* ------------------------------------------------------------------ */
-
-const hLines = [
-  { y: 0 },
-  { y: 0.22 },
-  { y: 0.45 },
-  { y: 0.70 },
-  { y: 1.0 },
-];
-
-const vLines = [
-  { x: 0 },
-  { x: 0.20 },
-  { x: 0.42 },
-  { x: 0.65 },
-  { x: 0.85 },
-  { x: 1.0 },
-];
-
-/* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -51,109 +30,21 @@ export default function PartnerGrid() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
-  const canvasWrapRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const whiteOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     const sticky = stickyRef.current;
     const showcase = showcaseRef.current;
-    const canvasWrap = canvasWrapRef.current;
-    const canvas = canvasRef.current;
+    const grid = gridRef.current;
     const whiteOverlay = whiteOverlayRef.current;
-    if (!section || !sticky || !showcase || !canvasWrap || !canvas || !whiteOverlay)
-      return;
-
-    const c2d = canvas.getContext("2d");
-    if (!c2d) return;
+    if (!section || !sticky || !showcase || !grid || !whiteOverlay) return;
 
     const cards = showcase.querySelectorAll<HTMLElement>(".partner-card");
     const statsEls = showcase.querySelectorAll<HTMLElement>(".stat-item");
     const titleEl = showcase.querySelector<HTMLElement>(".results-title");
 
-    /* ---- Canvas sizing ---- */
-    let w = 0;
-    let h = 0;
-    const dpr = window.devicePixelRatio || 1;
-
-    function sizeCanvas() {
-      w = canvas.offsetWidth;
-      h = canvas.offsetHeight;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      c2d.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    sizeCanvas();
-
-    /* ---- Animated proxy ---- */
-    const anim = { progress: 0 };
-
-    /* ---- Draw function ---- */
-    // p goes from 0 (straight grid) → 1 (maximum curve + thick)
-    function drawGrid(p: number) {
-      c2d.clearRect(0, 0, w, h);
-
-      // White background
-      c2d.fillStyle = "#ffffff";
-      c2d.fillRect(0, 0, w, h);
-
-      // Curve amount (0→1): ramps over first 60% of progress
-      const curveP = Math.min(1, p / 0.6);
-      // Thicken amount (0→1): ramps over last 40% of progress
-      const thickP = Math.max(0, Math.min(1, (p - 0.5) / 0.5));
-
-      // Smoothstep easing
-      const easedCurve = curveP * curveP * (3 - 2 * curveP);
-      const easedThick = thickP * thickP * (3 - 2 * thickP);
-
-      // Line width: 4px straight → 20px curved → 150px thick
-      const lineWidth = 4 + easedCurve * 16 + easedThick * 130;
-
-      c2d.strokeStyle = "#1e1b4b";
-      c2d.lineWidth = lineWidth;
-      c2d.lineCap = "round";
-      c2d.lineJoin = "round";
-
-      // Draw horizontal lines
-      hLines.forEach((line, i) => {
-        const baseY = line.y * h;
-        // Middle lines (index 2) sag most, edges sag least
-        const distFromCenter = Math.abs(i - 2) / 2;
-        const maxSag = 180 - distFromCenter * 100;
-        const sag = easedCurve * maxSag;
-
-        c2d.beginPath();
-        c2d.moveTo(-lineWidth, baseY);
-        c2d.quadraticCurveTo(w * 0.5, baseY + sag, w + lineWidth, baseY);
-        c2d.stroke();
-      });
-
-      // Draw vertical lines
-      vLines.forEach((line) => {
-        const baseX = line.x * w;
-        // Outer lines lean more, direction depends on side
-        const normalizedDist = (baseX - w / 2) / (w / 2 || 1);
-        const lean = easedCurve * normalizedDist * 80;
-
-        c2d.beginPath();
-        c2d.moveTo(baseX, -lineWidth);
-        c2d.quadraticCurveTo(baseX + lean, h * 0.5, baseX, h + lineWidth);
-        c2d.stroke();
-      });
-    }
-
-    // Initial draw (straight lines, but canvas is hidden)
-    drawGrid(0);
-
-    /* ---- Resize handler ---- */
-    function handleResize() {
-      sizeCanvas();
-      drawGrid(anim.progress);
-    }
-    window.addEventListener("resize", handleResize);
-
-    /* ---- GSAP animation ---- */
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -199,57 +90,54 @@ export default function PartnerGrid() {
         );
       });
 
-      /* ---- Phase B (0.12 → 0.25): Transition to grid ---- */
+      /* ---- Phase B (0.12 → 0.25): Grid appears ---- */
 
       // Fade out showcase
       tl.to(showcase, { opacity: 0, duration: 0.03 }, 0.12);
 
-      // Sticky bg → white for the canvas phase
+      // Sticky bg → white
       tl.to(
         sticky,
         { backgroundColor: "#ffffff", duration: 0.06, ease: "none" },
         0.12
       );
 
-      // Fade in canvas
+      // Fade in grid
       tl.fromTo(
-        canvasWrap,
+        grid,
         { opacity: 0 },
         { opacity: 1, duration: 0.06 },
         0.18
       );
 
-      /* ---- Phase C–E (0.25 → 0.75): Canvas animation via progress ---- */
+      /* ---- Phase C (0.25 → 0.85): The Zoom ---- */
 
       tl.to(
-        anim,
+        grid,
         {
-          progress: 1,
-          duration: 0.50, // 0.25 → 0.75
-          ease: "none",
-          onUpdate: () => drawGrid(anim.progress),
+          scale: 20,
+          duration: 0.60,
+          ease: "power2.in",
         },
         0.25
       );
 
-      /* ---- White takeover (0.68 → 0.75) ---- */
+      /* ---- Phase D (0.82 → 0.90): White overlay ---- */
 
       tl.to(
         whiteOverlay,
-        { opacity: 1, duration: 0.07, ease: "power2.in" },
-        0.68
+        { opacity: 1, duration: 0.08, ease: "power2.in" },
+        0.82
       );
 
-      /* ---- Clean exit ---- */
-      tl.to(canvasWrap, { opacity: 0, duration: 0.02 }, 0.75);
+      /* ---- Phase E (0.90 → 1.0): Clean exit ---- */
+
+      tl.to(grid, { opacity: 0, duration: 0.02 }, 0.90);
       tl.set({}, {}, 1.0); // pad timeline
 
     }, section);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -333,16 +221,34 @@ export default function PartnerGrid() {
           </div>
         </div>
 
-        {/* Canvas Grid */}
+        {/* Phase B-C: Zoomable Grid */}
         <div
-          ref={canvasWrapRef}
-          className="absolute inset-0"
-          style={{ opacity: 0 }}
+          ref={gridRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "grid",
+            gridTemplateColumns: "1.2fr 1.8fr 1.5fr 1fr",
+            gridTemplateRows: "0.8fr 1.2fr 1fr 0.7fr",
+            gap: "6px",
+            background: "#1e1b4b",
+            transformOrigin: "38% 45%",
+            opacity: 0,
+            willChange: "transform",
+          }}
         >
-          <canvas
-            ref={canvasRef}
-            style={{ width: "100%", height: "100%", display: "block" }}
-          />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white", gridColumn: "span 2" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white" }} />
+          <div style={{ background: "white", gridColumn: "span 2" }} />
         </div>
 
         {/* White overlay */}
@@ -350,7 +256,7 @@ export default function PartnerGrid() {
           ref={whiteOverlayRef}
           className="absolute inset-0"
           style={{
-            background: "white",
+            background: "#ffffff",
             opacity: 0,
             zIndex: 10,
             pointerEvents: "none",
