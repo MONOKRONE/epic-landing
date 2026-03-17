@@ -171,7 +171,7 @@ export default function ScrollAnimation() {
       gsap.fromTo(
         phase7Ref.current,
         { opacity: 0 },
-        { opacity: 1, scrollTrigger: pct(55, 60) }
+        { opacity: 1, scrollTrigger: pct(55, 58) }
       );
       gsap.fromTo(
         phase7Ref.current,
@@ -179,52 +179,112 @@ export default function ScrollAnimation() {
         { opacity: 0, immediateRender: false, scrollTrigger: pct(94, 100) }
       );
 
-      // Text slide up
+      // Text slide up (faster)
       gsap.fromTo(
         phase7TextRef.current,
         { y: 80 },
-        { y: 0, scrollTrigger: pct(55, 65) }
+        { y: 0, scrollTrigger: pct(55, 62) }
       );
 
-      // Phone slide in
-      gsap.set(phase7PhoneRef.current, { x: 100, opacity: 0 });
+      // Vehicle + For Sale badge slide in together (faster)
+      gsap.set(phase7PhoneRef.current, { x: 80, opacity: 0 });
       gsap.fromTo(
         phase7PhoneRef.current,
-        { x: 100, opacity: 0 },
-        { x: 0, opacity: 1, scrollTrigger: pct(62, 75) }
+        { x: 80, opacity: 0 },
+        { x: 0, opacity: 1, scrollTrigger: pct(58, 66) }
       );
 
-      // Mini document slides in from left
+      // Mini document starts from LEFT side, fully visible
+      gsap.set(miniDocRef.current, {
+        x: -120,
+        y: 40,
+        opacity: 0,
+        scale: 1,
+        rotation: -8,
+      });
+
+      // Step 1: Document appears from left (fast)
       gsap.fromTo(
         miniDocRef.current,
-        { x: -100, opacity: 0 },
+        { x: -120, y: 40, opacity: 0, scale: 1, rotation: -8 },
         {
           x: 0,
+          y: 0,
           opacity: 1,
-          scrollTrigger: pct(65, 80),
+          scale: 1,
+          rotation: -5,
+          scrollTrigger: pct(64, 70),
         }
       );
 
-      // "For Sale" badge fades out
+      // Step 2: Document FLIES toward the FOR SALE badge (top-right)
+      gsap.fromTo(
+        miniDocRef.current,
+        { x: 0, y: 0, scale: 1, rotation: -5, opacity: 1 },
+        {
+          x: 280,
+          y: -160,
+          scale: 0,
+          rotation: 15,
+          opacity: 0,
+          ease: "power2.in",
+          immediateRender: false,
+          scrollTrigger: pct(72, 80),
+        }
+      );
+
+      // Step 3: FOR SALE badge squeezes and vanishes
       gsap.fromTo(
         forSaleRef.current,
-        { opacity: 1, scale: 1 },
+        { scale: 1 },
         {
+          scale: 0.85,
+          ease: "power2.in",
+          immediateRender: false,
+          scrollTrigger: pct(77, 79),
+        }
+      );
+      gsap.fromTo(
+        forSaleRef.current,
+        { scale: 0.85, opacity: 1 },
+        {
+          scale: 0,
           opacity: 0,
-          scale: 0.8,
-          scrollTrigger: pct(70, 80),
+          ease: "power2.in",
+          immediateRender: false,
+          scrollTrigger: pct(79, 81),
         }
       );
 
-      // "SOLD" badge pops in
+      // Step 4: SOLD badge POPS in with elastic bounce
       gsap.fromTo(
         soldRef.current,
-        { opacity: 0, scale: 0.5 },
+        { opacity: 0, scale: 0 },
         {
           opacity: 1,
           scale: 1,
-          ease: "back.out(1.7)",
-          scrollTrigger: pct(78, 88),
+          ease: "back.out(2.5)",
+          scrollTrigger: pct(80, 85),
+        }
+      );
+
+      // Step 5: SOLD badge pulse glow effect
+      gsap.fromTo(
+        soldRef.current,
+        { boxShadow: "0 0 0px rgba(32, 164, 114, 0)" },
+        {
+          boxShadow: "0 0 30px rgba(32, 164, 114, 0.6)",
+          immediateRender: false,
+          scrollTrigger: pct(84, 88),
+        }
+      );
+      gsap.fromTo(
+        soldRef.current,
+        { boxShadow: "0 0 30px rgba(32, 164, 114, 0.6)" },
+        {
+          boxShadow: "0 0 0px rgba(32, 164, 114, 0)",
+          immediateRender: false,
+          scrollTrigger: pct(88, 92),
         }
       );
     }, containerRef);
@@ -642,7 +702,7 @@ export default function ScrollAnimation() {
                   {/* Mini lien release document — slides in from left */}
                   <div
                     ref={miniDocRef}
-                    className="absolute -left-8 bottom-4 z-20"
+                    className="absolute -left-12 bottom-0 z-20"
                     style={{ opacity: 0 }}
                   >
                     <div className="w-20 h-28 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col items-center justify-center p-2">
