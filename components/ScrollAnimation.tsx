@@ -32,6 +32,7 @@ export default function ScrollAnimation() {
   const forSaleRef = useRef<HTMLDivElement>(null);
   const soldRef = useRef<HTMLDivElement>(null);
   const miniDocRef = useRef<HTMLDivElement>(null);
+  const flashRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -179,14 +180,14 @@ export default function ScrollAnimation() {
         { opacity: 0, immediateRender: false, scrollTrigger: pct(94, 100) }
       );
 
-      // Text slide up (faster)
+      // Text slide up
       gsap.fromTo(
         phase7TextRef.current,
         { y: 80 },
         { y: 0, scrollTrigger: pct(55, 62) }
       );
 
-      // Vehicle + For Sale badge slide in together (faster)
+      // Vehicle + For Sale badge slide in
       gsap.set(phase7PhoneRef.current, { x: 80, opacity: 0 });
       gsap.fromTo(
         phase7PhoneRef.current,
@@ -194,16 +195,16 @@ export default function ScrollAnimation() {
         { x: 0, opacity: 1, scrollTrigger: pct(58, 66) }
       );
 
-      // Mini document starts from LEFT side, fully visible
+      // === DOCUMENT FLIGHT SEQUENCE ===
+
+      // Step 1: Document appears from left — FULLY OPAQUE
       gsap.set(miniDocRef.current, {
         x: -120,
         y: 40,
-        opacity: 0,
+        opacity: 1,
         scale: 1,
         rotation: -8,
       });
-
-      // Step 1: Document appears from left (fast)
       gsap.fromTo(
         miniDocRef.current,
         { x: -120, y: 40, opacity: 0, scale: 1, rotation: -8 },
@@ -217,46 +218,70 @@ export default function ScrollAnimation() {
         }
       );
 
-      // Step 2: Document FLIES toward the FOR SALE badge (top-right)
+      // Step 2: Document FLIES to FOR SALE badge — NO opacity change
       gsap.fromTo(
         miniDocRef.current,
-        { x: 0, y: 0, scale: 1, rotation: -5, opacity: 1 },
+        { x: 0, y: 0, scale: 1, rotation: -5 },
         {
           x: 280,
           y: -160,
-          scale: 0,
-          rotation: 15,
-          opacity: 0,
+          scale: 0.3,
+          rotation: 10,
           ease: "power2.in",
           immediateRender: false,
-          scrollTrigger: pct(72, 80),
+          scrollTrigger: pct(72, 79),
         }
       );
 
-      // Step 3: FOR SALE badge squeezes and vanishes
+      // Step 3: Document disappears INSTANTLY on impact
       gsap.fromTo(
-        forSaleRef.current,
-        { scale: 1 },
+        miniDocRef.current,
+        { opacity: 1 },
         {
-          scale: 0.85,
-          ease: "power2.in",
+          opacity: 0,
           immediateRender: false,
-          scrollTrigger: pct(77, 79),
+          scrollTrigger: pct(79, 79.5),
         }
       );
+
+      // Step 4: FOR SALE squeezes and vanishes
       gsap.fromTo(
         forSaleRef.current,
-        { scale: 0.85, opacity: 1 },
+        { scale: 1, opacity: 1 },
         {
-          scale: 0,
+          scale: 0.7,
           opacity: 0,
           ease: "power2.in",
+          immediateRender: false,
+          scrollTrigger: pct(77, 79.5),
+        }
+      );
+
+      // Step 5: WHITE FLASH on impact
+      gsap.fromTo(
+        flashRef.current,
+        { opacity: 0, scale: 0 },
+        {
+          opacity: 1,
+          scale: 1.5,
+          ease: "power2.out",
           immediateRender: false,
           scrollTrigger: pct(79, 81),
         }
       );
+      gsap.fromTo(
+        flashRef.current,
+        { opacity: 1, scale: 1.5 },
+        {
+          opacity: 0,
+          scale: 2,
+          ease: "power2.out",
+          immediateRender: false,
+          scrollTrigger: pct(81, 83),
+        }
+      );
 
-      // Step 4: SOLD badge POPS in with elastic bounce
+      // Step 6: SOLD badge appears FROM the flash — elastic pop
       gsap.fromTo(
         soldRef.current,
         { opacity: 0, scale: 0 },
@@ -268,19 +293,19 @@ export default function ScrollAnimation() {
         }
       );
 
-      // Step 5: SOLD badge pulse glow effect
+      // Step 7: Green glow pulse on SOLD
       gsap.fromTo(
         soldRef.current,
         { boxShadow: "0 0 0px rgba(32, 164, 114, 0)" },
         {
-          boxShadow: "0 0 30px rgba(32, 164, 114, 0.6)",
+          boxShadow: "0 0 40px rgba(32, 164, 114, 0.7)",
           immediateRender: false,
           scrollTrigger: pct(84, 88),
         }
       );
       gsap.fromTo(
         soldRef.current,
-        { boxShadow: "0 0 30px rgba(32, 164, 114, 0.6)" },
+        { boxShadow: "0 0 40px rgba(32, 164, 114, 0.7)" },
         {
           boxShadow: "0 0 0px rgba(32, 164, 114, 0)",
           immediateRender: false,
@@ -699,10 +724,23 @@ export default function ScrollAnimation() {
                     SOLD ✓
                   </div>
 
+                  {/* Impact flash — white burst when document hits badge */}
+                  <div
+                    ref={flashRef}
+                    className="absolute top-4 right-4 z-30 w-20 h-20 rounded-full"
+                    style={{
+                      background: "radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 40%, rgba(32,164,114,0.2) 70%, transparent 100%)",
+                      opacity: 0,
+                      filter: "blur(8px)",
+                      transform: "translate(20%, -20%)",
+                      pointerEvents: "none",
+                    }}
+                  />
+
                   {/* Mini lien release document — slides in from left */}
                   <div
                     ref={miniDocRef}
-                    className="absolute -left-12 bottom-0 z-20"
+                    className="absolute -left-14 bottom-2 z-20"
                     style={{ opacity: 0 }}
                   >
                     <div className="w-20 h-28 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col items-center justify-center p-2">
