@@ -17,12 +17,16 @@ export default function PartnerGrid() {
     if (!gridWrapper || !grid || !whiteOverlay) return;
 
     const ctx = gsap.context(() => {
-      // Tween 1: Zoom
+      // Tween 1: Zoom with slight 3D tilt
       gsap.fromTo(
         grid,
-        { scale: 1 },
+        {
+          scale: 1,
+          rotateX: 8,
+        },
         {
           scale: 20,
+          rotateX: 0,
           ease: "none",
           scrollTrigger: {
             trigger: gridWrapper,
@@ -41,8 +45,8 @@ export default function PartnerGrid() {
           opacity: 1,
           scrollTrigger: {
             trigger: gridWrapper,
-            start: "70% top",
-            end: "85% top",
+            start: "75% top",
+            end: "95% top",
             scrub: 1,
           },
         }
@@ -141,96 +145,74 @@ export default function PartnerGrid() {
         </div>
       </div>
 
-      {/* PART 2: Grid + Zoom — sticky with scroll animation */}
-      <div ref={gridWrapperRef} className="h-[180vh] lg:h-[300vh]">
+      {/* PART 2: Carpet grid zoom — CSS 3D perspective */}
+      <div ref={gridWrapperRef} className="hidden lg:block h-[300vh]">
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
-          style={{ background: "#1e1b4b" }}
+          style={{
+            background: "#1e1b4b",
+            perspective: "1000px",
+            perspectiveOrigin: "50% 40%",
+          }}
         >
-          {/* Masonry grid */}
+          {/* 3D grid plane */}
           <div
             ref={gridRef}
             style={{
               position: "absolute",
               inset: 0,
-              display: "flex",
+              transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
+              transformOrigin: "48% 65%",
+              willChange: "transform",
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
               gap: 6,
               padding: 6,
               background: "#1e1b4b",
-              transformOrigin: "55% 75%",
-              willChange: "transform",
             }}
           >
-            {/* Column 1 */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 0,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 28%" }} />
-              <div style={{ background: "white", flex: "0 0 38%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-            {/* Column 2 */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 60,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 18%" }} />
-              <div style={{ background: "white", flex: "0 0 42%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-            {/* Column 3 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 120,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 32%" }} />
-              <div style={{ background: "white", flex: "0 0 28%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-            {/* Column 4 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 180,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 22%" }} />
-              <div style={{ background: "white", flex: "0 0 45%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
-            {/* Column 5 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 6,
-                paddingTop: 240,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 35%" }} />
-              <div style={{ background: "white", flex: "0 0 22%" }} />
-              <div style={{ background: "white", flex: 1 }} />
-            </div>
+            {/* Row 1 */}
+            <GridCell h={120} />
+            <GridCell h={180} label="CHASE" />
+            <GridCell h={150} label="ALLY FINANCIAL" />
+            <GridCell h={120} />
+            <GridCell h={160} label="WELLS FARGO" />
+            {/* Row 2 */}
+            <GridCell h={180} />
+            <GridCell h={120} label="BANK OF AMERICA" />
+            <GridCell h={160} />
+            <GridCell h={200} label="CAPITAL ONE" />
+            <GridCell h={140} />
+            {/* Row 3 */}
+            <GridCell h={140} label="US BANK" />
+            <GridCell h={200} />
+            <GridCell h={120} label="TD BANK" />
+            <GridCell h={150} />
+            <GridCell h={180} label="CITIZENS" />
+            {/* Row 4 */}
+            <GridCell h={160} />
+            <GridCell h={140} label="PNC" />
+            <GridCell h={180} />
+            <GridCell h={120} label="NAVY FEDERAL" />
+            <GridCell h={160} />
+            {/* Row 5 — phantom */}
+            <GridCell h={180} />
+            <GridCell h={150} />
+            <GridCell h={140} />
+            <GridCell h={170} />
+            <GridCell h={130} />
+            {/* Row 6 — phantom */}
+            <GridCell h={140} />
+            <GridCell h={170} />
+            <GridCell h={160} />
+            <GridCell h={140} />
+            <GridCell h={180} />
+            {/* Row 7 — phantom */}
+            <GridCell h={160} />
+            <GridCell h={130} />
+            <GridCell h={180} />
+            <GridCell h={150} />
+            <GridCell h={140} />
           </div>
 
           {/* White overlay */}
@@ -246,6 +228,43 @@ export default function PartnerGrid() {
           />
         </div>
       </div>
+
+      {/* Mobile: simple navy to white curve */}
+      <div className="lg:hidden" style={{ background: "white" }}>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#1e1b4b" />
+        </svg>
+      </div>
     </section>
+  );
+}
+
+// ── Grid cell subcomponent ─────────────────────────────────────────
+function GridCell({ h, label }: { h: number; label?: string }) {
+  return (
+    <div
+      style={{
+        background: "white",
+        borderRadius: 16,
+        minHeight: h,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {label && (
+        <span
+          style={{
+            color: "#c4c4c4",
+            fontSize: 13,
+            fontWeight: 700,
+            letterSpacing: 2,
+            textAlign: "center",
+          }}
+        >
+          {label}
+        </span>
+      )}
+    </div>
   );
 }
