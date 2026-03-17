@@ -41,8 +41,8 @@ export default function PartnerGrid() {
           opacity: 1,
           scrollTrigger: {
             trigger: gridWrapper,
-            start: "70% top",
-            end: "85% top",
+            start: "65% top",
+            end: "80% top",
             scrub: 1,
           },
         }
@@ -142,7 +142,7 @@ export default function PartnerGrid() {
       </div>
 
       {/* PART 2: Grid + Zoom — sticky with scroll animation */}
-      <div ref={gridWrapperRef} className="h-[180vh] lg:h-[300vh]">
+      <div ref={gridWrapperRef} className="hidden lg:block h-[300vh]">
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{ background: "#1e1b4b" }}
@@ -154,10 +154,10 @@ export default function PartnerGrid() {
               position: "absolute",
               inset: 0,
               display: "flex",
-              gap: 6,
-              padding: 6,
+              gap: 8,
+              padding: 8,
               background: "#1e1b4b",
-              transformOrigin: "55% 75%",
+              transformOrigin: "50% 60%",
               willChange: "transform",
             }}
           >
@@ -167,13 +167,13 @@ export default function PartnerGrid() {
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
-                gap: 6,
+                gap: 8,
                 paddingTop: 0,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 28%" }} />
-              <div style={{ background: "white", flex: "0 0 38%" }} />
-              <div style={{ background: "white", flex: 1 }} />
+              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 12 }} />
+              <div style={{ background: "white", flex: "0 0 38%", borderRadius: 12 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
             </div>
             {/* Column 2 */}
             <div
@@ -181,13 +181,15 @@ export default function PartnerGrid() {
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
-                gap: 6,
+                gap: 8,
                 paddingTop: 60,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 18%" }} />
-              <div style={{ background: "white", flex: "0 0 42%" }} />
-              <div style={{ background: "white", flex: 1 }} />
+              <div style={{ background: "white", flex: "0 0 18%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CHASE</span>
+              </div>
+              <div style={{ background: "white", flex: "0 0 42%", borderRadius: 12 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
             </div>
             {/* Column 3 */}
             <div
@@ -195,13 +197,15 @@ export default function PartnerGrid() {
               style={{
                 flex: 1,
                 flexDirection: "column",
-                gap: 6,
+                gap: 8,
                 paddingTop: 120,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 32%" }} />
-              <div style={{ background: "white", flex: "0 0 28%" }} />
-              <div style={{ background: "white", flex: 1 }} />
+              <div style={{ background: "white", flex: "0 0 32%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>ALLY FINANCIAL</span>
+              </div>
+              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 12 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
             </div>
             {/* Column 4 */}
             <div
@@ -209,13 +213,15 @@ export default function PartnerGrid() {
               style={{
                 flex: 1,
                 flexDirection: "column",
-                gap: 6,
+                gap: 8,
                 paddingTop: 180,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 22%" }} />
-              <div style={{ background: "white", flex: "0 0 45%" }} />
-              <div style={{ background: "white", flex: 1 }} />
+              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 12 }} />
+              <div style={{ background: "white", flex: "0 0 45%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CAPITAL ONE</span>
+              </div>
+              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
             </div>
             {/* Column 5 */}
             <div
@@ -223,13 +229,13 @@ export default function PartnerGrid() {
               style={{
                 flex: 1,
                 flexDirection: "column",
-                gap: 6,
+                gap: 8,
                 paddingTop: 240,
               }}
             >
-              <div style={{ background: "white", flex: "0 0 35%" }} />
-              <div style={{ background: "white", flex: "0 0 22%" }} />
-              <div style={{ background: "white", flex: 1 }} />
+              <div style={{ background: "white", flex: "0 0 35%", borderRadius: 12 }} />
+              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 12 }} />
+              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
             </div>
           </div>
 
@@ -245,6 +251,13 @@ export default function PartnerGrid() {
             }}
           />
         </div>
+      </div>
+
+      {/* Mobile: simple navy to white curve */}
+      <div className="lg:hidden" style={{ background: "white" }}>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#1e1b4b" />
+        </svg>
       </div>
     </section>
   );
