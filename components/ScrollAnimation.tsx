@@ -248,10 +248,10 @@ export default function ScrollAnimation() {
         {/* ══════ PHASE 6: TESTIMONIALS ══════ */}
         <div
           ref={phase6Ref}
-          className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none"
+          className="fixed inset-0 z-[200] flex items-start justify-center pointer-events-none overflow-hidden"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-10 w-full">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="grid lg:grid-cols-2 gap-16 items-start" style={{ paddingTop: "12vh" }}>
 
               {/* ===== LEFT SIDE: Stacked content blocks ===== */}
               <div className="relative" style={{ minHeight: 400 }}>
