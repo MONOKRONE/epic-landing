@@ -392,7 +392,7 @@ export default function ScrollAnimation() {
               </div>
 
               {/* ===== RIGHT SIDE: Card stack + video ===== */}
-              <div className="flex flex-col items-center justify-center">
+              <div className="flex flex-col items-center justify-center mt-8 lg:mt-0">
                 {/* Card container — fixed height, cards stacked absolutely */}
                 <div className="relative w-[280px] lg:w-[360px] h-[340px] lg:h-[440px] mx-auto">
 
