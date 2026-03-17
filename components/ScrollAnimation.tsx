@@ -688,10 +688,13 @@ export default function ScrollAnimation() {
             className="relative w-[90vw] max-w-[1000px] aspect-video rounded-2xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <img
-              src="/png/static_img_partners_partners-video-3.png"
-              alt="Customer spotlight"
-              className="w-full h-full object-cover"
+            <iframe
+              src="https://www.youtube.com/embed/HUMRGEmqXLI?autoplay=1&rel=0"
+              title="Epic Customer Spotlight"
+              className="w-full h-full"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
             />
             <button
               className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
