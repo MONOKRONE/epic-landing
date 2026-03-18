@@ -128,10 +128,10 @@ export default function PartnerGrid() {
           >
             {[
               { offset: 0, labels: ["CHASE", "", "", "", "", "", "", "", ""] },
-              { offset: 80, labels: ["", "ALLY FINANCIAL", "", "", "", "", "", "", ""] },
-              { offset: 160, labels: ["WELLS FARGO", "", "CAPITAL ONE", "", "", "", "", "", ""] },
-              { offset: 240, labels: ["", "", "", "TRUIST", "", "", "", "", ""] },
-              { offset: 320, labels: ["", "US BANK", "", "", "TD BANK", "", "", "", ""] },
+              { offset: 180, labels: ["", "ALLY FINANCIAL", "", "", "", "", "", "", ""] },
+              { offset: 360, labels: ["WELLS FARGO", "", "CAPITAL ONE", "", "", "", "", "", ""] },
+              { offset: 540, labels: ["", "", "", "TRUIST", "", "", "", "", ""] },
+              { offset: 720, labels: ["", "US BANK", "", "", "TD BANK", "", "", "", ""] },
             ].map((col, ci) => (
               <div key={ci} style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10, paddingTop: col.offset }}>
                 {col.labels.map((label, ri) => (
