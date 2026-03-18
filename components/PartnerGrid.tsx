@@ -144,7 +144,7 @@ export default function PartnerGrid() {
       </div>
 
       {/* PART 2: Single grid with 3D tilt zoom */}
-      <div ref={gridWrapperRef} className="hidden lg:block h-[300vh]">
+      <div ref={gridWrapperRef} className="hidden lg:block h-[300vh] overflow-hidden">
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{
