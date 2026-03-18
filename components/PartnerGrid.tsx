@@ -19,26 +19,24 @@ export default function PartnerGrid() {
     const whiteOverlay = whiteOverlayRef.current;
     if (!gridWrapper || !grid || !whiteOverlay) return;
 
-    // Set initial row transforms
+    // Set initial row transforms — gentle power curve
     const bendObj = { intensity: 1 };
     const updateRows = () => {
       rowRefs.current.forEach((row, i) => {
         if (!row) return;
-        const rx = i * i * 3 * bendObj.intensity;
-        const tz = i * i * 15 * bendObj.intensity;
-        row.style.transform = `rotateX(${rx}deg) translateZ(${tz}px)`;
+        const rx = Math.pow(i, 1.8) * 2.5 * bendObj.intensity;
+        row.style.transform = `rotateX(${rx}deg)`;
       });
     };
     updateRows();
 
     const ctx = gsap.context(() => {
-      // Tween 1: Overall grid translateZ (zoom toward camera)
+      // Tween 1: Grid scrolls upward (no translateZ, no scale)
       gsap.fromTo(
         grid,
-        { z: 0, scale: 1 },
+        { y: "0%" },
         {
-          z: 600,
-          scale: 3,
+          y: "-65%",
           ease: "none",
           scrollTrigger: {
             trigger: gridWrapper,
@@ -51,7 +49,7 @@ export default function PartnerGrid() {
 
       // Tween 2: Bend intensity increases on scroll
       gsap.to(bendObj, {
-        intensity: 3.5,
+        intensity: 2.5,
         ease: "none",
         scrollTrigger: {
           trigger: gridWrapper,
@@ -70,7 +68,7 @@ export default function PartnerGrid() {
           opacity: 1,
           scrollTrigger: {
             trigger: gridWrapper,
-            start: "75% top",
+            start: "78% top",
             end: "95% top",
             scrub: 1,
           },
@@ -176,8 +174,8 @@ export default function PartnerGrid() {
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{
             background: "#1e1b4b",
-            perspective: "1000px",
-            perspectiveOrigin: "50% 30%",
+            perspective: "1200px",
+            perspectiveOrigin: "50% 70%",
           }}
         >
           {/* Grid container — translateZ + scale driven by scroll */}
@@ -191,7 +189,7 @@ export default function PartnerGrid() {
               willChange: "transform",
               display: "flex",
               flexDirection: "column",
-              gap: 8,
+              gap: 4,
               padding: "20px 0",
               background: "#1e1b4b",
             }}
@@ -285,15 +283,15 @@ const GridRow = forwardRef<HTMLDivElement, { idx: number; children: ReactNode }>
       ref={ref}
       style={{
         display: "flex",
-        gap: 8,
-        width: "120%",
-        marginLeft: "-10%",
+        gap: 4,
+        width: "140%",
+        marginLeft: "-20%",
         padding: "0 8px",
         transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
         transformOrigin: "50% 0%",
         willChange: "transform",
         // Initial bend set by useEffect
-        transform: `rotateX(${idx * idx * 3}deg) translateZ(${idx * idx * 15}px)`,
+        transform: `rotateX(${Math.pow(idx, 1.8) * 2.5}deg)`,
       }}
     >
       {children}
@@ -308,7 +306,7 @@ function GridCell({ h, label }: { h: number; label?: string }) {
     <div
       style={{
         background: "white",
-        borderRadius: 16,
+        borderRadius: 24,
         minHeight: h,
         flex: 1,
         display: "flex",
