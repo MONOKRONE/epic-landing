@@ -166,7 +166,7 @@ export default function PartnerGrid() {
               willChange: "transform",
               display: "grid",
               gridTemplateColumns: "repeat(5, 1fr)",
-              gridAutoRows: 320,
+              gridAutoRows: 550,
               gap: 10,
               padding: 10,
               background: "#2A206A",
