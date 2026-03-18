@@ -173,7 +173,7 @@ export default function PartnerGrid() {
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{
-            background: "#1e1b4b",
+            background: "#2A206A",
             perspective: "1200px",
             perspectiveOrigin: "50% 70%",
           }}
@@ -189,66 +189,80 @@ export default function PartnerGrid() {
               willChange: "transform",
               display: "flex",
               flexDirection: "column",
-              gap: 4,
+              gap: 3,
               padding: "20px 0",
-              background: "#1e1b4b",
+              background: "#2A206A",
             }}
           >
-            {/* Row 0 */}
+            {/* Row 0 — short */}
             <GridRow ref={(el) => { rowRefs.current[0] = el; }} idx={0}>
-              <GridCell h={120} />
-              <GridCell h={180} label="CHASE" />
-              <GridCell h={150} label="ALLY FINANCIAL" />
-              <GridCell h={120} />
-              <GridCell h={160} label="WELLS FARGO" />
-            </GridRow>
-            {/* Row 1 */}
-            <GridRow ref={(el) => { rowRefs.current[1] = el; }} idx={1}>
-              <GridCell h={180} />
-              <GridCell h={120} label="BANK OF AMERICA" />
-              <GridCell h={160} />
-              <GridCell h={200} label="CAPITAL ONE" />
-              <GridCell h={140} />
-            </GridRow>
-            {/* Row 2 */}
-            <GridRow ref={(el) => { rowRefs.current[2] = el; }} idx={2}>
-              <GridCell h={140} label="US BANK" />
-              <GridCell h={200} />
-              <GridCell h={120} label="TD BANK" />
-              <GridCell h={150} />
-              <GridCell h={180} label="CITIZENS" />
-            </GridRow>
-            {/* Row 3 */}
-            <GridRow ref={(el) => { rowRefs.current[3] = el; }} idx={3}>
-              <GridCell h={160} />
-              <GridCell h={140} label="PNC" />
-              <GridCell h={180} />
-              <GridCell h={120} label="NAVY FEDERAL" />
-              <GridCell h={160} />
-            </GridRow>
-            {/* Row 4 — phantom */}
-            <GridRow ref={(el) => { rowRefs.current[4] = el; }} idx={4}>
-              <GridCell h={180} />
-              <GridCell h={150} />
-              <GridCell h={140} />
-              <GridCell h={170} />
               <GridCell h={130} />
+              <GridCell h={150} label="CHASE" />
+              <GridCell h={130} />
+              <GridCell h={160} label="ALLY FINANCIAL" />
+              <GridCell h={130} />
+              <GridCell h={145} label="WELLS FARGO" />
+              <GridCell h={130} />
+            </GridRow>
+            {/* Row 1 — tall */}
+            <GridRow ref={(el) => { rowRefs.current[1] = el; }} idx={1}>
+              <GridCell h={200} label="BANK OF AMERICA" />
+              <GridCell h={220} />
+              <GridCell h={200} label="CAPITAL ONE" />
+              <GridCell h={230} />
+              <GridCell h={200} />
+              <GridCell h={210} label="TRUIST" />
+              <GridCell h={200} />
+            </GridRow>
+            {/* Row 2 — medium */}
+            <GridRow ref={(el) => { rowRefs.current[2] = el; }} idx={2}>
+              <GridCell h={160} />
+              <GridCell h={175} label="US BANK" />
+              <GridCell h={160} />
+              <GridCell h={180} label="TD BANK" />
+              <GridCell h={160} label="CITIZENS" />
+              <GridCell h={170} />
+              <GridCell h={160} />
+            </GridRow>
+            {/* Row 3 — tallest */}
+            <GridRow ref={(el) => { rowRefs.current[3] = el; }} idx={3}>
+              <GridCell h={220} label="PNC" />
+              <GridCell h={240} />
+              <GridCell h={220} />
+              <GridCell h={250} label="NAVY FEDERAL" />
+              <GridCell h={220} />
+              <GridCell h={235} label="FIFTH THIRD" />
+              <GridCell h={220} />
+            </GridRow>
+            {/* Row 4 — short */}
+            <GridRow ref={(el) => { rowRefs.current[4] = el; }} idx={4}>
+              <GridCell h={140} />
+              <GridCell h={155} />
+              <GridCell h={140} />
+              <GridCell h={150} />
+              <GridCell h={140} />
+              <GridCell h={145} />
+              <GridCell h={140} />
             </GridRow>
             {/* Row 5 — phantom */}
             <GridRow ref={(el) => { rowRefs.current[5] = el; }} idx={5}>
-              <GridCell h={140} />
-              <GridCell h={170} />
-              <GridCell h={160} />
-              <GridCell h={140} />
+              <GridCell h={180} />
+              <GridCell h={190} />
+              <GridCell h={180} />
+              <GridCell h={185} />
+              <GridCell h={180} />
+              <GridCell h={175} />
               <GridCell h={180} />
             </GridRow>
             {/* Row 6 — phantom */}
             <GridRow ref={(el) => { rowRefs.current[6] = el; }} idx={6}>
               <GridCell h={160} />
-              <GridCell h={130} />
-              <GridCell h={180} />
-              <GridCell h={150} />
-              <GridCell h={140} />
+              <GridCell h={170} />
+              <GridCell h={160} />
+              <GridCell h={165} />
+              <GridCell h={160} />
+              <GridCell h={155} />
+              <GridCell h={160} />
             </GridRow>
           </div>
 
@@ -283,9 +297,9 @@ const GridRow = forwardRef<HTMLDivElement, { idx: number; children: ReactNode }>
       ref={ref}
       style={{
         display: "flex",
-        gap: 4,
-        width: "140%",
-        marginLeft: "-20%",
+        gap: 3,
+        width: "160%",
+        marginLeft: "-30%",
         padding: "0 8px",
         transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
         transformOrigin: "50% 0%",
@@ -305,7 +319,7 @@ function GridCell({ h, label }: { h: number; label?: string }) {
   return (
     <div
       style={{
-        background: "white",
+        background: "#FAFAFA",
         borderRadius: 24,
         minHeight: h,
         flex: 1,
@@ -317,11 +331,12 @@ function GridCell({ h, label }: { h: number; label?: string }) {
       {label && (
         <span
           style={{
-            color: "#c4c4c4",
+            color: "#C4C0D4",
             fontSize: 13,
-            fontWeight: 700,
-            letterSpacing: 2,
+            fontWeight: 500,
+            letterSpacing: 1.5,
             textAlign: "center",
+            textTransform: "uppercase" as const,
           }}
         >
           {label}
