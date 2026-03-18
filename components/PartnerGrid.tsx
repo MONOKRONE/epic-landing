@@ -1,17 +1,14 @@
 "use client";
 
-import { useRef, useEffect, forwardRef, type ReactNode } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
-
-const NUM_ROWS = 7;
 
 export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const whiteOverlayRef = useRef<HTMLDivElement>(null);
-  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
@@ -19,24 +16,15 @@ export default function PartnerGrid() {
     const whiteOverlay = whiteOverlayRef.current;
     if (!gridWrapper || !grid || !whiteOverlay) return;
 
-    // Set initial row transforms — gentle power curve
-    const bendObj = { intensity: 1 };
-    const updateRows = () => {
-      rowRefs.current.forEach((row, i) => {
-        if (!row) return;
-        const rx = Math.pow(i, 1.8) * 2.5 * bendObj.intensity;
-        row.style.transform = `rotateX(${rx}deg)`;
-      });
-    };
-    updateRows();
-
     const ctx = gsap.context(() => {
-      // Tween 1: Grid scrolls upward (no translateZ, no scale)
+      // Tween 1: Tilt + scroll + push toward camera
       gsap.fromTo(
         grid,
-        { y: "0%" },
+        { rotateX: 0, y: "10%", z: 0 },
         {
-          y: "-65%",
+          rotateX: 35,
+          y: "-80%",
+          z: 400,
           ease: "none",
           scrollTrigger: {
             trigger: gridWrapper,
@@ -47,20 +35,7 @@ export default function PartnerGrid() {
         }
       );
 
-      // Tween 2: Bend intensity increases on scroll
-      gsap.to(bendObj, {
-        intensity: 2.5,
-        ease: "none",
-        scrollTrigger: {
-          trigger: gridWrapper,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
-          onUpdate: updateRows,
-        },
-      });
-
-      // Tween 3: White overlay
+      // Tween 2: White overlay
       gsap.fromTo(
         whiteOverlay,
         { opacity: 0 },
@@ -168,102 +143,89 @@ export default function PartnerGrid() {
         </div>
       </div>
 
-      {/* PART 2: Carpet grid zoom — per-row 3D bend */}
+      {/* PART 2: Single grid with 3D tilt zoom */}
       <div ref={gridWrapperRef} className="hidden lg:block h-[300vh]">
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{
             background: "#2A206A",
             perspective: "1200px",
-            perspectiveOrigin: "50% 70%",
+            perspectiveOrigin: "50% 30%",
           }}
         >
-          {/* Grid container — translateZ + scale driven by scroll */}
+          {/* Single CSS Grid — continuous gap lines */}
           <div
             ref={gridRef}
             style={{
               position: "absolute",
-              inset: 0,
+              top: 0,
+              left: "-15%",
+              width: "130%",
               transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
-              transformOrigin: "50% 0%",
+              transformOrigin: "50% 50%",
               willChange: "transform",
-              display: "flex",
-              flexDirection: "column",
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gridAutoRows: 320,
               gap: 6,
-              padding: "20px 0",
+              padding: 6,
               background: "#2A206A",
             }}
           >
-            {/* Row 0 — 240px */}
-            <GridRow ref={(el) => { rowRefs.current[0] = el; }} idx={0}>
-              <GridCell h={240} />
-              <GridCell h={240} label="CHASE" />
-              <GridCell h={240} />
-              <GridCell h={240} label="ALLY FINANCIAL" />
-              <GridCell h={240} />
-              <GridCell h={240} label="WELLS FARGO" />
-              <GridCell h={240} />
-            </GridRow>
-            {/* Row 1 — 320px */}
-            <GridRow ref={(el) => { rowRefs.current[1] = el; }} idx={1}>
-              <GridCell h={320} label="BANK OF AMERICA" />
-              <GridCell h={320} />
-              <GridCell h={320} label="CAPITAL ONE" />
-              <GridCell h={320} />
-              <GridCell h={320} />
-              <GridCell h={320} label="TRUIST" />
-              <GridCell h={320} />
-            </GridRow>
-            {/* Row 2 — 260px */}
-            <GridRow ref={(el) => { rowRefs.current[2] = el; }} idx={2}>
-              <GridCell h={260} />
-              <GridCell h={260} label="US BANK" />
-              <GridCell h={260} />
-              <GridCell h={260} label="TD BANK" />
-              <GridCell h={260} label="CITIZENS" />
-              <GridCell h={260} />
-              <GridCell h={260} />
-            </GridRow>
-            {/* Row 3 — 340px */}
-            <GridRow ref={(el) => { rowRefs.current[3] = el; }} idx={3}>
-              <GridCell h={340} label="PNC" />
-              <GridCell h={340} />
-              <GridCell h={340} />
-              <GridCell h={340} label="NAVY FEDERAL" />
-              <GridCell h={340} />
-              <GridCell h={340} label="FIFTH THIRD" />
-              <GridCell h={340} />
-            </GridRow>
-            {/* Row 4 — 280px */}
-            <GridRow ref={(el) => { rowRefs.current[4] = el; }} idx={4}>
-              <GridCell h={280} />
-              <GridCell h={280} />
-              <GridCell h={280} />
-              <GridCell h={280} />
-              <GridCell h={280} />
-              <GridCell h={280} />
-              <GridCell h={280} />
-            </GridRow>
-            {/* Row 5 — phantom 300px */}
-            <GridRow ref={(el) => { rowRefs.current[5] = el; }} idx={5}>
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-            </GridRow>
-            {/* Row 6 — phantom 300px */}
-            <GridRow ref={(el) => { rowRefs.current[6] = el; }} idx={6}>
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-              <GridCell h={300} />
-            </GridRow>
+            {/* Row 1 */}
+            <GC />
+            <GC span label="CHASE" />
+            <GC />
+            <GC />
+            <GC label="ALLY FINANCIAL" />
+            {/* Row 2 */}
+            <GC span label="WELLS FARGO" />
+            <GC />
+            <GC label="BANK OF AMERICA" />
+            <GC span />
+            <GC />
+            {/* Row 3 */}
+            <GC />
+            <GC />
+            <GC span label="CAPITAL ONE" />
+            <GC />
+            <GC label="TRUIST" />
+            {/* Row 4 */}
+            <GC label="US BANK" />
+            <GC span />
+            <GC />
+            <GC label="TD BANK" />
+            <GC span />
+            {/* Row 5 */}
+            <GC span label="CITIZENS" />
+            <GC />
+            <GC label="PNC" />
+            <GC />
+            <GC label="NAVY FEDERAL" />
+            {/* Row 6 */}
+            <GC />
+            <GC label="FIFTH THIRD" />
+            <GC span />
+            <GC />
+            <GC />
+            {/* Row 7 — phantom */}
+            <GC />
+            <GC />
+            <GC />
+            <GC span />
+            <GC />
+            {/* Row 8 — phantom */}
+            <GC span />
+            <GC />
+            <GC />
+            <GC />
+            <GC />
+            {/* Row 9 — phantom */}
+            <GC />
+            <GC />
+            <GC />
+            <GC />
+            <GC />
           </div>
 
           {/* White overlay */}
@@ -290,42 +252,17 @@ export default function PartnerGrid() {
   );
 }
 
-// ── Grid row — each row bends independently ────────────────────────
-const GridRow = forwardRef<HTMLDivElement, { idx: number; children: ReactNode }>(
-  ({ idx, children }, ref) => (
-    <div
-      ref={ref}
-      style={{
-        display: "flex",
-        gap: 6,
-        width: "160%",
-        marginLeft: "-30%",
-        padding: "0 8px",
-        transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
-        transformOrigin: "50% 0%",
-        willChange: "transform",
-        // Initial bend set by useEffect
-        transform: `rotateX(${Math.pow(idx, 1.8) * 2.5}deg)`,
-      }}
-    >
-      {children}
-    </div>
-  )
-);
-GridRow.displayName = "GridRow";
-
 // ── Grid cell ──────────────────────────────────────────────────────
-function GridCell({ h, label }: { h: number; label?: string }) {
+function GC({ label, span }: { label?: string; span?: boolean } = {}) {
   return (
     <div
       style={{
         background: "#FAFAFA",
         borderRadius: 24,
-        minHeight: h,
-        flex: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        ...(span ? { gridRow: "span 2" } : {}),
       }}
     >
       {label && (
