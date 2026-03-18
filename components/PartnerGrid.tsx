@@ -56,72 +56,30 @@ export default function PartnerGrid() {
 
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
-      {/* PART 1: Stats + Grid preview */}
-      <div style={{ background: "#2A206A", position: "relative", overflow: "hidden" }} className="py-16 lg:py-[120px]">
+      {/* PART 1: Stats — centered, no cards */}
+      <div style={{ background: "#2A206A", position: "relative" }} className="py-16 lg:py-[120px]">
+        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }} className="px-4 lg:px-10">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8 lg:mb-12">
+            The results speak for themselves
+          </h2>
 
-        {/* Grid cells as staircase background on the left */}
-        <div className="hidden lg:block" style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "55%",
-          height: "100%",
-          display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
-          gap: 10,
-          padding: 10,
-          paddingRight: 0,
-        }}>
-          {/* Column 1: offset 0 */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 0 }}>
-            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
-            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
-          </div>
-          {/* Column 2: offset 80px */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 80 }}>
-            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
-            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
-          </div>
-          {/* Column 3: offset 160px */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 160 }}>
-            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
-            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
-          </div>
-          {/* Column 4: offset 240px */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 240 }}>
-            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
-          </div>
-          {/* Column 5: offset 320px */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 320 }}>
-            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
-          </div>
-        </div>
-
-        {/* Stats content — positioned on the right, on top of grid */}
-        <div style={{ position: "relative", zIndex: 2, maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
-          <div className="lg:ml-auto lg:w-1/2 lg:pl-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8 lg:mb-12">
-              The results speak for themselves
-            </h2>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-              <div>
-                <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>$290B+</p>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
-              </div>
-              <div>
-                <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>99.99%</p>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
-              </div>
-              <div>
-                <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>2,500+</p>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
-              </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 64, flexWrap: "wrap" }}>
+            <div>
+              <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>$290B+</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
             </div>
-
-            <div style={{ marginTop: 40 }}>
-              <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 64, opacity: 1.0 }} />
+            <div>
+              <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>99.99%</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
             </div>
+            <div>
+              <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>2,500+</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 40 }}>
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 64, opacity: 1.0, margin: "0 auto" }} />
           </div>
         </div>
       </div>
@@ -136,7 +94,7 @@ export default function PartnerGrid() {
             perspectiveOrigin: "50% 20%",
           }}
         >
-          {/* Single CSS Grid — continuous gap lines */}
+          {/* Column-based staircase grid */}
           <div
             ref={gridRef}
             style={{
@@ -147,68 +105,51 @@ export default function PartnerGrid() {
               transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
               transformOrigin: "50% 50%",
               willChange: "transform",
-              display: "grid",
-              gridTemplateColumns: "repeat(5, 1fr)",
-              gridAutoRows: 550,
+              display: "flex",
               gap: 10,
               padding: 10,
+              alignItems: "flex-start",
               background: "#2A206A",
             }}
           >
-            {/* Row 1 */}
-            <GC />
-            <GC label="CHASE" />
-            <GC />
-            <GC />
-            <GC label="ALLY FINANCIAL" />
-            {/* Row 2 */}
-            <GC label="WELLS FARGO" />
-            <GC />
-            <GC label="BANK OF AMERICA" />
-            <GC />
-            <GC />
-            {/* Row 3 */}
-            <GC />
-            <GC />
-            <GC label="CAPITAL ONE" />
-            <GC />
-            <GC label="TRUIST" />
-            {/* Row 4 */}
-            <GC label="US BANK" />
-            <GC />
-            <GC />
-            <GC label="TD BANK" />
-            <GC />
-            {/* Row 5 */}
-            <GC label="CITIZENS" />
-            <GC />
-            <GC label="PNC" />
-            <GC />
-            <GC label="NAVY FEDERAL" />
-            {/* Row 6 */}
-            <GC />
-            <GC label="FIFTH THIRD" />
-            <GC />
-            <GC />
-            <GC />
-            {/* Row 7 — phantom */}
-            <GC />
-            <GC />
-            <GC />
-            <GC />
-            <GC />
-            {/* Row 8 — phantom */}
-            <GC />
-            <GC />
-            <GC />
-            <GC />
-            <GC />
-            {/* Row 9 — phantom */}
-            <GC />
-            <GC />
-            <GC />
-            <GC />
-            <GC />
+            {[
+              { offset: 0, labels: ["CHASE", "", "", "", "", "", "", "", ""] },
+              { offset: 80, labels: ["", "ALLY FINANCIAL", "", "", "", "", "", "", ""] },
+              { offset: 160, labels: ["WELLS FARGO", "", "CAPITAL ONE", "", "", "", "", "", ""] },
+              { offset: 240, labels: ["", "", "", "TRUIST", "", "", "", "", ""] },
+              { offset: 320, labels: ["", "US BANK", "", "", "TD BANK", "", "", "", ""] },
+            ].map((col, ci) => (
+              <div key={ci} style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10, paddingTop: col.offset }}>
+                {col.labels.map((label, ri) => (
+                  <div
+                    key={ri}
+                    style={{
+                      background: "#FAFAFA",
+                      borderRadius: 20,
+                      height: 550,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {label && (
+                      <span
+                        style={{
+                          color: "#C4C0D4",
+                          fontSize: 13,
+                          fontWeight: 500,
+                          letterSpacing: 1.5,
+                          textAlign: "center",
+                          textTransform: "uppercase" as const,
+                        }}
+                      >
+                        {label}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
 
           {/* White overlay */}
