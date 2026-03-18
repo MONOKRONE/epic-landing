@@ -62,44 +62,43 @@ export default function PartnerGrid() {
           <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
           >
-            {/* Left: Staircase partner cards */}
-            <div style={{ position: "relative", height: 500, minWidth: 0 }}>
-              {[
-                { label: "CHASE", top: 0, left: 0 },
-                { label: "ALLY FINANCIAL", top: 70, left: 60 },
-                { label: "WELLS FARGO", top: 140, left: 120 },
-                { label: "CAPITAL ONE", top: 210, left: 180 },
-                { label: "TRUIST", top: 280, left: 240 },
-              ].map((card, i) => (
-                <div
-                  key={i}
-                  style={{
-                    position: "absolute",
-                    top: card.top,
-                    left: card.left,
-                    width: 280,
-                    height: 160,
-                    background: "white",
-                    borderRadius: 16,
-                    boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <span
+            {/* Left: Staircase partner cards — columns side by side, each offset lower */}
+            <div style={{ position: "relative", height: 520, minWidth: 0, overflow: "hidden" }}>
+              <div style={{ display: "flex", gap: 12, position: "absolute", top: 0, left: 0, right: 0 }}>
+                {[
+                  { label: "CHASE", offsetY: 0 },
+                  { label: "ALLY FINANCIAL", offsetY: 60 },
+                  { label: "WELLS FARGO", offsetY: 120 },
+                  { label: "CAPITAL ONE", offsetY: 180 },
+                ].map((card, i) => (
+                  <div
+                    key={i}
                     style={{
-                      color: "#1e1b4b",
-                      fontSize: 15,
-                      fontWeight: 600,
-                      letterSpacing: 1.2,
-                      textTransform: "uppercase" as const,
+                      flex: 1,
+                      marginTop: card.offsetY,
+                      height: 400,
+                      background: "white",
+                      borderRadius: 16,
+                      boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    {card.label}
-                  </span>
-                </div>
-              ))}
+                    <span
+                      style={{
+                        color: "#C4C0D4",
+                        fontSize: 13,
+                        fontWeight: 500,
+                        letterSpacing: 1.5,
+                        textTransform: "uppercase" as const,
+                      }}
+                    >
+                      {card.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Right: Title + Stats + Awards */}
