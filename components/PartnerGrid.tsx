@@ -57,31 +57,61 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
 
-      {/* PART A: Stats — normal scroll, Marqeta-style layout */}
-      <div style={{ background: "#2A206A" }} className="py-16 lg:py-24">
-        <div style={{ maxWidth: 1200, margin: "0 auto" }} className="px-4 lg:px-10">
+      {/* PART A: Stats + card staircase preview side by side */}
+      <div style={{ background: "#2A206A", position: "relative", overflow: "hidden", minHeight: "100vh" }}>
 
-          {/* Big stat */}
+        {/* Left side: staircase card preview (decorative, not scroll-driven) */}
+        <div className="hidden lg:block" style={{
+          position: "absolute",
+          top: -100,
+          left: -40,
+          width: "55%",
+          bottom: 0,
+          display: "flex",
+          gap: 10,
+          alignItems: "flex-start",
+        }}>
+          {[0, 140, 280, 420].map((offset, i) => (
+            <div key={i} style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              paddingTop: offset,
+              flex: 1,
+            }}>
+              <div style={{ background: "#FAFAFA", borderRadius: 20, height: 550 }} />
+              <div style={{ background: "#FAFAFA", borderRadius: 20, height: 550 }} />
+              <div style={{ background: "#FAFAFA", borderRadius: 20, height: 550 }} />
+            </div>
+          ))}
+        </div>
+
+        {/* Right side: stats content */}
+        <div className="relative z-10 lg:ml-auto lg:w-[42%]" style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          minHeight: "100vh",
+          padding: "80px 60px",
+        }}>
           <div style={{ textAlign: "right", marginBottom: 48 }}>
             <p style={{ fontSize: 80, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>$290B+</p>
             <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>volume processed in 2024</p>
           </div>
 
-          {/* Two stats side by side */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 80, marginBottom: 48 }}>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 64, marginBottom: 48 }}>
             <div style={{ textAlign: "center" }}>
-              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>99.99%</p>
+              <p style={{ fontSize: 48, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>99.99%</p>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>platform uptime in 2024</p>
             </div>
             <div style={{ textAlign: "center" }}>
-              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>2,500+</p>
+              <p style={{ fontSize: 48, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>2,500+</p>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>lender connections nationwide</p>
             </div>
           </div>
 
-          {/* Awards */}
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 24 }}>
-            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 80, opacity: 1.0 }} />
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 80 }} />
           </div>
         </div>
       </div>
