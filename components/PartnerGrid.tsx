@@ -39,7 +39,7 @@ export default function PartnerGrid() {
       uniform float u_time;
 
       const float COLS = 5.0;
-      const float ROWS = 4.0;
+      const float ROWS = 7.0;
 
       float sdRoundedBox(vec2 p, vec2 b, float r) {
         vec2 q = abs(p) - b + r;
@@ -53,7 +53,7 @@ export default function PartnerGrid() {
         float t = u_progress;
 
         // Warp: curtain pull
-        float warpAmt = t * t * 4.0;
+        float warpAmt = t * t * 5.0;
         float yBottom = clamp(0.5 - p.y, 0.0, 1.0);
         float xSpread = 1.0 + warpAmt * yBottom * yBottom;
         vec2 warped;
@@ -61,20 +61,20 @@ export default function PartnerGrid() {
         warped.y = p.y;
 
         // Zoom
-        float zoom = 1.0 + t * t * 10.0;
+        float zoom = 1.0 + t * t * 8.0;
         warped /= zoom;
 
         // Grid coordinates
-        float gridW = aspect * 0.78;
-        float gridH = 0.62;
+        float gridW = aspect * 1.1;
+        float gridH = 1.4;
         vec2 gridUV = vec2(
           (warped.x + gridW * 0.5) / gridW * COLS,
           (warped.y + gridH * 0.5) / gridH * ROWS
         );
 
         vec2 cellUV = fract(gridUV);
-        float gap = mix(0.035, 0.018, t);
-        float cornerR = mix(0.06, 0.005, t);
+        float gap = mix(0.025, 0.012, t);
+        float cornerR = mix(0.045, 0.003, t);
 
         vec2 cellCenter = cellUV - 0.5;
         vec2 halfBox = vec2(0.5 - gap);
@@ -266,9 +266,9 @@ export default function PartnerGrid() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(5, 1fr)",
-                gridTemplateRows: "repeat(3, 1fr)",
+                gridTemplateRows: "repeat(4, 1fr)",
                 width: "70vw",
-                height: "55vh",
+                height: "75vh",
                 gap: 0,
               }}
             >
@@ -276,6 +276,7 @@ export default function PartnerGrid() {
                 "CHASE", "ALLY FINANCIAL", "WELLS FARGO", "CAPITAL ONE", "TRUIST",
                 "US BANK", "TD BANK", "CITIZENS", "PNC", "NAVY FEDERAL",
                 "FIFTH THIRD", "", "DOORDASH", "", "",
+                "", "", "", "", "",
               ].map((name, i) => (
                 <div
                   key={i}
