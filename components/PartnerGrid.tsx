@@ -102,8 +102,8 @@ export default function PartnerGrid() {
             style={{
               position: "absolute",
               top: 0,
-              left: "-20%",
-              width: "140%",
+              left: "-2%",
+              width: "104%",
               transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
               transformOrigin: "50% 50%",
               willChange: "transform",
