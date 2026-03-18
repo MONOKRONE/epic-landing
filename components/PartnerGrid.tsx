@@ -56,99 +56,71 @@ export default function PartnerGrid() {
 
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
-      {/* PART 1: Stats — normal scrolling content */}
-      <div style={{ background: "#2A206A" }} className="py-16 lg:py-[120px] pb-8 lg:pb-0">
-        <div style={{ maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
-          <div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
-          >
-            {/* Left: Staircase partner cards — columns side by side, each offset lower */}
-            <div style={{ position: "relative", height: 520, minWidth: 0, overflow: "hidden" }}>
-              <div style={{ display: "flex", gap: 12, position: "absolute", top: 0, left: 0, right: 0 }}>
-                {[
-                  { label: "CHASE", offsetY: 0 },
-                  { label: "ALLY FINANCIAL", offsetY: 60 },
-                  { label: "WELLS FARGO", offsetY: 120 },
-                  { label: "CAPITAL ONE", offsetY: 180 },
-                ].map((card, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      flex: 1,
-                      marginTop: card.offsetY,
-                      height: 400,
-                      background: "white",
-                      borderRadius: 16,
-                      boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: "#C4C0D4",
-                        fontSize: 13,
-                        fontWeight: 500,
-                        letterSpacing: 1.5,
-                        textTransform: "uppercase" as const,
-                      }}
-                    >
-                      {card.label}
-                    </span>
-                  </div>
-                ))}
+      {/* PART 1: Stats + Grid preview */}
+      <div style={{ background: "#2A206A", position: "relative", overflow: "hidden" }} className="py-16 lg:py-[120px]">
+
+        {/* Grid cells as staircase background on the left */}
+        <div className="hidden lg:block" style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "55%",
+          height: "100%",
+          display: "grid",
+          gridTemplateColumns: "repeat(5, 1fr)",
+          gap: 10,
+          padding: 10,
+          paddingRight: 0,
+        }}>
+          {/* Column 1: offset 0 */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 0 }}>
+            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
+            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
+          </div>
+          {/* Column 2: offset 80px */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 80 }}>
+            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
+            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
+          </div>
+          {/* Column 3: offset 160px */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 160 }}>
+            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
+            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
+          </div>
+          {/* Column 4: offset 240px */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 240 }}>
+            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
+          </div>
+          {/* Column 5: offset 320px */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 320 }}>
+            <div style={{ background: "#FAFAFA", borderRadius: 20, flex: 1, minHeight: 300 }} />
+          </div>
+        </div>
+
+        {/* Stats content — positioned on the right, on top of grid */}
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
+          <div className="lg:ml-auto lg:w-1/2 lg:pl-16">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8 lg:mb-12">
+              The results speak for themselves
+            </h2>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+              <div>
+                <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>$290B+</p>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
+              </div>
+              <div>
+                <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>99.99%</p>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
+              </div>
+              <div>
+                <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>2,500+</p>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
               </div>
             </div>
 
-            {/* Right: Title + Stats + Awards */}
-            <div>
-              <h2
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8 lg:mb-12"
-              >
-                The results speak for themselves
-              </h2>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 32,
-                }}
-              >
-                <div>
-                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
-                    $290B+
-                  </p>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
-                    volume processed in 2024
-                  </p>
-                </div>
-                <div>
-                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
-                    99.99%
-                  </p>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
-                    platform uptime in 2024
-                  </p>
-                </div>
-                <div>
-                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
-                    2,500+
-                  </p>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
-                    lender connections nationwide
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ marginTop: 40 }}>
-                <img
-                  src="/svg/static_img_Awards_Updated-logo.svg"
-                  alt="Awards"
-                  style={{ height: 64, opacity: 1.0 }}
-                />
-              </div>
+            <div style={{ marginTop: 40 }}>
+              <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 64, opacity: 1.0 }} />
             </div>
           </div>
         </div>
