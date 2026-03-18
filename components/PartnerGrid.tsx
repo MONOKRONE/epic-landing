@@ -189,80 +189,80 @@ export default function PartnerGrid() {
               willChange: "transform",
               display: "flex",
               flexDirection: "column",
-              gap: 3,
+              gap: 6,
               padding: "20px 0",
               background: "#2A206A",
             }}
           >
-            {/* Row 0 — short */}
+            {/* Row 0 — 240px */}
             <GridRow ref={(el) => { rowRefs.current[0] = el; }} idx={0}>
-              <GridCell h={130} />
-              <GridCell h={150} label="CHASE" />
-              <GridCell h={130} />
-              <GridCell h={160} label="ALLY FINANCIAL" />
-              <GridCell h={130} />
-              <GridCell h={145} label="WELLS FARGO" />
-              <GridCell h={130} />
-            </GridRow>
-            {/* Row 1 — tall */}
-            <GridRow ref={(el) => { rowRefs.current[1] = el; }} idx={1}>
-              <GridCell h={200} label="BANK OF AMERICA" />
-              <GridCell h={220} />
-              <GridCell h={200} label="CAPITAL ONE" />
-              <GridCell h={230} />
-              <GridCell h={200} />
-              <GridCell h={210} label="TRUIST" />
-              <GridCell h={200} />
-            </GridRow>
-            {/* Row 2 — medium */}
-            <GridRow ref={(el) => { rowRefs.current[2] = el; }} idx={2}>
-              <GridCell h={160} />
-              <GridCell h={175} label="US BANK" />
-              <GridCell h={160} />
-              <GridCell h={180} label="TD BANK" />
-              <GridCell h={160} label="CITIZENS" />
-              <GridCell h={170} />
-              <GridCell h={160} />
-            </GridRow>
-            {/* Row 3 — tallest */}
-            <GridRow ref={(el) => { rowRefs.current[3] = el; }} idx={3}>
-              <GridCell h={220} label="PNC" />
               <GridCell h={240} />
-              <GridCell h={220} />
-              <GridCell h={250} label="NAVY FEDERAL" />
-              <GridCell h={220} />
-              <GridCell h={235} label="FIFTH THIRD" />
-              <GridCell h={220} />
+              <GridCell h={240} label="CHASE" />
+              <GridCell h={240} />
+              <GridCell h={240} label="ALLY FINANCIAL" />
+              <GridCell h={240} />
+              <GridCell h={240} label="WELLS FARGO" />
+              <GridCell h={240} />
             </GridRow>
-            {/* Row 4 — short */}
+            {/* Row 1 — 320px */}
+            <GridRow ref={(el) => { rowRefs.current[1] = el; }} idx={1}>
+              <GridCell h={320} label="BANK OF AMERICA" />
+              <GridCell h={320} />
+              <GridCell h={320} label="CAPITAL ONE" />
+              <GridCell h={320} />
+              <GridCell h={320} />
+              <GridCell h={320} label="TRUIST" />
+              <GridCell h={320} />
+            </GridRow>
+            {/* Row 2 — 260px */}
+            <GridRow ref={(el) => { rowRefs.current[2] = el; }} idx={2}>
+              <GridCell h={260} />
+              <GridCell h={260} label="US BANK" />
+              <GridCell h={260} />
+              <GridCell h={260} label="TD BANK" />
+              <GridCell h={260} label="CITIZENS" />
+              <GridCell h={260} />
+              <GridCell h={260} />
+            </GridRow>
+            {/* Row 3 — 340px */}
+            <GridRow ref={(el) => { rowRefs.current[3] = el; }} idx={3}>
+              <GridCell h={340} label="PNC" />
+              <GridCell h={340} />
+              <GridCell h={340} />
+              <GridCell h={340} label="NAVY FEDERAL" />
+              <GridCell h={340} />
+              <GridCell h={340} label="FIFTH THIRD" />
+              <GridCell h={340} />
+            </GridRow>
+            {/* Row 4 — 280px */}
             <GridRow ref={(el) => { rowRefs.current[4] = el; }} idx={4}>
-              <GridCell h={140} />
-              <GridCell h={155} />
-              <GridCell h={140} />
-              <GridCell h={150} />
-              <GridCell h={140} />
-              <GridCell h={145} />
-              <GridCell h={140} />
+              <GridCell h={280} />
+              <GridCell h={280} />
+              <GridCell h={280} />
+              <GridCell h={280} />
+              <GridCell h={280} />
+              <GridCell h={280} />
+              <GridCell h={280} />
             </GridRow>
-            {/* Row 5 — phantom */}
+            {/* Row 5 — phantom 300px */}
             <GridRow ref={(el) => { rowRefs.current[5] = el; }} idx={5}>
-              <GridCell h={180} />
-              <GridCell h={190} />
-              <GridCell h={180} />
-              <GridCell h={185} />
-              <GridCell h={180} />
-              <GridCell h={175} />
-              <GridCell h={180} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
             </GridRow>
-            {/* Row 6 — phantom */}
+            {/* Row 6 — phantom 300px */}
             <GridRow ref={(el) => { rowRefs.current[6] = el; }} idx={6}>
-              <GridCell h={160} />
-              <GridCell h={170} />
-              <GridCell h={160} />
-              <GridCell h={165} />
-              <GridCell h={160} />
-              <GridCell h={155} />
-              <GridCell h={160} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
+              <GridCell h={300} />
             </GridRow>
           </div>
 
@@ -297,7 +297,7 @@ const GridRow = forwardRef<HTMLDivElement, { idx: number; children: ReactNode }>
       ref={ref}
       style={{
         display: "flex",
-        gap: 3,
+        gap: 6,
         width: "160%",
         marginLeft: "-30%",
         padding: "0 8px",
