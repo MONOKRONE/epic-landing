@@ -57,83 +57,32 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
 
-      {/* PART A: Stats + card staircase — flexbox row, both in flow */}
-      <div className="hidden lg:flex" style={{
-        background: "#2A206A",
-        overflow: "hidden",
-        flexDirection: "row",
-        alignItems: "flex-start",
-      }}>
-        {/* Left: staircase cards */}
-        <div style={{
-          display: "flex",
-          gap: 10,
-          padding: 10,
-          paddingLeft: 0,
-          alignItems: "flex-start",
-          width: "58%",
-          flexShrink: 0,
-          marginLeft: -40,
-        }}>
-          {[0, 140, 280, 420].map((offset, i) => (
-            <div key={i} style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 10,
-              paddingTop: offset,
-              flex: 1,
-            }}>
-              <div style={{ background: "#FAFAFA", borderRadius: 20, height: 550 }} />
-              <div style={{ background: "#FAFAFA", borderRadius: 20, height: 550 }} />
-            </div>
-          ))}
-        </div>
-        {/* Right: stats */}
-        <div style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "80px 60px",
-          minHeight: "100vh",
-        }}>
+      {/* PART A: Stats — normal scroll, Marqeta-style layout */}
+      <div style={{ background: "#2A206A" }} className="py-16 lg:py-24">
+        <div style={{ maxWidth: 1200, margin: "0 auto" }} className="px-4 lg:px-10">
+
+          {/* Big stat */}
           <div style={{ textAlign: "right", marginBottom: 48 }}>
             <p style={{ fontSize: 80, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>$290B+</p>
             <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>volume processed in 2024</p>
           </div>
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 64, marginBottom: 48 }}>
+
+          {/* Two stats side by side */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 80, marginBottom: 48 }}>
             <div style={{ textAlign: "center" }}>
-              <p style={{ fontSize: 48, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>99.99%</p>
+              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>99.99%</p>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>platform uptime in 2024</p>
             </div>
             <div style={{ textAlign: "center" }}>
-              <p style={{ fontSize: 48, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>2,500+</p>
+              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>2,500+</p>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>lender connections nationwide</p>
             </div>
           </div>
+
+          {/* Awards */}
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 24 }}>
-            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 80 }} />
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 80, opacity: 1.0 }} />
           </div>
-        </div>
-      </div>
-      {/* Mobile: stats only */}
-      <div className="lg:hidden" style={{ background: "#2A206A" }}>
-        <div className="px-4 py-16 text-center">
-          <div style={{ marginBottom: 32 }}>
-            <p className="text-4xl font-black" style={{ color: "#20A472" }}>$290B+</p>
-            <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
-          </div>
-          <div className="flex justify-center gap-8 mb-8">
-            <div>
-              <p className="text-2xl font-black" style={{ color: "#20A472" }}>99.99%</p>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>platform uptime</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black" style={{ color: "#20A472" }}>2,500+</p>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>lender connections</p>
-            </div>
-          </div>
-          <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 48, margin: "0 auto" }} />
         </div>
       </div>
 
@@ -214,6 +163,32 @@ export default function PartnerGrid() {
         </div>
       </div>
 
+      {/* PART C: Mobile fallback */}
+      <div className="lg:hidden" style={{ background: "#2A206A" }}>
+        <div className="px-4 py-16 text-center">
+          <h2 className="text-3xl font-bold text-white mb-8">The results speak for themselves</h2>
+          <div className="flex flex-col gap-6">
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>$290B+</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>99.99%</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>2,500+</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
+            </div>
+          </div>
+          <div className="mt-8">
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 48, margin: "0 auto" }} />
+          </div>
+        </div>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2A206A" />
+        </svg>
+      </div>
     </section>
   );
 }
