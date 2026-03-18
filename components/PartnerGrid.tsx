@@ -7,51 +7,198 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const whiteOverlayRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const logoOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
-    const grid = gridRef.current;
-    const whiteOverlay = whiteOverlayRef.current;
-    if (!gridWrapper || !grid || !whiteOverlay) return;
+    const canvas = canvasRef.current;
+    const logoOverlay = logoOverlayRef.current;
+    if (!gridWrapper || !canvas || !logoOverlay) return;
 
+    const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
+    if (!gl) return;
+    gl.getExtension("OES_standard_derivatives");
+
+    // Shaders
+    const vertSrc = `
+      attribute vec2 a_position;
+      varying vec2 v_uv;
+      void main() {
+        v_uv = a_position * 0.5 + 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    const fragSrc = `
+      #extension GL_OES_standard_derivatives : enable
+      precision highp float;
+      varying vec2 v_uv;
+      uniform float u_progress;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+
+      const float COLS = 5.0;
+      const float ROWS = 4.0;
+
+      float sdRoundedBox(vec2 p, vec2 b, float r) {
+        vec2 q = abs(p) - b + r;
+        return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+      }
+
+      void main() {
+        vec2 uv = v_uv;
+        float aspect = u_resolution.x / u_resolution.y;
+        vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
+        float t = u_progress;
+
+        // Warp: curtain pull
+        float warpAmt = t * t * 4.0;
+        float yBottom = clamp(0.5 - p.y, 0.0, 1.0);
+        float xSpread = 1.0 + warpAmt * yBottom * yBottom;
+        vec2 warped;
+        warped.x = p.x / xSpread;
+        warped.y = p.y;
+
+        // Zoom
+        float zoom = 1.0 + t * t * 10.0;
+        warped /= zoom;
+
+        // Grid coordinates
+        float gridW = aspect * 0.78;
+        float gridH = 0.62;
+        vec2 gridUV = vec2(
+          (warped.x + gridW * 0.5) / gridW * COLS,
+          (warped.y + gridH * 0.5) / gridH * ROWS
+        );
+
+        vec2 cellUV = fract(gridUV);
+        float gap = mix(0.035, 0.018, t);
+        float cornerR = mix(0.06, 0.005, t);
+
+        vec2 cellCenter = cellUV - 0.5;
+        vec2 halfBox = vec2(0.5 - gap);
+        float d = sdRoundedBox(cellCenter, halfBox, cornerR);
+        float aa = fwidth(d);
+        float cellMask = 1.0 - smoothstep(-aa, aa, d);
+
+        float inGrid = step(0.0, gridUV.x) * step(0.0, gridUV.y)
+                     * step(gridUV.x, COLS) * step(gridUV.y, ROWS);
+
+        // Colors — use Epic purple
+        vec3 purple = vec3(0.165, 0.125, 0.416); // #2A206A
+        vec3 white = vec3(1.0);
+
+        float bgFade = smoothstep(0.75, 1.0, t);
+        vec3 bg = mix(purple, white, bgFade);
+        vec3 color = mix(bg, white, cellMask * inGrid);
+
+        float fullWhite = smoothstep(0.9, 1.0, t);
+        color = mix(color, white, fullWhite);
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    // Compile shaders
+    function createShader(type: number, source: string) {
+      const shader = gl!.createShader(type)!;
+      gl!.shaderSource(shader, source);
+      gl!.compileShader(shader);
+      if (!gl!.getShaderParameter(shader, gl!.COMPILE_STATUS)) {
+        console.error("Shader error:", gl!.getShaderInfoLog(shader));
+        gl!.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vert = createShader(gl.VERTEX_SHADER, vertSrc);
+    const frag = createShader(gl.FRAGMENT_SHADER, fragSrc);
+    if (!vert || !frag) return;
+
+    const program = gl.createProgram()!;
+    gl.attachShader(program, vert);
+    gl.attachShader(program, frag);
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    // Fullscreen quad
+    const posBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+    const posLoc = gl.getAttribLocation(program, "a_position");
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const uProgress = gl.getUniformLocation(program, "u_progress");
+    const uResolution = gl.getUniformLocation(program, "u_resolution");
+    const uTime = gl.getUniformLocation(program, "u_time");
+
+    // Resize
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      canvas!.width = canvas!.clientWidth * dpr;
+      canvas!.height = canvas!.clientHeight * dpr;
+      gl!.viewport(0, 0, canvas!.width, canvas!.height);
+      gl!.uniform2f(uResolution, canvas!.width, canvas!.height);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    // Animation state
+    let scrollProgress = 0;
+    const startTime = performance.now();
+    let animFrameId: number;
+
+    // GSAP ScrollTrigger
     const ctx = gsap.context(() => {
-      // Tween 1: Tilt + scroll + push toward camera
-      gsap.fromTo(
-        grid,
-        { rotateX: 0, y: "-5%", z: 0 },
+      gsap.to(
+        {},
         {
-          rotateX: 50,
-          y: "-85%",
-          z: 600,
-          ease: "none",
           scrollTrigger: {
             trigger: gridWrapper,
             start: "top top",
             end: "bottom top",
-            scrub: 1.5,
+            scrub: 0.5,
+            onUpdate: (self) => {
+              scrollProgress = self.progress;
+            },
           },
         }
       );
 
-      // Tween 2: White overlay
-      gsap.fromTo(
-        whiteOverlay,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          scrollTrigger: {
-            trigger: gridWrapper,
-            start: "78% top",
-            end: "95% top",
-            scrub: 1,
-          },
-        }
-      );
+      // Fade out logo overlay
+      gsap.to(logoOverlay!, {
+        scrollTrigger: {
+          trigger: gridWrapper,
+          start: "top top",
+          end: "30% top",
+          scrub: 0.5,
+        },
+        opacity: 0,
+      });
     }, gridWrapper);
 
-    return () => ctx.revert();
+    // Render loop
+    function render() {
+      const elapsed = (performance.now() - startTime) / 1000;
+      gl!.uniform1f(uProgress, scrollProgress);
+      gl!.uniform1f(uTime, elapsed);
+      gl!.drawArrays(gl!.TRIANGLES, 0, 6);
+      animFrameId = requestAnimationFrame(render);
+    }
+    render();
+
+    return () => {
+      cancelAnimationFrame(animFrameId);
+      window.removeEventListener("resize", resize);
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -86,80 +233,69 @@ export default function PartnerGrid() {
         </div>
       </div>
 
-      {/* PART B: Staircase grid + 3D zoom — scroll driven */}
-      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "400vh" }}>
-        <div
-          className="sticky top-0 h-screen w-full overflow-hidden"
-          style={{
-            background: "#2A206A",
-            perspective: "800px",
-            perspectiveOrigin: "50% 20%",
-          }}
-        >
-          {/* Grid */}
-          <div
-            ref={gridRef}
+      {/* PART B: WebGL Grid zoom — scroll driven */}
+      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "400vh", position: "relative" }}>
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
+          <canvas
+            ref={canvasRef}
             style={{
               position: "absolute",
               top: 0,
-              left: "-2%",
-              width: "104%",
-              transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
-              transformOrigin: "50% 50%",
-              willChange: "transform",
+              left: 0,
+              width: "100%",
+              height: "100%",
+              display: "block",
+            }}
+          />
+          {/* Logo overlay on top of canvas */}
+          <div
+            ref={logoOverlayRef}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
               display: "flex",
-              gap: 10,
-              padding: 10,
-              alignItems: "flex-start",
-              background: "#2A206A",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            {[
-              { offset: 0, labels: ["CHASE", "", "", "", "", "", "", "", ""] },
-              { offset: 180, labels: ["", "ALLY FINANCIAL", "", "", "", "", "", "", ""] },
-              { offset: 360, labels: ["WELLS FARGO", "", "CAPITAL ONE", "", "", "", "", "", ""] },
-              { offset: 540, labels: ["", "", "", "TRUIST", "", "", "", "", ""] },
-              { offset: 720, labels: ["", "US BANK", "", "", "TD BANK", "", "", "", ""] },
-            ].map((col, ci) => (
-              <div key={ci} style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: col.offset, flex: 1 }}>
-                {col.labels.map((label, ri) => (
-                  <div
-                    key={ri}
-                    style={{
-                      background: "#FAFAFA",
-                      borderRadius: 20,
-                      height: 550,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {label && (
-                      <span
-                        style={{
-                          color: "#C4C0D4",
-                          fontSize: 13,
-                          fontWeight: 500,
-                          letterSpacing: 1.5,
-                          textAlign: "center",
-                          textTransform: "uppercase" as const,
-                        }}
-                      >
-                        {label}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ))}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(5, 1fr)",
+                gridTemplateRows: "repeat(3, 1fr)",
+                width: "70vw",
+                height: "55vh",
+                gap: 0,
+              }}
+            >
+              {[
+                "CHASE", "ALLY FINANCIAL", "WELLS FARGO", "CAPITAL ONE", "TRUIST",
+                "US BANK", "TD BANK", "CITIZENS", "PNC", "NAVY FEDERAL",
+                "FIFTH THIRD", "", "DOORDASH", "", "",
+              ].map((name, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "clamp(0.7rem, 1.1vw, 1.1rem)",
+                    fontWeight: 600,
+                    color: "#2A206A",
+                    opacity: 0.35,
+                    letterSpacing: 1,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {name}
+                </div>
+              ))}
+            </div>
           </div>
-
-          {/* White overlay */}
-          <div
-            ref={whiteOverlayRef}
-            className="absolute inset-0"
-            style={{ background: "#ffffff", opacity: 0, zIndex: 10, pointerEvents: "none" }}
-          />
         </div>
       </div>
 
