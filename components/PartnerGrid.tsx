@@ -9,21 +9,23 @@ export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const whiteOverlayRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
     const grid = gridRef.current;
     const whiteOverlay = whiteOverlayRef.current;
-    if (!gridWrapper || !grid || !whiteOverlay) return;
+    const stats = statsRef.current;
+    if (!gridWrapper || !grid || !whiteOverlay || !stats) return;
 
     const ctx = gsap.context(() => {
       // Tween 1: Tilt + scroll + push toward camera
       gsap.fromTo(
         grid,
-        { rotateX: 0, y: "10%", z: 0 },
+        { rotateX: 0, y: "-5%", z: 0 },
         {
           rotateX: 50,
-          y: "-90%",
+          y: "-85%",
           z: 600,
           ease: "none",
           scrollTrigger: {
@@ -35,7 +37,19 @@ export default function PartnerGrid() {
         }
       );
 
-      // Tween 2: White overlay
+      // Tween 2: Stats fade out in first 25% of scroll
+      gsap.to(stats, {
+        opacity: 0,
+        y: -50,
+        scrollTrigger: {
+          trigger: gridWrapper,
+          start: "top top",
+          end: "25% top",
+          scrub: 1,
+        },
+      });
+
+      // Tween 3: White overlay
       gsap.fromTo(
         whiteOverlay,
         { opacity: 0 },
@@ -56,36 +70,36 @@ export default function PartnerGrid() {
 
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
-      {/* PART 1: Stats — centered, no cards */}
-      <div style={{ background: "#2A206A", position: "relative" }} className="py-16 lg:py-[120px]">
-        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }} className="px-4 lg:px-10">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8 lg:mb-12">
-            The results speak for themselves
-          </h2>
 
-          <div style={{ display: "flex", justifyContent: "center", gap: 64, flexWrap: "wrap" }}>
+      {/* Mobile: stats + curve */}
+      <div className="lg:hidden" style={{ background: "#2A206A" }}>
+        <div className="px-4 py-16 text-center">
+          <h2 className="text-3xl font-bold text-white mb-8">The results speak for themselves</h2>
+          <div className="flex flex-col gap-6">
             <div>
-              <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>$290B+</p>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>$290B+</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
             </div>
             <div>
-              <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>99.99%</p>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>99.99%</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
             </div>
             <div>
-              <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>2,500+</p>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>2,500+</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
             </div>
           </div>
-
-          <div style={{ marginTop: 40 }}>
-            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 64, opacity: 1.0, margin: "0 auto" }} />
+          <div className="mt-8">
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 48, margin: "0 auto" }} />
           </div>
         </div>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2A206A" />
+        </svg>
       </div>
 
-      {/* PART 2: Single grid with 3D tilt zoom */}
-      <div ref={gridWrapperRef} className="hidden lg:block h-[300vh]">
+      {/* Desktop: unified stats + grid zoom */}
+      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "400vh" }}>
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{
@@ -152,6 +166,47 @@ export default function PartnerGrid() {
             ))}
           </div>
 
+          {/* Stats overlay — right side, fades out on scroll */}
+          <div
+            ref={statsRef}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: "45%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              padding: "0 60px",
+              zIndex: 5,
+              background: "linear-gradient(to left, #2A206A 60%, transparent 100%)",
+            }}
+          >
+            <h2 style={{ fontSize: 48, fontWeight: 700, color: "white", lineHeight: 1.1, marginBottom: 48 }}>
+              The results speak for themselves
+            </h2>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+              <div>
+                <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>$290B+</p>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
+              </div>
+              <div>
+                <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>99.99%</p>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
+              </div>
+              <div>
+                <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>2,500+</p>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 40 }}>
+              <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 64, opacity: 1.0 }} />
+            </div>
+          </div>
+
           {/* White overlay */}
           <div
             ref={whiteOverlayRef}
@@ -165,44 +220,6 @@ export default function PartnerGrid() {
           />
         </div>
       </div>
-
-      {/* Mobile: simple navy to white curve */}
-      <div className="lg:hidden" style={{ background: "white" }}>
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2A206A" />
-        </svg>
-      </div>
     </section>
-  );
-}
-
-// ── Grid cell ──────────────────────────────────────────────────────
-function GC({ label, span }: { label?: string; span?: boolean } = {}) {
-  return (
-    <div
-      style={{
-        background: "#FAFAFA",
-        borderRadius: 20,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        ...(span ? { gridRow: "span 2" } : {}),
-      }}
-    >
-      {label && (
-        <span
-          style={{
-            color: "#C4C0D4",
-            fontSize: 13,
-            fontWeight: 500,
-            letterSpacing: 1.5,
-            textAlign: "center",
-            textTransform: "uppercase" as const,
-          }}
-        >
-          {label}
-        </span>
-      )}
-    </div>
   );
 }
