@@ -22,9 +22,9 @@ export default function PartnerGrid() {
         grid,
         { rotateX: 0, y: "10%", z: 0 },
         {
-          rotateX: 35,
-          y: "-80%",
-          z: 400,
+          rotateX: 50,
+          y: "-90%",
+          z: 600,
           ease: "none",
           scrollTrigger: {
             trigger: gridWrapper,
@@ -64,7 +64,7 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
       {/* PART 1: Stats — normal scrolling content */}
-      <div style={{ background: "#1e1b4b" }} className="py-16 lg:py-[120px] pb-8 lg:pb-0">
+      <div style={{ background: "#2A206A" }} className="py-16 lg:py-[120px] pb-8 lg:pb-0">
         <div style={{ maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
           <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
@@ -148,9 +148,9 @@ export default function PartnerGrid() {
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{
-            background: "#1e1b4b",
-            perspective: "1200px",
-            perspectiveOrigin: "50% 30%",
+            background: "#2A206A",
+            perspective: "800px",
+            perspectiveOrigin: "50% 20%",
           }}
         >
           {/* Single CSS Grid — continuous gap lines */}
@@ -159,17 +159,17 @@ export default function PartnerGrid() {
             style={{
               position: "absolute",
               top: 0,
-              left: "-15%",
-              width: "130%",
+              left: "-20%",
+              width: "140%",
               transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
               transformOrigin: "50% 50%",
               willChange: "transform",
               display: "grid",
               gridTemplateColumns: "repeat(5, 1fr)",
-              gridAutoRows: 500,
-              gap: 14,
-              padding: 14,
-              background: "#1e1b4b",
+              gridAutoRows: 320,
+              gap: 10,
+              padding: 10,
+              background: "#2A206A",
             }}
           >
             {/* Row 1 */}
@@ -245,7 +245,7 @@ export default function PartnerGrid() {
       {/* Mobile: simple navy to white curve */}
       <div className="lg:hidden" style={{ background: "white" }}>
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#1e1b4b" />
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2A206A" />
         </svg>
       </div>
     </section>
@@ -258,7 +258,7 @@ function GC({ label, span }: { label?: string; span?: boolean } = {}) {
     <div
       style={{
         background: "#FAFAFA",
-        borderRadius: 24,
+        borderRadius: 20,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
