@@ -114,8 +114,8 @@ export default function PartnerGrid() {
             style={{
               position: "absolute",
               top: 0,
-              left: "-20%",
-              width: "140%",
+              left: "-10%",
+              width: "65%",
               transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
               transformOrigin: "50% 50%",
               willChange: "transform",
@@ -180,7 +180,7 @@ export default function PartnerGrid() {
               justifyContent: "center",
               padding: "0 60px",
               zIndex: 5,
-              background: "linear-gradient(to left, #2A206A 60%, transparent 100%)",
+              background: "#2A206A",
             }}
           >
             <h2 style={{ fontSize: 48, fontWeight: 700, color: "white", lineHeight: 1.1, marginBottom: 48 }}>
