@@ -64,7 +64,7 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
       {/* PART 1: Stats — normal scrolling content */}
-      <div style={{ background: "#1e1b4b" }} className="py-16 lg:py-[120px] pb-8 lg:pb-[60px]">
+      <div style={{ background: "#1e1b4b" }} className="py-16 lg:py-[120px] pb-8 lg:pb-0">
         <div style={{ maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
           <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
@@ -148,7 +148,7 @@ export default function PartnerGrid() {
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
           style={{
-            background: "#2A206A",
+            background: "#1e1b4b",
             perspective: "1200px",
             perspectiveOrigin: "50% 30%",
           }}
@@ -166,10 +166,10 @@ export default function PartnerGrid() {
               willChange: "transform",
               display: "grid",
               gridTemplateColumns: "repeat(5, 1fr)",
-              gridAutoRows: 320,
-              gap: 6,
-              padding: 6,
-              background: "#2A206A",
+              gridAutoRows: 460,
+              gap: 10,
+              padding: 10,
+              background: "#1e1b4b",
             }}
           >
             {/* Row 1 */}
