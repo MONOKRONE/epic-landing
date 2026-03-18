@@ -54,13 +54,6 @@ export default function PartnerGrid() {
     return () => ctx.revert();
   }, []);
 
-  const logos = [
-    { src: "/svg/static_svg_logo-uber.svg", alt: "Uber" },
-    { src: "/svg/static_svg_logo-square.svg", alt: "Square" },
-    { src: "/svg/static_svg_logo-instacart.svg", alt: "Instacart" },
-    { src: "/svg/static_img_partners_WesternUnion.svg", alt: "Western Union" },
-  ];
-
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
       {/* PART 1: Stats — normal scrolling content */}
@@ -69,23 +62,42 @@ export default function PartnerGrid() {
           <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
           >
-            {/* Left: Partner logo cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {logos.map((logo, i) => (
+            {/* Left: Staircase partner cards */}
+            <div style={{ position: "relative", height: 500, minWidth: 0 }}>
+              {[
+                { label: "CHASE", top: 0, left: 0 },
+                { label: "ALLY FINANCIAL", top: 70, left: 60 },
+                { label: "WELLS FARGO", top: 140, left: 120 },
+                { label: "CAPITAL ONE", top: 210, left: 180 },
+                { label: "TRUIST", top: 280, left: 240 },
+              ].map((card, i) => (
                 <div
                   key={i}
                   style={{
+                    position: "absolute",
+                    top: card.top,
+                    left: card.left,
+                    width: 280,
+                    height: 160,
                     background: "white",
-                    borderRadius: 12,
-                    boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
-                    padding: "24px 32px",
+                    borderRadius: 16,
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <img
-                    src={logo.src}
-                    alt={logo.alt}
-                    style={{ height: 32, objectFit: "contain" }}
-                  />
+                  <span
+                    style={{
+                      color: "#1e1b4b",
+                      fontSize: 15,
+                      fontWeight: 600,
+                      letterSpacing: 1.2,
+                      textTransform: "uppercase" as const,
+                    }}
+                  >
+                    {card.label}
+                  </span>
                 </div>
               ))}
             </div>
