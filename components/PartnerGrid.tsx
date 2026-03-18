@@ -58,7 +58,7 @@ export default function PartnerGrid() {
         float xSpread = 1.0 + warpAmt * yBottom * yBottom;
         vec2 warped;
         warped.x = p.x / xSpread;
-        warped.y = p.y;
+        warped.y = p.y + 0.15;
 
         // Zoom
         float zoom = 1.0 + t * t * 8.0;
@@ -71,6 +71,10 @@ export default function PartnerGrid() {
           (warped.x + gridW * 0.5) / gridW * COLS,
           (warped.y + gridH * 0.5) / gridH * ROWS
         );
+        // Staircase: each column shifts down by 33% of one cell height
+        float colIndex = floor(gridUV.x);
+        float stairOffset = colIndex * 0.33;
+        gridUV.y -= stairOffset;
 
         vec2 cellUV = fract(gridUV);
         float gap = mix(0.025, 0.012, t);
@@ -266,10 +270,10 @@ export default function PartnerGrid() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(5, 1fr)",
-                gridTemplateRows: "repeat(4, 1fr)",
                 width: "70vw",
                 height: "75vh",
                 gap: 0,
+                position: "relative",
               }}
             >
               {[
@@ -277,24 +281,30 @@ export default function PartnerGrid() {
                 "US BANK", "TD BANK", "CITIZENS", "PNC", "NAVY FEDERAL",
                 "FIFTH THIRD", "", "DOORDASH", "", "",
                 "", "", "", "", "",
-              ].map((name, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "clamp(0.7rem, 1.1vw, 1.1rem)",
-                    fontWeight: 600,
-                    color: "#2A206A",
-                    opacity: 0.35,
-                    letterSpacing: 1,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {name}
-                </div>
-              ))}
+              ].map((name, i) => {
+                const col = i % 5;
+                const row = Math.floor(i / 5);
+                const stairPx = col * 33;
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "clamp(0.7rem, 1.1vw, 1.1rem)",
+                      fontWeight: 600,
+                      color: "#2A206A",
+                      opacity: name ? 0.35 : 0,
+                      letterSpacing: 1,
+                      textTransform: "uppercase" as const,
+                      marginTop: row === 0 ? `${stairPx}%` : 0,
+                    }}
+                  >
+                    {name}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
