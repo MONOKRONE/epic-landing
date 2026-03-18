@@ -166,38 +166,38 @@ export default function PartnerGrid() {
               willChange: "transform",
               display: "grid",
               gridTemplateColumns: "repeat(5, 1fr)",
-              gridAutoRows: 460,
-              gap: 10,
-              padding: 10,
+              gridAutoRows: 500,
+              gap: 14,
+              padding: 14,
               background: "#1e1b4b",
             }}
           >
             {/* Row 1 */}
             <GC />
-            <GC span label="CHASE" />
+            <GC label="CHASE" />
             <GC />
             <GC />
             <GC label="ALLY FINANCIAL" />
             {/* Row 2 */}
-            <GC span label="WELLS FARGO" />
+            <GC label="WELLS FARGO" />
             <GC />
             <GC label="BANK OF AMERICA" />
-            <GC span />
+            <GC />
             <GC />
             {/* Row 3 */}
             <GC />
             <GC />
-            <GC span label="CAPITAL ONE" />
+            <GC label="CAPITAL ONE" />
             <GC />
             <GC label="TRUIST" />
             {/* Row 4 */}
             <GC label="US BANK" />
-            <GC span />
+            <GC />
             <GC />
             <GC label="TD BANK" />
-            <GC span />
+            <GC />
             {/* Row 5 */}
-            <GC span label="CITIZENS" />
+            <GC label="CITIZENS" />
             <GC />
             <GC label="PNC" />
             <GC />
@@ -205,17 +205,17 @@ export default function PartnerGrid() {
             {/* Row 6 */}
             <GC />
             <GC label="FIFTH THIRD" />
-            <GC span />
+            <GC />
             <GC />
             <GC />
             {/* Row 7 — phantom */}
             <GC />
             <GC />
             <GC />
-            <GC span />
+            <GC />
             <GC />
             {/* Row 8 — phantom */}
-            <GC span />
+            <GC />
             <GC />
             <GC />
             <GC />
