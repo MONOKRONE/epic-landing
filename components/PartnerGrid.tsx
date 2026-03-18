@@ -9,14 +9,12 @@ export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const whiteOverlayRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
     const grid = gridRef.current;
     const whiteOverlay = whiteOverlayRef.current;
-    const stats = statsRef.current;
-    if (!gridWrapper || !grid || !whiteOverlay || !stats) return;
+    if (!gridWrapper || !grid || !whiteOverlay) return;
 
     const ctx = gsap.context(() => {
       // Tween 1: Tilt + scroll + push toward camera
@@ -37,19 +35,7 @@ export default function PartnerGrid() {
         }
       );
 
-      // Tween 2: Stats fade out in first 25% of scroll
-      gsap.to(stats, {
-        opacity: 0,
-        y: -50,
-        scrollTrigger: {
-          trigger: gridWrapper,
-          start: "top top",
-          end: "25% top",
-          scrub: 1,
-        },
-      });
-
-      // Tween 3: White overlay
+      // Tween 2: White overlay
       gsap.fromTo(
         whiteOverlay,
         { opacity: 0 },
@@ -71,34 +57,36 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
 
-      {/* Mobile: stats + curve */}
-      <div className="lg:hidden" style={{ background: "#2A206A" }}>
-        <div className="px-4 py-16 text-center">
-          <h2 className="text-3xl font-bold text-white mb-8">The results speak for themselves</h2>
-          <div className="flex flex-col gap-6">
-            <div>
-              <p className="text-3xl font-black" style={{ color: "#20A472" }}>$290B+</p>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
+      {/* PART A: Stats — normal scroll, Marqeta-style layout */}
+      <div style={{ background: "#2A206A" }} className="py-16 lg:py-24">
+        <div style={{ maxWidth: 1200, margin: "0 auto" }} className="px-4 lg:px-10">
+
+          {/* Big stat */}
+          <div style={{ textAlign: "right", marginBottom: 48 }}>
+            <p style={{ fontSize: 80, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>$290B+</p>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>volume processed in 2024</p>
+          </div>
+
+          {/* Two stats side by side */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 80, marginBottom: 48 }}>
+            <div style={{ textAlign: "center" }}>
+              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>99.99%</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>platform uptime in 2024</p>
             </div>
-            <div>
-              <p className="text-3xl font-black" style={{ color: "#20A472" }}>99.99%</p>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
-            </div>
-            <div>
-              <p className="text-3xl font-black" style={{ color: "#20A472" }}>2,500+</p>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
+            <div style={{ textAlign: "center" }}>
+              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>2,500+</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>lender connections nationwide</p>
             </div>
           </div>
-          <div className="mt-8">
-            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 48, margin: "0 auto" }} />
+
+          {/* Awards */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 24 }}>
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 80, opacity: 1.0 }} />
           </div>
         </div>
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2A206A" />
-        </svg>
       </div>
 
-      {/* Desktop: unified stats + grid zoom */}
+      {/* PART B: Staircase grid + 3D zoom — scroll driven */}
       <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "400vh" }}>
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
@@ -108,14 +96,14 @@ export default function PartnerGrid() {
             perspectiveOrigin: "50% 20%",
           }}
         >
-          {/* Column-based staircase grid */}
+          {/* Grid */}
           <div
             ref={gridRef}
             style={{
               position: "absolute",
               top: 0,
-              left: "-10%",
-              width: "65%",
+              left: "-20%",
+              width: "140%",
               transformStyle: "preserve-3d" as React.CSSProperties["transformStyle"],
               transformOrigin: "50% 50%",
               willChange: "transform",
@@ -133,7 +121,7 @@ export default function PartnerGrid() {
               { offset: 540, labels: ["", "", "", "TRUIST", "", "", "", "", ""] },
               { offset: 720, labels: ["", "US BANK", "", "", "TD BANK", "", "", "", ""] },
             ].map((col, ci) => (
-              <div key={ci} style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10, paddingTop: col.offset }}>
+              <div key={ci} style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: col.offset, flex: 1 }}>
                 {col.labels.map((label, ri) => (
                   <div
                     key={ri}
@@ -166,59 +154,40 @@ export default function PartnerGrid() {
             ))}
           </div>
 
-          {/* Stats overlay — right side, fades out on scroll */}
-          <div
-            ref={statsRef}
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: "45%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              padding: "0 60px",
-              zIndex: 5,
-              background: "#2A206A",
-            }}
-          >
-            <h2 style={{ fontSize: 48, fontWeight: 700, color: "white", lineHeight: 1.1, marginBottom: 48 }}>
-              The results speak for themselves
-            </h2>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-              <div>
-                <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>$290B+</p>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
-              </div>
-              <div>
-                <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>99.99%</p>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
-              </div>
-              <div>
-                <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472" }}>2,500+</p>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
-              </div>
-            </div>
-
-            <div style={{ marginTop: 40 }}>
-              <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 64, opacity: 1.0 }} />
-            </div>
-          </div>
-
           {/* White overlay */}
           <div
             ref={whiteOverlayRef}
             className="absolute inset-0"
-            style={{
-              background: "#ffffff",
-              opacity: 0,
-              zIndex: 10,
-              pointerEvents: "none",
-            }}
+            style={{ background: "#ffffff", opacity: 0, zIndex: 10, pointerEvents: "none" }}
           />
         </div>
+      </div>
+
+      {/* PART C: Mobile fallback */}
+      <div className="lg:hidden" style={{ background: "#2A206A" }}>
+        <div className="px-4 py-16 text-center">
+          <h2 className="text-3xl font-bold text-white mb-8">The results speak for themselves</h2>
+          <div className="flex flex-col gap-6">
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>$290B+</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>99.99%</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>2,500+</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
+            </div>
+          </div>
+          <div className="mt-8">
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 48, margin: "0 auto" }} />
+          </div>
+        </div>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2A206A" />
+        </svg>
       </div>
     </section>
   );
