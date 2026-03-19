@@ -15,11 +15,7 @@ const banks = [
     name: "Wells Fargo",
     image: "/svg/bank-wells.svg",
   },
-  {
-    name: "US Bank",
-    image: "/svg/bank-usbank.svg",
-  },
-  {
+{
     name: "Capital One",
     image: "/svg/bank-capitalone.svg",
   },
@@ -99,40 +95,39 @@ export default function Features() {
               "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.2s",
           }}
         >
-          {banks.map((bank, i) => (
-            <div
-              key={bank.name}
-              style={{
-                position: 'absolute',
-                width: '22%',
-                top: `${[5, 12, 5, 12, 5][i]}%`,
-                left: `${[2, 21, 40, 59, 78][i]}%`,
-              }}
-            >
-              <div
-                style={{
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: 24,
+            width: '50%',
+            position: 'absolute',
+            top: '10%',
+            left: '5%',
+          }}>
+            {banks.map((bank) => (
+              <div key={bank.name}>
+                <div style={{
                   borderRadius: 16,
                   overflow: 'hidden',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
                   background: '#F0EDF5',
-                  aspectRatio: '3/2',
+                  aspectRatio: '4/3',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: 20,
-                }}
-              >
-                <img
-                  src={bank.image}
-                  alt={bank.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                />
+                  padding: 16,
+                }}>
+                  <img
+                    src={bank.image}
+                    alt={bank.name}
+                    style={{ width: '80%', height: '80%', objectFit: 'contain' }}
+                  />
+                </div>
+                <p style={{ marginTop: 8, fontSize: 13, fontWeight: 500, color: '#1e1b4b' }}>
+                  {bank.name}
+                </p>
               </div>
-              <p style={{ marginTop: 10, fontSize: 14, fontWeight: 500, color: '#1e1b4b' }}>
-                {bank.name}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
 
         </div>
 
