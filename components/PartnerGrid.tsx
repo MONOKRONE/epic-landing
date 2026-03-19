@@ -58,7 +58,7 @@ export default function PartnerGrid() {
         float xSpread = 1.0 + warpAmt * yBottom * yBottom;
         vec2 warped;
         warped.x = p.x / xSpread;
-        warped.y = p.y + 0.55;
+        warped.y = -p.y - 0.6;
 
         // Zoom
         float zoom = 1.0 + t * t * 8.0;
@@ -72,9 +72,9 @@ export default function PartnerGrid() {
           (warped.y + gridH * 0.5) / gridH * ROWS
         );
         // Staircase: each column shifts down by 33% of one cell height
-        float colIndex = floor(gridUV.x);
+        float colIndex = clamp(floor(gridUV.x), 0.0, COLS - 1.0);
         float stairOffset = colIndex * 0.33;
-        gridUV.y -= stairOffset;
+        gridUV.y += stairOffset;
 
         vec2 cellUV = fract(gridUV);
         float gap = mix(0.025, 0.012, t);
