@@ -253,45 +253,41 @@ export default function FloatingCard() {
             });
           });
 
-          // Phase 2: Bills fly toward the left side of the screen (where banks are)
+          // Phase 2: Bills fly toward bank card positions (left side 2x2 grid)
           const bankDestinations = [
-            { x: -900, y: 80,   rot: -25 },  // Bank 1: far left, top area
-            { x: -400, y: 350,  rot: 15 },   // Bank 2: center-left, bottom
-            { x: -700, y: 300,  rot: -40 },  // Bank 3: left, mid-bottom
-            { x: -200, y: 450,  rot: 30 },   // Bank 4: center, far bottom
-            { x: -550, y: 150,  rot: -10 },  // Bank 5: mid-left, top
+            { x: -800, y: 300, rot: -15 },   // Chase: far left, mid
+            { x: -500, y: 200, rot: 10 },    // BoA: center-left, upper-mid
+            { x: -900, y: 500, rot: -25 },   // Wells Fargo: far left, lower
+            { x: -600, y: 450, rot: 20 },    // Capital One: center-left, lower
+            { x: -700, y: 350, rot: -5 },    // Extra bill: between banks
           ];
 
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
             const dest = bankDestinations[i];
 
-            // Main flight — bill moves toward bank, STAYS VISIBLE
-            const flightTl = gsap.timeline({
-              scrollTrigger: {
-                trigger: featuresEl,
-                start: "top 80%",
-                end: "center center",
-                scrub: 1.5,
+            gsap.fromTo(el,
+              {
+                x: fanOffsets[i].x,
+                y: fanOffsets[i].y,
+                rotation: fanOffsets[i].rot,
+                opacity: 1,
+                scale: 1,
               },
-            });
-
-            // 85% of journey: fly toward bank, fully visible
-            flightTl.to(el, {
-              x: dest.x,
-              y: dest.y,
-              rotation: dest.rot,
-              duration: 0.85,
-              ease: "power1.inOut",
-            });
-
-            // Last 15%: fade out as bill "enters" the bank
-            flightTl.to(el, {
-              opacity: 0,
-              scale: 0.6,
-              duration: 0.15,
-              ease: "power2.in",
-            });
+              {
+                x: dest.x,
+                y: dest.y,
+                rotation: dest.rot,
+                opacity: 0,
+                scale: 0.7,
+                scrollTrigger: {
+                  trigger: featuresEl,
+                  start: "top 60%",
+                  end: "center top",
+                  scrub: 1.5,
+                },
+              }
+            );
           });
         }
 
