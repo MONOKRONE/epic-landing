@@ -99,120 +99,40 @@ export default function Features() {
               "opacity 1s cubic-bezier(0.16,1,0.3,1) 0.2s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.2s",
           }}
         >
-          {/* Bank 1 - top left, large */}
-          <div
-            className="absolute"
-            style={{ top: "0%", left: "0%", width: "34%" }}
-          >
+          {banks.map((bank, i) => (
             <div
-              className="rounded-2xl overflow-hidden shadow-2xl"
-              style={{ aspectRatio: "4/3" }}
+              key={bank.name}
+              style={{
+                position: 'absolute',
+                width: '22%',
+                top: `${[5, 12, 5, 12, 5][i]}%`,
+                left: `${[2, 21, 40, 59, 78][i]}%`,
+              }}
             >
-              <img
-                src={banks[0].image}
-                alt={banks[0].name}
-                className="w-full h-full object-cover"
-              />
+              <div
+                style={{
+                  borderRadius: 16,
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+                  background: '#F0EDF5',
+                  aspectRatio: '3/2',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 20,
+                }}
+              >
+                <img
+                  src={bank.image}
+                  alt={bank.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+              </div>
+              <p style={{ marginTop: 10, fontSize: 14, fontWeight: 500, color: '#1e1b4b' }}>
+                {bank.name}
+              </p>
             </div>
-            <p
-              className="mt-3 text-sm font-bold"
-              style={{ color: "var(--navy)" }}
-            >
-              {banks[0].name}
-            </p>
-          </div>
-
-          {/* Bank 2 - top right, medium, offset down */}
-          <div
-            className="absolute"
-            style={{ top: "8%", right: "0%", width: "26%" }}
-          >
-            <div
-              className="rounded-2xl overflow-hidden shadow-2xl"
-              style={{ aspectRatio: "3/4" }}
-            >
-              <img
-                src={banks[1].image}
-                alt={banks[1].name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p
-              className="mt-3 text-sm font-bold"
-              style={{ color: "var(--navy)" }}
-            >
-              {banks[1].name}
-            </p>
-          </div>
-
-          {/* Bank 3 - bottom left, medium */}
-          <div
-            className="absolute"
-            style={{ top: "55%", left: "5%", width: "22%" }}
-          >
-            <div
-              className="rounded-2xl overflow-hidden shadow-xl"
-              style={{ aspectRatio: "4/3" }}
-            >
-              <img
-                src={banks[2].image}
-                alt={banks[2].name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p
-              className="mt-3 text-sm font-bold"
-              style={{ color: "var(--navy)" }}
-            >
-              {banks[2].name}
-            </p>
-          </div>
-
-          {/* Bank 4 - bottom center */}
-          <div
-            className="absolute"
-            style={{ top: "60%", left: "38%", width: "21%" }}
-          >
-            <div
-              className="rounded-2xl overflow-hidden shadow-xl"
-              style={{ aspectRatio: "3/4" }}
-            >
-              <img
-                src={banks[3].image}
-                alt={banks[3].name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p
-              className="mt-3 text-sm font-bold"
-              style={{ color: "var(--navy)" }}
-            >
-              {banks[3].name}
-            </p>
-          </div>
-
-          {/* Bank 5 - bottom right, small */}
-          <div
-            className="absolute"
-            style={{ top: "50%", right: "2%", width: "19%" }}
-          >
-            <div
-              className="rounded-2xl overflow-hidden shadow-xl"
-              style={{ aspectRatio: "1/1" }}
-            >
-              <img
-                src={banks[4].image}
-                alt={banks[4].name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p
-              className="mt-3 text-sm font-bold"
-              style={{ color: "var(--navy)" }}
-            >
-              {banks[4].name}
-            </p>
-          </div>
+          ))}
 
         </div>
 
