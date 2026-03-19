@@ -145,8 +145,8 @@ export default function FloatingCard() {
           right: "auto",
           xPercent: -50,
           yPercent: -50,
-          width: "250vw",
-          height: "250vh",
+          width: "200vw",
+          height: "200vh",
           borderRadius: 0,
           duration: 1.5,
           ease: "power3.inOut",
@@ -155,10 +155,13 @@ export default function FloatingCard() {
             gsap.set(card, { right: "auto" });
           },
           onUpdate: function () {
-            // Keep bill visible during expansion
-            if (imgRef.current) imgRef.current.style.opacity = "1";
-            if (purpleBgRef.current) purpleBgRef.current.style.opacity = "0";
-            // Hide bands during expansion
+            const p = this.progress();
+            // First 60%: bill fully visible, zooming in
+            // 60-100%: bill fades out, green bg fades in
+            const fadeP = Math.max(0, Math.min(1, (p - 0.6) / 0.4));
+            if (imgRef.current) imgRef.current.style.opacity = `${1 - fadeP}`;
+            if (purpleBgRef.current) purpleBgRef.current.style.opacity = `${fadeP}`;
+            // Hide bands
             if (bandLeftRef.current) bandLeftRef.current.style.opacity = "0";
             if (bandRightRef.current) bandRightRef.current.style.opacity = "0";
             if (bandTextRef.current) bandTextRef.current.style.opacity = "0";
