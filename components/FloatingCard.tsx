@@ -158,6 +158,10 @@ export default function FloatingCard() {
             // Keep bill visible during expansion
             if (imgRef.current) imgRef.current.style.opacity = "1";
             if (purpleBgRef.current) purpleBgRef.current.style.opacity = "0";
+            // Hide bands during expansion
+            if (bandLeftRef.current) bandLeftRef.current.style.opacity = "0";
+            if (bandRightRef.current) bandRightRef.current.style.opacity = "0";
+            if (bandTextRef.current) bandTextRef.current.style.opacity = "0";
           },
         });
 
@@ -300,8 +304,9 @@ export default function FloatingCard() {
                 rotateZ: 0,
                 zIndex: 40,
               });
-              if (imgRef.current) imgRef.current.style.opacity = "1";
-              if (purpleBgRef.current) purpleBgRef.current.style.opacity = "0";
+              // Transition: bill fades, purple appears for Tailored section
+              if (imgRef.current) imgRef.current.style.opacity = "0";
+              if (purpleBgRef.current) purpleBgRef.current.style.opacity = "1";
             },
             onLeaveBack: () => {
               gsap.set(card, { zIndex: 50 }); // stays in front when scrolling back from tailored
@@ -369,6 +374,7 @@ export default function FloatingCard() {
           borderRadius: 16,
           overflow: "hidden",
           opacity: 0,
+          background: "#e8f5e9",
         }}
       >
         {/* Money stack image */}
