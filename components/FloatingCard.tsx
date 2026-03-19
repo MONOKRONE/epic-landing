@@ -230,15 +230,16 @@ export default function FloatingCard() {
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
 
-            // Set initial position (at the stack)
+            // Set initial position (at the stack, hidden)
             gsap.set(el, {
               top: spawnTop,
               right: spawnRight,
               x: 0,
               y: 0,
+              opacity: 0,
             });
 
-            // Phase 1: Fan out
+            // Phase 1: Fan out (after band breaks)
             gsap.to(el, {
               x: fanOffsets[i].x,
               y: fanOffsets[i].y,
@@ -246,7 +247,7 @@ export default function FloatingCard() {
               opacity: 1,
               scrollTrigger: {
                 trigger: enterprisesEl,
-                start: "top 50%",
+                start: "bottom 40%",
                 end: "bottom top",
                 scrub: 1,
               },
@@ -282,8 +283,8 @@ export default function FloatingCard() {
                 scale: 0.7,
                 scrollTrigger: {
                   trigger: featuresEl,
-                  start: "top 60%",
-                  end: "center top",
+                  start: "top 90%",
+                  end: "top 20%",
                   scrub: 1.5,
                 },
               }

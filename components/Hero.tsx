@@ -454,6 +454,8 @@ export default function Hero() {
                   top: -10,
                   left: -30,
                   zIndex: 3,
+                  width: 180,
+                  overflow: 'hidden',
                 }}
               >
                 <img src="/svg/card-lien-release.svg" alt="Lien Release Notification" style={{ width: '100%', height: 'auto' }} />
@@ -467,6 +469,8 @@ export default function Hero() {
                   bottom: -20,
                   left: -40,
                   zIndex: 3,
+                  width: 190,
+                  overflow: 'hidden',
                 }}
               >
                 <img src="/svg/card-recent-payoffs.svg" alt="Recent Payoffs" style={{ width: '100%', height: 'auto' }} />
@@ -480,6 +484,8 @@ export default function Hero() {
                   top: 120,
                   right: -40,
                   zIndex: 3,
+                  width: 160,
+                  overflow: 'hidden',
                 }}
               >
                 <img src="/svg/card-monthly-payoffs.svg" alt="Monthly Payoffs" style={{ width: '100%', height: 'auto' }} />
