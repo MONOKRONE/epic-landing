@@ -5,23 +5,23 @@ import React, { useRef, useEffect, useState } from "react";
 const banks = [
   {
     name: "Chase Bank",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80",
+    image: "/svg/bank-chase.svg",
   },
   {
     name: "Bank of America",
-    image: "https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=600&q=80",
+    image: "/svg/bank-boa.svg",
   },
   {
     name: "Wells Fargo",
-    image: "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=600&q=80",
+    image: "/svg/bank-wells.svg",
   },
   {
     name: "US Bank",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80",
+    image: "/svg/bank-usbank.svg",
   },
   {
     name: "Capital One",
-    image: "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?w=600&q=80",
+    image: "/svg/bank-capitalone.svg",
   },
 ];
 
