@@ -353,7 +353,7 @@ export default function FloatingCard() {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "cover",
+              objectFit: "contain",
             }}
           />
         </div>
@@ -387,7 +387,7 @@ export default function FloatingCard() {
             inset: 0,
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
             zIndex: 2,
           }}
         />
