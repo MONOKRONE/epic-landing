@@ -8,13 +8,10 @@ gsap.registerPlugin(ScrollTrigger);
 export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const logoOverlayRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
     const canvas = canvasRef.current;
-    const logoOverlay = logoOverlayRef.current;
-    if (!gridWrapper || !canvas || !logoOverlay) return;
+    if (!gridWrapper || !canvas) return;
 
     const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
     if (!gl) return;
@@ -171,16 +168,6 @@ export default function PartnerGrid() {
         }
       );
 
-      // Fade out logo overlay
-      gsap.to(logoOverlay!, {
-        scrollTrigger: {
-          trigger: gridWrapper,
-          start: "top top",
-          end: "30% top",
-          scrub: 0.5,
-        },
-        opacity: 0,
-      });
     }, gridWrapper);
 
     // Render loop
@@ -246,62 +233,6 @@ export default function PartnerGrid() {
               display: "block",
             }}
           />
-          {/* Logo overlay on top of canvas */}
-          <div
-            ref={logoOverlayRef}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              pointerEvents: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(5, 1fr)",
-                width: "70vw",
-                height: "75vh",
-                gap: 0,
-                position: "relative",
-              }}
-            >
-              {[
-                "CHASE", "ALLY FINANCIAL", "WELLS FARGO", "CAPITAL ONE", "TRUIST",
-                "US BANK", "TD BANK", "CITIZENS", "PNC", "NAVY FEDERAL",
-                "FIFTH THIRD", "", "DOORDASH", "", "",
-                "", "", "", "", "",
-              ].map((name, i) => {
-                const col = i % 5;
-                const row = Math.floor(i / 5);
-                const stairPx = col * 33;
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "clamp(0.7rem, 1.1vw, 1.1rem)",
-                      fontWeight: 600,
-                      color: "#2A206A",
-                      opacity: name ? 0.35 : 0,
-                      letterSpacing: 1,
-                      textTransform: "uppercase" as const,
-                      marginTop: row === 0 ? `${stairPx}%` : 0,
-                    }}
-                  >
-                    {name}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
         </div>
       </div>
 
