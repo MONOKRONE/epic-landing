@@ -85,10 +85,10 @@ export default function FloatingCard() {
         /* WP1 → WP2: Hero → Enterprises
            Card moves to RIGHT side, bigger, tilted — must not overlap left text */
         cardTl.to(card, {
-          top: "15%",
+          top: "20%",
           right: "4%",
-          width: 480,
-          height: 311,
+          width: 400,
+          height: 260,
           rotateY: -15,
           rotateZ: 8,
           rotateX: 5,
@@ -212,83 +212,70 @@ export default function FloatingCard() {
           );
         }
 
-        /* --- Scattered bills: fan out then fly to banks --- */
+        /* --- Scattered bills: single timeline per bill --- */
         if (enterprisesEl && featuresEl) {
-          const spawnTop = "15%";
-          const spawnRight = "8%";
-
-          // Each bill gets a slight offset from the stack — fan out gently
           const fanOffsets = [
-            { x: -100, y: -80,  rot: -20 },
-            { x: -200, y: 20,   rot: -35 },
-            { x: -50,  y: 80,   rot: 10 },
-            { x: -160, y: -40,  rot: -28 },
-            { x: -250, y: 60,   rot: -15 },
+            { x: -100, y: -80, rot: -20 },
+            { x: -200, y: 20, rot: -35 },
+            { x: -50, y: 80, rot: 10 },
+            { x: -160, y: -40, rot: -28 },
+            { x: -250, y: 60, rot: -15 },
+          ];
+          const bankDestinations = [
+            { x: -800, y: 300, rot: -15 },
+            { x: -500, y: 200, rot: 10 },
+            { x: -900, y: 500, rot: -25 },
+            { x: -600, y: 450, rot: 20 },
+            { x: -700, y: 350, rot: -5 },
           ];
 
-          // Phase 1: Bills appear and fan out during Enterprises scroll
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
-
-            // Set initial position (at the stack, hidden)
+            // Start hidden at stack position
             gsap.set(el, {
-              top: spawnTop,
-              right: spawnRight,
+              top: "60%",
+              right: "2%",
               x: 0,
               y: 0,
+              rotation: 0,
               opacity: 0,
+              scale: 1,
             });
 
-            // Phase 1: Fan out (after band breaks)
-            gsap.to(el, {
-              x: fanOffsets[i].x,
-              y: fanOffsets[i].y,
-              rotation: fanOffsets[i].rot,
-              opacity: 1,
+            // Single timeline: appear → fan out → fly to bank → fade
+            const billTl = gsap.timeline({
               scrollTrigger: {
                 trigger: enterprisesEl,
-                start: "bottom 40%",
-                end: "bottom top",
-                scrub: 1,
+                start: "top 60%",
+                endTrigger: featuresEl,
+                end: "center top",
+                scrub: 1.5,
               },
             });
-          });
 
-          // Phase 2: Bills fly toward bank card positions (left side 2x2 grid)
-          const bankDestinations = [
-            { x: -800, y: 300, rot: -15 },   // Chase: far left, mid
-            { x: -500, y: 200, rot: 10 },    // BoA: center-left, upper-mid
-            { x: -900, y: 500, rot: -25 },   // Wells Fargo: far left, lower
-            { x: -600, y: 450, rot: 20 },    // Capital One: center-left, lower
-            { x: -700, y: 350, rot: -5 },    // Extra bill: between banks
-          ];
-
-          scatteredRefs.current.forEach((el, i) => {
-            if (!el) return;
-            const dest = bankDestinations[i];
-
-            gsap.fromTo(el,
-              {
-                x: fanOffsets[i].x,
-                y: fanOffsets[i].y,
-                rotation: fanOffsets[i].rot,
-                opacity: 1,
-                scale: 1,
-              },
-              {
-                x: dest.x,
-                y: dest.y,
-                rotation: dest.rot,
-                opacity: 0,
-                scale: 0.7,
-                scrollTrigger: {
-                  trigger: featuresEl,
-                  start: "top 90%",
-                  end: "top 20%",
-                  scrub: 1.5,
-                },
-              }
+            // 0-30%: Appear and fan out from stack
+            billTl.fromTo(el,
+              { opacity: 0, x: 0, y: 0, rotation: 0, scale: 0.8 },
+              { opacity: 1, x: fanOffsets[i].x, y: fanOffsets[i].y, rotation: fanOffsets[i].rot, scale: 1, duration: 0.3 },
+              0
             );
+
+            // 30-85%: Fly toward bank
+            billTl.to(el, {
+              x: bankDestinations[i].x,
+              y: bankDestinations[i].y,
+              rotation: bankDestinations[i].rot,
+              duration: 0.55,
+              ease: "power1.inOut",
+            }, 0.3);
+
+            // 85-100%: Fade out at bank
+            billTl.to(el, {
+              opacity: 0,
+              scale: 0.6,
+              duration: 0.15,
+              ease: "power2.in",
+            }, 0.85);
           });
         }
 
@@ -372,10 +359,10 @@ export default function FloatingCard() {
         className="pointer-events-none"
         style={{
           position: "fixed",
-          top: "8%",
-          right: "4%",
-          width: 480,
-          height: 370,
+          top: "55%",
+          right: "2%",
+          width: 320,
+          height: 210,
           zIndex: 1,
           willChange: "transform, width, height, top, right, left, border-radius",
           transformStyle: "preserve-3d",
