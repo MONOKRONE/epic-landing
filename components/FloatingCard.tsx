@@ -126,16 +126,15 @@ export default function FloatingCard() {
           ease: "power2.inOut",
         });
 
-        /* WP4: Card stays small, fades out as diagonal wipe takes over */
+        /* WP4: Card moves to right side, stays visible — wipe covers it */
         cardTl.to(card, {
-          top: "15%",
-          right: "5%",
-          width: 340,
-          height: 220,
-          rotateZ: 0,
+          top: "5%",
+          right: "2%",
+          width: 300,
+          height: 195,
+          rotateZ: 8,
           rotateX: 0,
-          rotateY: 0,
-          opacity: 0,
+          rotateY: -5,
           duration: 1,
           ease: "power2.inOut",
         });
@@ -258,34 +257,34 @@ export default function FloatingCard() {
           });
         }
 
-        /* --- Diagonal wipe: purple wedge slides in from bottom-right --- */
+        /* --- Diagonal wipe: green wedge slides in from bottom --- */
         const wipe = wipeRef.current;
-        if (wipe && tailoredEl) {
-          // Wipe enters during Features→Tailored transition
+        if (wipe && featuresEl && tailoredEl) {
+          // Wipe starts sliding in during Features section
           gsap.fromTo(wipe,
             { yPercent: 100 },
             {
               yPercent: 0,
               ease: "none",
               scrollTrigger: {
-                trigger: featuresEl || enterprisesEl,
-                start: "bottom 60%",
+                trigger: featuresEl,
+                start: "center center",
                 endTrigger: tailoredEl,
-                end: "top top",
+                end: "top 20%",
                 scrub: 1,
               },
             }
           );
 
-          // Hide card once wipe covers it
-          ScrollTrigger.create({
-            trigger: tailoredEl,
-            start: "top 50%",
-            onEnter: () => {
-              gsap.set(card, { opacity: 0 });
-            },
-            onLeaveBack: () => {
-              gsap.set(card, { opacity: 1 });
+          // Fade card as wipe approaches it
+          gsap.to(card, {
+            opacity: 0,
+            scrollTrigger: {
+              trigger: featuresEl,
+              start: "bottom 30%",
+              endTrigger: tailoredEl,
+              end: "top 40%",
+              scrub: 1,
             },
           });
         }
@@ -446,7 +445,7 @@ export default function FloatingCard() {
           height: "100vh",
           zIndex: 45,
           background: "#e8f5e9",
-          clipPath: "polygon(0% 35%, 100% 0%, 100% 100%, 0% 100%)",
+          clipPath: "polygon(0% 20%, 100% 0%, 100% 100%, 0% 100%)",
           transform: "translateY(100%)",
           willChange: "transform",
         }}
