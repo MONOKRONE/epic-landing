@@ -200,37 +200,38 @@ export default function PartnerGrid() {
             fontWeight: 700,
             color: 'white',
             textAlign: 'center',
-            marginBottom: 64,
+            marginBottom: 48,
             lineHeight: 1.15,
           }}>
             The results speak for themselves
           </h2>
 
-          {/* Three stats in a row */}
+          {/* Big stat — full number */}
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <p style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', fontWeight: 300, color: '#20A472', lineHeight: 1, letterSpacing: '-0.02em' }}>$290,000,000,000+</p>
+            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', marginTop: 12 }}>volume processed in 2024</p>
+          </div>
+
+          {/* Two smaller stats side by side */}
           <div style={{
             display: 'flex',
             justifyContent: 'center',
             gap: 80,
-            flexWrap: 'wrap',
             marginBottom: 56,
           }}>
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 900, color: '#20A472', lineHeight: 1 }}>$290B+</p>
-              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginTop: 10 }}>volume processed in 2024</p>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 900, color: '#20A472', lineHeight: 1 }}>99.99%</p>
+              <p style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 300, color: '#20A472', lineHeight: 1 }}>99.99%</p>
               <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginTop: 10 }}>platform uptime in 2024</p>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 900, color: '#20A472', lineHeight: 1 }}>2,500+</p>
+              <p style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 300, color: '#20A472', lineHeight: 1 }}>2,500+</p>
               <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginTop: 10 }}>lender connections nationwide</p>
             </div>
           </div>
 
-          {/* Awards centered */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 24 }}>
-            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 72 }} />
+          {/* Awards — bigger */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 32 }}>
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 110 }} />
           </div>
         </div>
       </div>
