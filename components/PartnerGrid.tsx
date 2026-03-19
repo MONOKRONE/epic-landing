@@ -58,7 +58,7 @@ export default function PartnerGrid() {
         float xSpread = 1.0 + warpAmt * yBottom * yBottom;
         vec2 warped;
         warped.x = p.x / xSpread;
-        warped.y = -p.y - 1.35;
+        warped.y = -p.y - 1.45;
 
         // Zoom
         float zoom = 1.0 + t * t * 8.0;
