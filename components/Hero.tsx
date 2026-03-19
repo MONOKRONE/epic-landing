@@ -451,8 +451,8 @@ export default function Hero() {
                 ref={notifRef}
                 className="absolute hidden md:block"
                 style={{
-                  top: '28%',
-                  right: '38%',
+                  top: '20%',
+                  left: -90,
                   zIndex: 30,
                   width: 180,
                   overflow: 'hidden',
@@ -466,8 +466,8 @@ export default function Hero() {
                 ref={ledgerRef}
                 className="absolute hidden md:block"
                 style={{
-                  top: '80%',
-                  right: '15%',
+                  bottom: -70,
+                  right: '30%',
                   zIndex: 30,
                   width: 190,
                   overflow: 'hidden',
@@ -481,8 +481,8 @@ export default function Hero() {
                 ref={graphRef}
                 className="absolute hidden md:block"
                 style={{
-                  top: '32%',
-                  right: '-4%',
+                  top: '35%',
+                  right: -80,
                   zIndex: 30,
                   width: 160,
                   overflow: 'hidden',
