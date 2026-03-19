@@ -438,7 +438,7 @@ export default function Hero() {
                 }}
               >
                 <Image
-                  src="/jpg/dealer-salesman.jpg"
+                  src="/png/top-photo.png"
                   alt="Customer using mobile payment"
                   fill
                   className="object-cover"
