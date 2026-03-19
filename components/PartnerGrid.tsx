@@ -190,31 +190,47 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
 
-      {/* PART A: Stats — normal scroll, Marqeta-style layout */}
-      <div style={{ background: "#2A206A" }} className="py-16 lg:py-24">
-        <div style={{ maxWidth: 1200, margin: "0 auto" }} className="px-4 lg:px-10">
+      {/* PART A: Stats — centered aesthetic layout */}
+      <div style={{ background: '#2A206A' }} className="py-20 lg:py-32">
+        <div style={{ maxWidth: 1100, margin: '0 auto' }} className="px-4 lg:px-10">
 
-          {/* Big stat */}
-          <div style={{ textAlign: "right", marginBottom: 48 }}>
-            <p style={{ fontSize: 80, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>$290B+</p>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>volume processed in 2024</p>
+          {/* Title */}
+          <h2 style={{
+            fontSize: 'clamp(2rem, 4vw, 3.2rem)',
+            fontWeight: 700,
+            color: 'white',
+            textAlign: 'center',
+            marginBottom: 64,
+            lineHeight: 1.15,
+          }}>
+            The results speak for themselves
+          </h2>
+
+          {/* Three stats in a row */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 80,
+            flexWrap: 'wrap',
+            marginBottom: 56,
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 900, color: '#20A472', lineHeight: 1 }}>$290B+</p>
+              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginTop: 10 }}>volume processed in 2024</p>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 900, color: '#20A472', lineHeight: 1 }}>99.99%</p>
+              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginTop: 10 }}>platform uptime in 2024</p>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 900, color: '#20A472', lineHeight: 1 }}>2,500+</p>
+              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginTop: 10 }}>lender connections nationwide</p>
+            </div>
           </div>
 
-          {/* Two stats side by side */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 80, marginBottom: 48 }}>
-            <div style={{ textAlign: "center" }}>
-              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>99.99%</p>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>platform uptime in 2024</p>
-            </div>
-            <div style={{ textAlign: "center" }}>
-              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>2,500+</p>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>lender connections nationwide</p>
-            </div>
-          </div>
-
-          {/* Awards */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 24 }}>
-            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 80, opacity: 1.0 }} />
+          {/* Awards centered */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 24 }}>
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 72 }} />
           </div>
         </div>
       </div>
