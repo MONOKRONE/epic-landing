@@ -125,63 +125,55 @@ export default function FloatingCard() {
           ease: "power2.inOut",
         });
 
-        /* WP4: Bill slides diagonally from right toward center-bottom */
+        /* WP4 → WP5: Card grows slightly before explosion to fullscreen */
         cardTl.to(card, {
-          top: "40%",
-          right: "25%",
-          width: 600,
-          height: 390,
-          rotateZ: -5,
+          top: "15%",
+          right: "5%",
+          width: 340,
+          height: 220,
+          rotateZ: 0,
           rotateX: 0,
           rotateY: 0,
-          duration: 0.8,
+          duration: 0.5,
           ease: "power2.inOut",
         });
 
-        /* WP5a: Bill continues sliding down-left while growing large */
+        /* WP5: Expansion — card becomes full-screen purple bg */
         cardTl.to(card, {
-          top: "30%",
-          right: "auto",
+          top: "50%",
           left: "50%",
+          right: "auto",
           xPercent: -50,
           yPercent: -50,
-          width: "120vw",
-          height: "80vh",
-          rotateZ: 0,
+          width: "200vw",
+          height: "200vh",
           borderRadius: 0,
-          duration: 1,
-          ease: "power2.inOut",
+          duration: 1.5,
+          ease: "power3.inOut",
           onStart: () => {
+            // Switch to left-based positioning
             gsap.set(card, { right: "auto" });
           },
-        });
-
-        /* WP5b: Zoom into the green area + fade to solid green */
-        cardTl.to(card, {
-          width: "250vw",
-          height: "250vh",
-          duration: 1,
-          ease: "power3.in",
           onUpdate: function () {
             const p = this.progress();
-            // Scale the bill image to zoom into Treasury-Franklin green gap
-            if (imgRef.current) {
-              imgRef.current.style.transformOrigin = "37% 50%";
-              imgRef.current.style.transform = `scale(${1 + p * 5})`;
-              // Fade out in last 40%
-              const fadeP = Math.max(0, Math.min(1, (p - 0.6) / 0.4));
-              imgRef.current.style.opacity = `${1 - fadeP}`;
-            }
-            if (purpleBgRef.current) {
-              const fadeP = Math.max(0, Math.min(1, (p - 0.6) / 0.4));
-              purpleBgRef.current.style.opacity = `${fadeP}`;
-            }
+            // First 60%: bill fully visible, zooming in
+            // 60-100%: bill fades out, green bg fades in
+            const fadeP = Math.max(0, Math.min(1, (p - 0.75) / 0.25));
+            if (imgRef.current) imgRef.current.style.opacity = `${1 - fadeP}`;
+            if (purpleBgRef.current) purpleBgRef.current.style.opacity = `${fadeP}`;
             // Hide bands
             if (bandLeftRef.current) bandLeftRef.current.style.opacity = "0";
             if (bandRightRef.current) bandRightRef.current.style.opacity = "0";
             if (bandTextRef.current) bandTextRef.current.style.opacity = "0";
           },
         });
+
+        // Zoom image into the green gap between Treasury and Franklin
+        cardTl.to(imgRef.current, {
+          scale: 4,
+          duration: 1.5,
+          ease: "power3.inOut",
+        }, "<"); // "<" means start at same time as WP5
 
         /* --- Band break animation --- */
         if (enterprisesEl) {
@@ -336,6 +328,7 @@ export default function FloatingCard() {
             },
             onEnterBack: () => {
               gsap.to(card, { opacity: 1, duration: 0.3 });
+              if (imgRef.current) imgRef.current.style.transform = "";
             },
           });
         }
@@ -407,6 +400,7 @@ export default function FloatingCard() {
             width: "100%",
             height: "100%",
             objectFit: "contain",
+            transformOrigin: "37% 50%",
             zIndex: 2,
           }}
         />
