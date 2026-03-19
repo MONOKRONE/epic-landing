@@ -1,0 +1,22 @@
+<svg viewBox="0 0 230 170" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="230" height="170" rx="14" fill="white" filter="drop-shadow(0 4px 16px rgba(0,0,0,0.08))"/>
+  
+  <text x="16" y="30" font-size="10" fill="#888" font-weight="500" letter-spacing="0.5">Recent Payoffs</text>
+  
+  <!-- Row 1 -->
+  <text x="16" y="56" font-size="10" fill="#1e1b4b" font-weight="500">Toyota Camry</text>
+  <text x="16" y="68" font-size="8" fill="#aaa">Wells Fargo · 2h ago</text>
+  <text x="214" y="60" font-size="11" fill="#2e7d32" font-weight="500" text-anchor="end">+$14,250</text>
+  <line x1="16" y1="76" x2="214" y2="76" stroke="#f0f0f0" stroke-width="0.5"/>
+  
+  <!-- Row 2 -->
+  <text x="16" y="94" font-size="10" fill="#1e1b4b" font-weight="500">Honda Civic</text>
+  <text x="16" y="106" font-size="8" fill="#aaa">Chase Auto · 4h ago</text>
+  <text x="214" y="98" font-size="11" fill="#2e7d32" font-weight="500" text-anchor="end">+$9,800</text>
+  <line x1="16" y1="114" x2="214" y2="114" stroke="#f0f0f0" stroke-width="0.5"/>
+  
+  <!-- Row 3 -->
+  <text x="16" y="132" font-size="10" fill="#1e1b4b" font-weight="500">Ford F-150</text>
+  <text x="16" y="144" font-size="8" fill="#aaa">Capital One · 6h ago</text>
+  <text x="214" y="136" font-size="11" fill="#2e7d32" font-weight="500" text-anchor="end">+$22,400</text>
+</svg>

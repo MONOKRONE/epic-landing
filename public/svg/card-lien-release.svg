@@ -1,0 +1,22 @@
+<svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="220" height="180" rx="14" fill="white" filter="drop-shadow(0 4px 16px rgba(0,0,0,0.08))"/>
+  
+  <!-- Header -->
+  <rect x="16" y="16" width="32" height="32" rx="8" fill="#e8f5e9"/>
+  <path d="M26 32l4.4 4.4 8.8-8.8" stroke="#2e7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <text x="56" y="28" font-size="9" fill="#888" font-weight="500">Notification</text>
+  <text x="56" y="42" font-size="11" fill="#1e1b4b" font-weight="600">Lien Released</text>
+  
+  <!-- Details box -->
+  <rect x="16" y="58" width="188" height="82" rx="8" fill="#f8f8fa"/>
+  <text x="26" y="78" font-size="9" fill="#888">Vehicle</text>
+  <text x="194" y="78" font-size="9" fill="#1e1b4b" font-weight="500" text-anchor="end">2024 Honda Accord</text>
+  <text x="26" y="100" font-size="9" fill="#888">Lender</text>
+  <text x="194" y="100" font-size="9" fill="#1e1b4b" font-weight="500" text-anchor="end">Chase Auto</text>
+  <text x="26" y="122" font-size="9" fill="#888">Amount</text>
+  <text x="194" y="122" font-size="9" fill="#2e7d32" font-weight="500" text-anchor="end">$24,850.00</text>
+  
+  <!-- Status -->
+  <circle cx="24" cy="158" r="3" fill="#2e7d32"/>
+  <text x="32" y="161" font-size="8" fill="#2e7d32" font-weight="500">Released — Mar 15, 2026</text>
+</svg>

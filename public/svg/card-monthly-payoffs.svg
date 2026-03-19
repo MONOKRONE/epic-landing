@@ -1,0 +1,27 @@
+<svg viewBox="0 0 200 170" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="200" height="170" rx="14" fill="white" filter="drop-shadow(0 4px 16px rgba(0,0,0,0.08))"/>
+  
+  <text x="16" y="30" font-size="10" fill="#888" font-weight="500" letter-spacing="0.5">Monthly Payoffs</text>
+  <text x="16" y="56" font-size="22" fill="#1e1b4b" font-weight="600">$1.2M</text>
+  
+  <!-- Trend -->
+  <path d="M16 72l6-8 4 4 6-8" stroke="#2e7d32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <text x="38" y="72" font-size="9" fill="#2e7d32" font-weight="500">+18.3% vs last month</text>
+  
+  <!-- Mini bar chart -->
+  <rect x="16" y="120" width="12" height="22" rx="2" fill="#c8e6c9"/>
+  <rect x="32" y="112" width="12" height="30" rx="2" fill="#c8e6c9"/>
+  <rect x="48" y="116" width="12" height="26" rx="2" fill="#c8e6c9"/>
+  <rect x="64" y="106" width="12" height="36" rx="2" fill="#c8e6c9"/>
+  <rect x="80" y="110" width="12" height="32" rx="2" fill="#c8e6c9"/>
+  <rect x="96" y="100" width="12" height="42" rx="2" fill="#a5d6a7"/>
+  <rect x="112" y="104" width="12" height="38" rx="2" fill="#a5d6a7"/>
+  <rect x="128" y="94" width="12" height="48" rx="2" fill="#66bb6a"/>
+  <rect x="144" y="98" width="12" height="44" rx="2" fill="#66bb6a"/>
+  <rect x="160" y="88" width="12" height="54" rx="2" fill="#43a047"/>
+  <rect x="176" y="84" width="12" height="58" rx="2" fill="#2e7d32"/>
+  
+  <!-- Labels -->
+  <text x="16" y="155" font-size="8" fill="#aaa">Jan</text>
+  <text x="176" y="155" font-size="8" fill="#aaa">Dec</text>
+</svg>
