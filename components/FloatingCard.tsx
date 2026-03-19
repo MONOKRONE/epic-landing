@@ -222,18 +222,18 @@ export default function FloatingCard() {
             { x: -250, y: 60, rot: -15 },
           ];
           const bankDestinations = [
-            { x: -800, y: 300, rot: -15 },
-            { x: -500, y: 200, rot: 10 },
-            { x: -900, y: 500, rot: -25 },
-            { x: -600, y: 450, rot: 20 },
-            { x: -700, y: 350, rot: -5 },
+            { x: -1000, y: 100, rot: -10 },   // Chase: top-left bank
+            { x: -700, y: 100, rot: 8 },       // BoA: top-right bank
+            { x: -1000, y: 300, rot: -20 },    // Wells Fargo: bottom-left bank
+            { x: -700, y: 300, rot: 15 },      // Capital One: bottom-right bank
+            { x: -850, y: 200, rot: -5 },      // Extra: center between banks
           ];
 
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
             // Start hidden at stack position
             gsap.set(el, {
-              top: "60%",
+              top: "55%",
               right: "2%",
               x: 0,
               y: 0,
