@@ -7,256 +7,259 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const whiteOverlayRef = useRef<HTMLDivElement>(null);
-
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
-    const grid = gridRef.current;
-    const whiteOverlay = whiteOverlayRef.current;
-    if (!gridWrapper || !grid || !whiteOverlay) return;
+    const canvas = canvasRef.current;
+    if (!gridWrapper || !canvas) return;
 
+    const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
+    if (!gl) return;
+    gl.getExtension("OES_standard_derivatives");
+
+    // Shaders
+    const vertSrc = `
+      attribute vec2 a_position;
+      varying vec2 v_uv;
+      void main() {
+        v_uv = a_position * 0.5 + 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    const fragSrc = `
+      #extension GL_OES_standard_derivatives : enable
+      precision highp float;
+      varying vec2 v_uv;
+      uniform float u_progress;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+
+      const float COLS = 5.0;
+      const float ROWS = 7.0;
+
+      float sdRoundedBox(vec2 p, vec2 b, float r) {
+        vec2 q = abs(p) - b + r;
+        return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+      }
+
+      void main() {
+        vec2 uv = v_uv;
+        float aspect = u_resolution.x / u_resolution.y;
+        vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
+        float t = u_progress;
+
+        // Warp: curtain pull
+        float warpAmt = t * t * 5.0;
+        float yBottom = clamp(0.5 - p.y, 0.0, 1.0);
+        float xSpread = 1.0 + warpAmt * yBottom * yBottom;
+        vec2 warped;
+        warped.x = p.x / xSpread;
+        warped.y = -p.y - 1.76;
+
+        // Zoom
+        float zoom = 1.0 + t * t * 8.0;
+        warped /= zoom;
+
+        // Grid coordinates
+        float gridW = aspect * 1.045;
+        float gridH = 4.39;
+        vec2 gridUV = vec2(
+          (warped.x + gridW * 0.5) / gridW * COLS,
+          (warped.y + gridH * 0.5) / gridH * ROWS
+        );
+        // Staircase: each column shifts down by 33% of one cell height
+        float colIndex = clamp(floor(gridUV.x), 0.0, COLS - 1.0);
+        float stairOffset = colIndex * 0.33;
+        gridUV.y -= stairOffset;
+
+        vec2 cellUV = fract(gridUV);
+        float gap = mix(0.025, 0.012, t);
+        float cornerR = mix(0.045, 0.003, t);
+
+        vec2 cellCenter = cellUV - 0.5;
+        vec2 halfBox = vec2(0.5 - gap);
+        float d = sdRoundedBox(cellCenter, halfBox, cornerR);
+        float aa = fwidth(d);
+        float cellMask = 1.0 - smoothstep(-aa, aa, d);
+
+        float inGrid = step(0.0, gridUV.x) * step(0.0, gridUV.y)
+                     * step(gridUV.x, COLS) * step(gridUV.y, ROWS);
+
+        // Colors — use Epic purple
+        vec3 purple = vec3(0.165, 0.125, 0.416); // #2A206A
+        vec3 white = vec3(1.0);
+
+        vec3 color = mix(purple, white, cellMask * inGrid);
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    // Compile shaders
+    function createShader(type: number, source: string) {
+      const shader = gl!.createShader(type)!;
+      gl!.shaderSource(shader, source);
+      gl!.compileShader(shader);
+      if (!gl!.getShaderParameter(shader, gl!.COMPILE_STATUS)) {
+        console.error("Shader error:", gl!.getShaderInfoLog(shader));
+        gl!.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vert = createShader(gl.VERTEX_SHADER, vertSrc);
+    const frag = createShader(gl.FRAGMENT_SHADER, fragSrc);
+    if (!vert || !frag) return;
+
+    const program = gl.createProgram()!;
+    gl.attachShader(program, vert);
+    gl.attachShader(program, frag);
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    // Fullscreen quad
+    const posBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+    const posLoc = gl.getAttribLocation(program, "a_position");
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const uProgress = gl.getUniformLocation(program, "u_progress");
+    const uResolution = gl.getUniformLocation(program, "u_resolution");
+    const uTime = gl.getUniformLocation(program, "u_time");
+
+    // Resize
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      canvas!.width = canvas!.clientWidth * dpr;
+      canvas!.height = canvas!.clientHeight * dpr;
+      gl!.viewport(0, 0, canvas!.width, canvas!.height);
+      gl!.uniform2f(uResolution, canvas!.width, canvas!.height);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    // Animation state
+    let scrollProgress = 0;
+    const startTime = performance.now();
+    let animFrameId: number;
+
+    // GSAP ScrollTrigger
     const ctx = gsap.context(() => {
-      // Tween 1: Zoom
-      gsap.fromTo(
-        grid,
-        { scale: 1 },
+      gsap.to(
+        {},
         {
-          scale: 20,
-          ease: "none",
           scrollTrigger: {
             trigger: gridWrapper,
             start: "top top",
             end: "bottom top",
-            scrub: 1.5,
+            scrub: 0.5,
+            onUpdate: (self) => {
+              scrollProgress = self.progress;
+            },
           },
         }
       );
 
-      // Tween 2: White overlay
-      gsap.fromTo(
-        whiteOverlay,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          scrollTrigger: {
-            trigger: gridWrapper,
-            start: "65% top",
-            end: "80% top",
-            scrub: 1,
-          },
-        }
-      );
     }, gridWrapper);
 
-    return () => ctx.revert();
-  }, []);
+    // Render loop
+    function render() {
+      const elapsed = (performance.now() - startTime) / 1000;
+      gl!.uniform1f(uProgress, scrollProgress);
+      gl!.uniform1f(uTime, elapsed);
+      gl!.drawArrays(gl!.TRIANGLES, 0, 6);
+      animFrameId = requestAnimationFrame(render);
+    }
+    render();
 
-  const logos = [
-    { src: "/svg/static_svg_logo-uber.svg", alt: "Uber" },
-    { src: "/svg/static_svg_logo-square.svg", alt: "Square" },
-    { src: "/svg/static_svg_logo-instacart.svg", alt: "Instacart" },
-    { src: "/svg/static_img_partners_WesternUnion.svg", alt: "Western Union" },
-  ];
+    return () => {
+      cancelAnimationFrame(animFrameId);
+      window.removeEventListener("resize", resize);
+      ctx.revert();
+    };
+  }, []);
 
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
-      {/* PART 1: Stats — normal scrolling content */}
-      <div style={{ background: "#1e1b4b" }} className="py-16 lg:py-[120px] pb-8 lg:pb-[60px]">
-        <div style={{ maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
-          <div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
-          >
-            {/* Left: Partner logo cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {logos.map((logo, i) => (
-                <div
-                  key={i}
-                  style={{
-                    background: "white",
-                    borderRadius: 12,
-                    boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
-                    padding: "24px 32px",
-                  }}
-                >
-                  <img
-                    src={logo.src}
-                    alt={logo.alt}
-                    style={{ height: 32, objectFit: "contain" }}
-                  />
-                </div>
-              ))}
+
+      {/* PART A: Stats — normal scroll, Marqeta-style layout */}
+      <div style={{ background: "#2A206A" }} className="py-16 lg:py-24">
+        <div style={{ maxWidth: 1200, margin: "0 auto" }} className="px-4 lg:px-10">
+
+          {/* Big stat */}
+          <div style={{ textAlign: "right", marginBottom: 48 }}>
+            <p style={{ fontSize: 80, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>$290B+</p>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>volume processed in 2024</p>
+          </div>
+
+          {/* Two stats side by side */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 80, marginBottom: 48 }}>
+            <div style={{ textAlign: "center" }}>
+              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>99.99%</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>platform uptime in 2024</p>
             </div>
-
-            {/* Right: Title + Stats + Awards */}
-            <div>
-              <h2
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8 lg:mb-12"
-              >
-                The results speak for themselves
-              </h2>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 32,
-                }}
-              >
-                <div>
-                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
-                    $290B+
-                  </p>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
-                    volume processed in 2024
-                  </p>
-                </div>
-                <div>
-                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
-                    99.99%
-                  </p>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
-                    platform uptime in 2024
-                  </p>
-                </div>
-                <div>
-                  <p className="text-3xl sm:text-4xl lg:text-[56px] font-black" style={{ color: "#20A472" }}>
-                    2,500+
-                  </p>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
-                    lender connections nationwide
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ marginTop: 40 }}>
-                <img
-                  src="/svg/static_img_Awards_Updated-logo.svg"
-                  alt="Awards"
-                  style={{ height: 64, opacity: 1.0 }}
-                />
-              </div>
+            <div style={{ textAlign: "center" }}>
+              <p style={{ fontSize: 56, fontWeight: 900, color: "#20A472", lineHeight: 1 }}>2,500+</p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>lender connections nationwide</p>
             </div>
+          </div>
+
+          {/* Awards */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 24 }}>
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 80, opacity: 1.0 }} />
           </div>
         </div>
       </div>
 
-      {/* PART 2: Grid + Zoom — sticky with scroll animation */}
-      <div ref={gridWrapperRef} className="hidden lg:block h-[300vh]">
-        <div
-          className="sticky top-0 h-screen w-full overflow-hidden"
-          style={{ background: "#1e1b4b" }}
-        >
-          {/* Masonry grid */}
-          <div
-            ref={gridRef}
+      {/* PART B: WebGL Grid zoom — scroll driven */}
+      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "180vh", position: "relative" }}>
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
+          <canvas
+            ref={canvasRef}
             style={{
               position: "absolute",
-              inset: 0,
-              display: "flex",
-              gap: 8,
-              padding: 8,
-              background: "#1e1b4b",
-              transformOrigin: "50% 60%",
-              willChange: "transform",
-            }}
-          >
-            {/* Column 1 */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-                paddingTop: 0,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: "0 0 38%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
-            </div>
-            {/* Column 2 */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-                paddingTop: 60,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 18%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CHASE</span>
-              </div>
-              <div style={{ background: "white", flex: "0 0 42%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
-            </div>
-            {/* Column 3 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 8,
-                paddingTop: 120,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 32%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>ALLY FINANCIAL</span>
-              </div>
-              <div style={{ background: "white", flex: "0 0 28%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
-            </div>
-            {/* Column 4 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 8,
-                paddingTop: 180,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: "0 0 45%", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ color: "#c4c4c4", fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CAPITAL ONE</span>
-              </div>
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
-            </div>
-            {/* Column 5 */}
-            <div
-              className="hidden lg:flex"
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                gap: 8,
-                paddingTop: 240,
-              }}
-            >
-              <div style={{ background: "white", flex: "0 0 35%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: "0 0 22%", borderRadius: 12 }} />
-              <div style={{ background: "white", flex: 1, borderRadius: 12 }} />
-            </div>
-          </div>
-
-          {/* White overlay */}
-          <div
-            ref={whiteOverlayRef}
-            className="absolute inset-0"
-            style={{
-              background: "#ffffff",
-              opacity: 0,
-              zIndex: 10,
-              pointerEvents: "none",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              display: "block",
             }}
           />
         </div>
       </div>
 
-      {/* Mobile: simple navy to white curve */}
-      <div className="lg:hidden" style={{ background: "white" }}>
+      {/* PART C: Mobile fallback */}
+      <div className="lg:hidden" style={{ background: "#2A206A" }}>
+        <div className="px-4 py-16 text-center">
+          <h2 className="text-3xl font-bold text-white mb-8">The results speak for themselves</h2>
+          <div className="flex flex-col gap-6">
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>$290B+</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>99.99%</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>2,500+</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
+            </div>
+          </div>
+          <div className="mt-8">
+            <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 48, margin: "0 auto" }} />
+          </div>
+        </div>
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#1e1b4b" />
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2A206A" />
         </svg>
       </div>
     </section>
