@@ -1,0 +1,15 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect x="60" y="180" width="280" height="60" rx="4" fill="#85bb65" opacity="0.4"/>
+  <rect x="55" y="165" width="280" height="60" rx="4" fill="#85bb65" opacity="0.5"/>
+  <rect x="50" y="150" width="280" height="60" rx="4" fill="#85bb65" opacity="0.6"/>
+  <rect x="45" y="135" width="280" height="60" rx="4" fill="#85bb65" opacity="0.7"/>
+  <rect x="40" y="120" width="280" height="60" rx="4" fill="#85bb65" opacity="0.8"/>
+  <rect x="35" y="105" width="280" height="60" rx="4" fill="#85bb65" opacity="0.9"/>
+  <rect x="30" y="90" width="280" height="60" rx="4" fill="#85bb65"/>
+  <rect x="130" y="80" width="80" height="200" rx="2" fill="#1e1b4b" opacity="0.15"/>
+  <rect x="45" y="98" width="60" height="36" rx="18" fill="#6b9e50" opacity="0.4"/>
+  <circle cx="170" cy="116" r="16" fill="#6b9e50" opacity="0.3"/>
+  <rect x="220" y="105" width="75" height="6" rx="3" fill="#6b9e50" opacity="0.3"/>
+  <rect x="220" y="118" width="55" height="4" rx="2" fill="#6b9e50" opacity="0.2"/>
+  <text x="170" y="122" text-anchor="middle" font-size="14" font-weight="700" fill="#4a7c34" opacity="0.5">100</text>
+</svg>

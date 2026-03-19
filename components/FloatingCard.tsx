@@ -359,7 +359,7 @@ export default function FloatingCard() {
           }}
         >
           <img
-            src="/png/single-bill.png"
+            src="/svg/bill-100.svg"
             alt=""
             style={{
               width: "100%",
@@ -390,7 +390,7 @@ export default function FloatingCard() {
         {/* Money stack image */}
         <img
           ref={imgRef}
-          src="/png/money-stack.png"
+          src="/svg/bill-stack-banded.svg"
           alt="Stack of hundred dollar bills"
           style={{
             position: "absolute",
