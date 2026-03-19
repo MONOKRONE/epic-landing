@@ -320,7 +320,7 @@ export default function ScrollAnimation() {
   }, []);
 
   return (
-    <div ref={containerRef} className="h-[300vh] lg:h-[500vh] relative">
+    <div ref={containerRef} className="h-[300vh] lg:h-[500vh] relative" style={{ zIndex: 60, background: 'white' }}>
       {/* Sticky Viewport */}
       <div
         className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden"
