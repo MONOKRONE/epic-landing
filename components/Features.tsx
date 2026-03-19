@@ -102,7 +102,7 @@ export default function Features() {
           {/* Bank 1 - top left, large */}
           <div
             className="absolute"
-            style={{ top: "0%", left: "0%", width: "45%" }}
+            style={{ top: "0%", left: "0%", width: "34%" }}
           >
             <div
               className="rounded-2xl overflow-hidden shadow-2xl"
@@ -125,7 +125,7 @@ export default function Features() {
           {/* Bank 2 - top right, medium, offset down */}
           <div
             className="absolute"
-            style={{ top: "8%", right: "0%", width: "35%" }}
+            style={{ top: "8%", right: "0%", width: "26%" }}
           >
             <div
               className="rounded-2xl overflow-hidden shadow-2xl"
@@ -148,7 +148,7 @@ export default function Features() {
           {/* Bank 3 - bottom left, medium */}
           <div
             className="absolute"
-            style={{ top: "55%", left: "5%", width: "30%" }}
+            style={{ top: "55%", left: "5%", width: "22%" }}
           >
             <div
               className="rounded-2xl overflow-hidden shadow-xl"
@@ -171,7 +171,7 @@ export default function Features() {
           {/* Bank 4 - bottom center */}
           <div
             className="absolute"
-            style={{ top: "60%", left: "38%", width: "28%" }}
+            style={{ top: "60%", left: "38%", width: "21%" }}
           >
             <div
               className="rounded-2xl overflow-hidden shadow-xl"
@@ -194,7 +194,7 @@ export default function Features() {
           {/* Bank 5 - bottom right, small */}
           <div
             className="absolute"
-            style={{ top: "50%", right: "2%", width: "25%" }}
+            style={{ top: "50%", right: "2%", width: "19%" }}
           >
             <div
               className="rounded-2xl overflow-hidden shadow-xl"
