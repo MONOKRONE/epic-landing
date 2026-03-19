@@ -662,6 +662,102 @@ export default function Hero() {
         </div>
       </div>
 
+      {/* Floating UI cards */}
+      <div className="hidden lg:block">
+        {/* Card 1: Lien Release Notification */}
+        <div style={{
+          position: 'absolute',
+          top: '12%',
+          right: '2%',
+          zIndex: 30,
+          width: 220,
+          background: 'white',
+          borderRadius: 14,
+          padding: 16,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+          animation: 'floatUp 6s ease-in-out infinite',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: '#e8f5e9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.3 4.7l-6.6 6.6L3.4 8" stroke="#2e7d32" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </div>
+            <div>
+              <p style={{ fontSize: 11, color: '#888', margin: 0, fontWeight: 500 }}>Notification</p>
+              <p style={{ fontSize: 13, fontWeight: 600, margin: 0, color: '#1e1b4b' }}>Lien Released</p>
+            </div>
+          </div>
+          <div style={{ background: '#f8f8fa', borderRadius: 8, padding: '10px 12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+              <span style={{ fontSize: 11, color: '#888' }}>Vehicle</span>
+              <span style={{ fontSize: 11, fontWeight: 500, color: '#1e1b4b' }}>2024 Honda Accord</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+              <span style={{ fontSize: 11, color: '#888' }}>Lender</span>
+              <span style={{ fontSize: 11, fontWeight: 500, color: '#1e1b4b' }}>Chase Auto</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 11, color: '#888' }}>Amount</span>
+              <span style={{ fontSize: 11, fontWeight: 500, color: '#2e7d32' }}>$24,850.00</span>
+            </div>
+          </div>
+        </div>
+        {/* Card 2: Recent Payoffs */}
+        <div style={{
+          position: 'absolute',
+          top: '42%',
+          right: '0%',
+          zIndex: 30,
+          width: 230,
+          background: 'white',
+          borderRadius: 14,
+          padding: 16,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+          animation: 'floatUp 7s ease-in-out infinite 1s',
+        }}>
+          <p style={{ fontSize: 12, fontWeight: 500, color: '#888', margin: '0 0 10px', letterSpacing: 0.5 }}>Recent Payoffs</p>
+          {[
+            { car: 'Toyota Camry', amount: '+$14,250' },
+            { car: 'Honda Civic', amount: '+$9,800' },
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: i === 0 ? '1px solid #f0f0f0' : 'none' }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: '#1e1b4b' }}>{item.car}</span>
+              <span style={{ fontSize: 12, fontWeight: 500, color: '#2e7d32' }}>{item.amount}</span>
+            </div>
+          ))}
+        </div>
+        {/* Card 3: Monthly Total */}
+        <div style={{
+          position: 'absolute',
+          top: '68%',
+          right: '4%',
+          zIndex: 30,
+          width: 180,
+          background: 'white',
+          borderRadius: 14,
+          padding: 16,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+          animation: 'floatUp 5s ease-in-out infinite 0.5s',
+        }}>
+          <p style={{ fontSize: 12, fontWeight: 500, color: '#888', margin: '0 0 4px' }}>Monthly Payoffs</p>
+          <p style={{ fontSize: 22, fontWeight: 600, color: '#1e1b4b', margin: '0 0 4px' }}>$1.2M</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 8l3-4 2 2 3-4" stroke="#2e7d32" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <span style={{ fontSize: 11, color: '#2e7d32', fontWeight: 500 }}>+18.3%</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 40, marginTop: 10 }}>
+            {[35, 45, 40, 55, 50, 65, 60, 75, 70, 85, 90, 100].map((h, i) => (
+              <div key={i} style={{ flex: 1, height: `${h}%`, background: i > 8 ? '#2e7d32' : '#c8e6c9', borderRadius: '2px 2px 0 0' }} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes floatUp {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+      `}</style>
     </section>
   );
 }
