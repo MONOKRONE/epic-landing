@@ -93,11 +93,11 @@ export default function PartnerGrid() {
         vec3 purple = vec3(0.165, 0.125, 0.416); // #2A206A
         vec3 white = vec3(1.0);
 
-        float bgFade = smoothstep(0.75, 1.0, t);
+        float bgFade = smoothstep(0.88, 0.98, t);
         vec3 bg = mix(purple, white, bgFade);
         vec3 color = mix(bg, white, cellMask * inGrid);
 
-        float fullWhite = smoothstep(0.9, 1.0, t);
+        float fullWhite = smoothstep(0.95, 1.0, t);
         color = mix(color, white, fullWhite);
 
         gl_FragColor = vec4(color, 1.0);
