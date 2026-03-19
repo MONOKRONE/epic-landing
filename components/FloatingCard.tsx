@@ -222,36 +222,27 @@ export default function FloatingCard() {
             { x: -200, y: 50, rot: -12 },
           ];
 
-          // Get the bank card elements from Features section
-          const bankGrid = featuresEl.querySelector('div[style*="grid"]');
-          const bankCards = bankGrid ? Array.from(bankGrid.children) : [];
+          const bankDestinations = [
+            { x: -950, y: -20, rot: -10 },    // Chase: top-left
+            { x: -650, y: -20, rot: 8 },       // BoA: top-right
+            { x: -950, y: 220, rot: -18 },     // Wells Fargo: bottom-left
+            { x: -650, y: 220, rot: 12 },      // Capital One: bottom-right
+            { x: -800, y: 100, rot: -5 },      // Extra: center
+          ];
 
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
+            const dest = bankDestinations[i];
 
-            // Bills spawn from the card's position (WP2 area during band break)
             gsap.set(el, {
-              top: "20%",
-              right: "6%",
+              top: "28%",
+              right: "5%",
               x: 0,
               y: 0,
               rotation: 0,
               opacity: 0,
               scale: 1,
             });
-
-            // Calculate destination: fly to actual bank card position
-            let destX = -900;
-            let destY = 150;
-            let destRot = -10;
-            const bankIndex = Math.min(i, bankCards.length - 1);
-            if (bankCards[bankIndex]) {
-              const bankRect = bankCards[bankIndex].getBoundingClientRect();
-              const elRect = el.getBoundingClientRect();
-              destX = bankRect.left + bankRect.width / 2 - elRect.left - elRect.width / 2;
-              destY = bankRect.top + bankRect.height / 2 - elRect.top - elRect.height / 2;
-              destRot = [-10, 8, -20, 15, -5][i];
-            }
 
             // Single timeline
             const billTl = gsap.timeline({
@@ -273,9 +264,9 @@ export default function FloatingCard() {
 
             // 25-80%: Fly toward bank card
             billTl.to(el, {
-              x: destX,
-              y: destY,
-              rotation: destRot,
+              x: dest.x,
+              y: dest.y,
+              rotation: dest.rot,
               duration: 0.55,
               ease: "power1.inOut",
             }, 0.25);
