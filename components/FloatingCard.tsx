@@ -125,40 +125,58 @@ export default function FloatingCard() {
           ease: "power2.inOut",
         });
 
-        /* WP4 → WP5: Card grows slightly before explosion to fullscreen */
+        /* WP4: Bill slides diagonally from right toward center-bottom */
         cardTl.to(card, {
-          top: "15%",
-          right: "5%",
-          width: 340,
-          height: 220,
-          rotateZ: 0,
+          top: "40%",
+          right: "25%",
+          width: 600,
+          height: 390,
+          rotateZ: -5,
           rotateX: 0,
           rotateY: 0,
-          duration: 0.5,
+          duration: 0.8,
           ease: "power2.inOut",
         });
 
-        /* WP5: Expansion — card becomes full-screen purple bg */
+        /* WP5a: Bill continues sliding down-left while growing large */
         cardTl.to(card, {
-          top: "50%",
-          left: "50%",
+          top: "30%",
           right: "auto",
+          left: "50%",
           xPercent: -50,
           yPercent: -50,
-          width: "110vw",
-          height: "110vh",
+          width: "120vw",
+          height: "80vh",
+          rotateZ: 0,
           borderRadius: 0,
-          duration: 1.5,
-          ease: "power3.inOut",
+          duration: 1,
+          ease: "power2.inOut",
           onStart: () => {
-            // Switch to left-based positioning
             gsap.set(card, { right: "auto" });
           },
+        });
+
+        /* WP5b: Zoom into the green area + fade to solid green */
+        cardTl.to(card, {
+          width: "250vw",
+          height: "250vh",
+          duration: 1,
+          ease: "power3.in",
           onUpdate: function () {
             const p = this.progress();
-            const fadeP = Math.max(0, Math.min(1, (p - 0.3) / 0.5));
-            if (imgRef.current) imgRef.current.style.opacity = `${1 - fadeP}`;
-            if (purpleBgRef.current) purpleBgRef.current.style.opacity = `${fadeP}`;
+            // Scale the bill image to zoom into Treasury-Franklin green gap
+            if (imgRef.current) {
+              imgRef.current.style.transformOrigin = "37% 50%";
+              imgRef.current.style.transform = `scale(${1 + p * 5})`;
+              // Fade out in last 40%
+              const fadeP = Math.max(0, Math.min(1, (p - 0.6) / 0.4));
+              imgRef.current.style.opacity = `${1 - fadeP}`;
+            }
+            if (purpleBgRef.current) {
+              const fadeP = Math.max(0, Math.min(1, (p - 0.6) / 0.4));
+              purpleBgRef.current.style.opacity = `${fadeP}`;
+            }
+            // Hide bands
             if (bandLeftRef.current) bandLeftRef.current.style.opacity = "0";
             if (bandRightRef.current) bandRightRef.current.style.opacity = "0";
             if (bandTextRef.current) bandTextRef.current.style.opacity = "0";
@@ -304,8 +322,9 @@ export default function FloatingCard() {
                 rotateZ: 0,
                 zIndex: 40,
               });
-              // Transition: bill fades, purple appears for Tailored section
+              // Transition: bill fades, green bg appears for Tailored section
               if (imgRef.current) imgRef.current.style.opacity = "0";
+              if (imgRef.current) imgRef.current.style.transform = "scale(1)";
               if (purpleBgRef.current) purpleBgRef.current.style.opacity = "1";
             },
             onLeaveBack: () => {
@@ -458,7 +477,7 @@ export default function FloatingCard() {
           ref={purpleBgRef}
           className="absolute inset-0"
           style={{
-            background: "#1e1b4b",
+            background: "#e8f5e9",
             opacity: 0,
             zIndex: 1,
           }}
