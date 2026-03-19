@@ -233,7 +233,7 @@ export default function PartnerGrid() {
       </div>
 
       {/* PART B: WebGL Grid zoom — scroll driven */}
-      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "0vh", position: "relative" }}>
+      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "160vh", position: "relative" }}>
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <canvas
             ref={canvasRef}
