@@ -445,7 +445,7 @@ export default function FloatingCard() {
           width: "100vw",
           height: "100vh",
           zIndex: 45,
-          background: "#1e1b4b",
+          background: "#e8f5e9",
           clipPath: "polygon(0% 35%, 100% 0%, 100% 100%, 0% 100%)",
           transform: "translateY(100%)",
           willChange: "transform",
