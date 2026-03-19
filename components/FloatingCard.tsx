@@ -374,7 +374,7 @@ export default function FloatingCard() {
           borderRadius: 16,
           overflow: "hidden",
           opacity: 0,
-          background: "#e8f5e9",
+          background: "transparent",
         }}
       >
         {/* Money stack image */}
