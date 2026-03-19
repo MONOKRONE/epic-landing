@@ -145,8 +145,8 @@ export default function FloatingCard() {
           right: "auto",
           xPercent: -50,
           yPercent: -50,
-          width: "110vw",
-          height: "110vh",
+          width: "250vw",
+          height: "250vh",
           borderRadius: 0,
           duration: 1.5,
           ease: "power3.inOut",
@@ -458,7 +458,7 @@ export default function FloatingCard() {
           ref={purpleBgRef}
           className="absolute inset-0"
           style={{
-            background: "#1e1b4b",
+            background: "#e8f5e9",
             opacity: 0,
             zIndex: 1,
           }}
