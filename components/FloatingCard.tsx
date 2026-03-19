@@ -212,29 +212,27 @@ export default function FloatingCard() {
           );
         }
 
-        /* --- Scattered bills: single timeline per bill --- */
+        /* --- Scattered bills: dynamic positioning --- */
         if (enterprisesEl && featuresEl) {
           const fanOffsets = [
-            { x: -100, y: -80, rot: -20 },
-            { x: -200, y: 20, rot: -35 },
-            { x: -50, y: 80, rot: 10 },
-            { x: -160, y: -40, rot: -28 },
-            { x: -250, y: 60, rot: -15 },
+            { x: -80, y: -60, rot: -15 },
+            { x: -160, y: 30, rot: -30 },
+            { x: -40, y: 70, rot: 8 },
+            { x: -130, y: -30, rot: -22 },
+            { x: -200, y: 50, rot: -12 },
           ];
-          const bankDestinations = [
-            { x: -1000, y: 100, rot: -10 },   // Chase: top-left bank
-            { x: -700, y: 100, rot: 8 },       // BoA: top-right bank
-            { x: -1000, y: 300, rot: -20 },    // Wells Fargo: bottom-left bank
-            { x: -700, y: 300, rot: 15 },      // Capital One: bottom-right bank
-            { x: -850, y: 200, rot: -5 },      // Extra: center between banks
-          ];
+
+          // Get the bank card elements from Features section
+          const bankGrid = featuresEl.querySelector('div[style*="grid"]');
+          const bankCards = bankGrid ? Array.from(bankGrid.children) : [];
 
           scatteredRefs.current.forEach((el, i) => {
             if (!el) return;
-            // Start hidden at stack position
+
+            // Bills spawn from the card's position (WP2 area during band break)
             gsap.set(el, {
-              top: "55%",
-              right: "2%",
+              top: "20%",
+              right: "6%",
               x: 0,
               y: 0,
               rotation: 0,
@@ -242,40 +240,53 @@ export default function FloatingCard() {
               scale: 1,
             });
 
-            // Single timeline: appear → fan out → fly to bank → fade
+            // Calculate destination: fly to actual bank card position
+            let destX = -900;
+            let destY = 150;
+            let destRot = -10;
+            const bankIndex = Math.min(i, bankCards.length - 1);
+            if (bankCards[bankIndex]) {
+              const bankRect = bankCards[bankIndex].getBoundingClientRect();
+              const elRect = el.getBoundingClientRect();
+              destX = bankRect.left + bankRect.width / 2 - elRect.left - elRect.width / 2;
+              destY = bankRect.top + bankRect.height / 2 - elRect.top - elRect.height / 2;
+              destRot = [-10, 8, -20, 15, -5][i];
+            }
+
+            // Single timeline
             const billTl = gsap.timeline({
               scrollTrigger: {
                 trigger: enterprisesEl,
-                start: "top 60%",
+                start: "top 40%",
                 endTrigger: featuresEl,
-                end: "center top",
+                end: "top -20%",
                 scrub: 1.5,
               },
             });
 
-            // 0-30%: Appear and fan out from stack
+            // 0-25%: Appear and fan out from stack
             billTl.fromTo(el,
               { opacity: 0, x: 0, y: 0, rotation: 0, scale: 0.8 },
-              { opacity: 1, x: fanOffsets[i].x, y: fanOffsets[i].y, rotation: fanOffsets[i].rot, scale: 1, duration: 0.3 },
+              { opacity: 1, x: fanOffsets[i].x, y: fanOffsets[i].y, rotation: fanOffsets[i].rot, scale: 1, duration: 0.25 },
               0
             );
 
-            // 30-85%: Fly toward bank
+            // 25-80%: Fly toward bank card
             billTl.to(el, {
-              x: bankDestinations[i].x,
-              y: bankDestinations[i].y,
-              rotation: bankDestinations[i].rot,
+              x: destX,
+              y: destY,
+              rotation: destRot,
               duration: 0.55,
               ease: "power1.inOut",
-            }, 0.3);
+            }, 0.25);
 
-            // 85-100%: Fade out at bank
+            // 80-100%: Fade out at bank
             billTl.to(el, {
               opacity: 0,
-              scale: 0.6,
-              duration: 0.15,
+              scale: 0.5,
+              duration: 0.2,
               ease: "power2.in",
-            }, 0.85);
+            }, 0.8);
           });
         }
 
