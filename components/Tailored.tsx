@@ -236,7 +236,7 @@ export default function Tailored() {
     >
       <div
         className="sticky top-0 h-screen overflow-hidden"
-        style={{ background: "#e8f5e9", zIndex: 51 }}
+        style={{ background: "var(--navy)", zIndex: 51 }}
       >
         <div className="max-w-[1400px] mx-auto px-4 lg:px-10 h-full flex items-center">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center w-full">

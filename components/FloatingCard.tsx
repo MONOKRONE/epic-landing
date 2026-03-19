@@ -32,6 +32,7 @@ export default function FloatingCard() {
   const bandRightRef = useRef<HTMLDivElement>(null);
   const bandTextRef = useRef<HTMLDivElement>(null);
   const scatteredRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const wipeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const card = cardRef.current;
@@ -125,7 +126,7 @@ export default function FloatingCard() {
           ease: "power2.inOut",
         });
 
-        /* WP4 → WP5: Card grows slightly before explosion to fullscreen */
+        /* WP4: Card stays small, fades out as diagonal wipe takes over */
         cardTl.to(card, {
           top: "15%",
           right: "5%",
@@ -134,46 +135,10 @@ export default function FloatingCard() {
           rotateZ: 0,
           rotateX: 0,
           rotateY: 0,
-          duration: 0.5,
+          opacity: 0,
+          duration: 1,
           ease: "power2.inOut",
         });
-
-        /* WP5: Expansion — card becomes full-screen purple bg */
-        cardTl.to(card, {
-          top: "50%",
-          left: "50%",
-          right: "auto",
-          xPercent: -50,
-          yPercent: -50,
-          width: "200vw",
-          height: "200vh",
-          borderRadius: 0,
-          duration: 1.5,
-          ease: "power3.inOut",
-          onStart: () => {
-            // Switch to left-based positioning
-            gsap.set(card, { right: "auto" });
-          },
-          onUpdate: function () {
-            const p = this.progress();
-            // First 60%: bill fully visible, zooming in
-            // 60-100%: bill fades out, green bg fades in
-            const fadeP = Math.max(0, Math.min(1, (p - 0.75) / 0.25));
-            if (imgRef.current) imgRef.current.style.opacity = `${1 - fadeP}`;
-            if (purpleBgRef.current) purpleBgRef.current.style.opacity = `${fadeP}`;
-            // Hide bands
-            if (bandLeftRef.current) bandLeftRef.current.style.opacity = "0";
-            if (bandRightRef.current) bandRightRef.current.style.opacity = "0";
-            if (bandTextRef.current) bandTextRef.current.style.opacity = "0";
-          },
-        });
-
-        // Zoom image into the green gap between Treasury and Franklin
-        cardTl.to(imgRef.current, {
-          scale: 4,
-          duration: 1.5,
-          ease: "power3.inOut",
-        }, "<"); // "<" means start at same time as WP5
 
         /* --- Band break animation --- */
         if (enterprisesEl) {
@@ -293,42 +258,34 @@ export default function FloatingCard() {
           });
         }
 
-        /* --- Keep card as Tailored background --- */
-        if (tailoredEl) {
+        /* --- Diagonal wipe: purple wedge slides in from bottom-right --- */
+        const wipe = wipeRef.current;
+        if (wipe && tailoredEl) {
+          // Wipe enters during Features→Tailored transition
+          gsap.fromTo(wipe,
+            { yPercent: 100 },
+            {
+              yPercent: 0,
+              ease: "none",
+              scrollTrigger: {
+                trigger: featuresEl || enterprisesEl,
+                start: "bottom 60%",
+                endTrigger: tailoredEl,
+                end: "top top",
+                scrub: 1,
+              },
+            }
+          );
+
+          // Hide card once wipe covers it
           ScrollTrigger.create({
             trigger: tailoredEl,
-            start: "top 10%",
-            end: "bottom bottom",
+            start: "top 50%",
             onEnter: () => {
-              gsap.set(card, {
-                top: 0,
-                left: 0,
-                right: "auto",
-                xPercent: 0,
-                yPercent: 0,
-                width: "100vw",
-                height: "100vh",
-                borderRadius: 0,
-                rotateX: 0,
-                rotateY: 0,
-                rotateZ: 0,
-                zIndex: 40,
-              });
-              // Transition: bill fades, green bg appears for Tailored section
-              if (imgRef.current) imgRef.current.style.opacity = "0";
-              if (imgRef.current) imgRef.current.style.transform = "scale(1)";
-              if (purpleBgRef.current) purpleBgRef.current.style.opacity = "1";
+              gsap.set(card, { opacity: 0 });
             },
             onLeaveBack: () => {
-              gsap.set(card, { zIndex: 50 }); // stays in front when scrolling back from tailored
-            },
-            onLeave: () => {
-              // Hide card after Tailored ends
-              gsap.to(card, { opacity: 0, duration: 0.3 });
-            },
-            onEnterBack: () => {
-              gsap.to(card, { opacity: 1, duration: 0.3 });
-              if (imgRef.current) imgRef.current.style.transform = "";
+              gsap.set(card, { opacity: 1 });
             },
           });
         }
@@ -400,7 +357,6 @@ export default function FloatingCard() {
             width: "100%",
             height: "100%",
             objectFit: "contain",
-            transformOrigin: "37% 50%",
             zIndex: 2,
           }}
         />
@@ -477,6 +433,24 @@ export default function FloatingCard() {
           }}
         />
       </div>
+
+      {/* Diagonal purple wipe — slides up from bottom-right */}
+      <div
+        ref={wipeRef}
+        className="pointer-events-none"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 45,
+          background: "#1e1b4b",
+          clipPath: "polygon(0% 35%, 100% 0%, 100% 100%, 0% 100%)",
+          transform: "translateY(100%)",
+          willChange: "transform",
+        }}
+      />
     </div>
   );
 }
