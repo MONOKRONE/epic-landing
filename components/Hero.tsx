@@ -456,43 +456,7 @@ export default function Hero() {
                   zIndex: 3,
                 }}
               >
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.96)",
-                    backdropFilter: "blur(16px)",
-                    WebkitBackdropFilter: "blur(16px)",
-                    borderRadius: 14,
-                    boxShadow:
-                      "0 8px 32px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06)",
-                    padding: "16px 22px",
-                    minWidth: 220,
-                  }}
-                >
-                  <div
-                    className="flex items-center gap-1.5 mb-2"
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      letterSpacing: "0.08em",
-                      color: "#94a3b8",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Notification
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle />
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: "#1e293b",
-                      }}
-                    >
-                      Lien Released
-                    </span>
-                  </div>
-                </div>
+                <img src="/svg/card-lien-release.svg" alt="Lien Release Notification" style={{ width: '100%', height: 'auto' }} />
               </div>
 
               {/* --- 2. Recent Payoffs Ledger (bottom-left) --- */}
@@ -505,90 +469,7 @@ export default function Hero() {
                   zIndex: 3,
                 }}
               >
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.96)",
-                    backdropFilter: "blur(16px)",
-                    WebkitBackdropFilter: "blur(16px)",
-                    borderRadius: 14,
-                    boxShadow:
-                      "0 8px 32px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06)",
-                    padding: "16px 22px",
-                    minWidth: 250,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      letterSpacing: "0.08em",
-                      color: "#94a3b8",
-                      textTransform: "uppercase",
-                      marginBottom: 12,
-                    }}
-                  >
-                    Recent Payoffs
-                  </div>
-
-                  {/* Row 1 */}
-                  <div className="flex items-center justify-between">
-                    <div
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "#1e293b",
-                      }}
-                    >
-                      Toyota Camry
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <ChevronUp />
-                      <span
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#22c55e",
-                        }}
-                      >
-                        +$14,250
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Divider */}
-                  <div
-                    style={{
-                      height: 1,
-                      background: "#f1f5f9",
-                      margin: "10px 0",
-                    }}
-                  />
-
-                  {/* Row 2 */}
-                  <div className="flex items-center justify-between">
-                    <div
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "#1e293b",
-                      }}
-                    >
-                      Honda Civic
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <ChevronUp />
-                      <span
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#22c55e",
-                        }}
-                      >
-                        +$9,800
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <img src="/svg/card-recent-payoffs.svg" alt="Recent Payoffs" style={{ width: '100%', height: 'auto' }} />
               </div>
 
               {/* --- 3. Monthly Payoffs Chart (right) --- */}
@@ -601,60 +482,7 @@ export default function Hero() {
                   zIndex: 3,
                 }}
               >
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.96)",
-                    backdropFilter: "blur(16px)",
-                    WebkitBackdropFilter: "blur(16px)",
-                    borderRadius: 14,
-                    boxShadow:
-                      "0 8px 32px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06)",
-                    padding: "16px 22px",
-                    minWidth: 210,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      letterSpacing: "0.08em",
-                      color: "#94a3b8",
-                      textTransform: "uppercase",
-                      marginBottom: 4,
-                    }}
-                  >
-                    Monthly Payoffs
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 24,
-                      fontWeight: 700,
-                      color: "#1e293b",
-                      marginBottom: 12,
-                    }}
-                  >
-                    $1.2M
-                  </div>
-
-                  {/* Bar chart */}
-                  <div
-                    className="flex items-end gap-2"
-                    style={{ height: 56 }}
-                  >
-                    {barHeights.map((h, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          width: 18,
-                          height: `${h}%`,
-                          borderRadius: 4,
-                          background: barColors[i],
-                          transition: "height 0.6s ease",
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
+                <img src="/svg/card-monthly-payoffs.svg" alt="Monthly Payoffs" style={{ width: '100%', height: 'auto' }} />
               </div>
 
             </div>
