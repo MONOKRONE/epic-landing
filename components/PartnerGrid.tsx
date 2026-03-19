@@ -65,8 +65,8 @@ export default function PartnerGrid() {
         warped /= zoom;
 
         // Grid coordinates
-        float gridW = aspect * 1.1;
-        float gridH = 3.8;
+        float gridW = aspect * 1.045;
+        float gridH = 4.18;
         vec2 gridUV = vec2(
           (warped.x + gridW * 0.5) / gridW * COLS,
           (warped.y + gridH * 0.5) / gridH * ROWS
