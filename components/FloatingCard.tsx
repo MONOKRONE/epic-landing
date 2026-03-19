@@ -155,11 +155,9 @@ export default function FloatingCard() {
             gsap.set(card, { right: "auto" });
           },
           onUpdate: function () {
-            const p = this.progress();
-            // Crossfade: image → purple bg
-            const fadeP = Math.max(0, Math.min(1, (p - 0.2) / 0.5));
-            if (imgRef.current) imgRef.current.style.opacity = `${1 - fadeP}`;
-            if (purpleBgRef.current) purpleBgRef.current.style.opacity = `${fadeP}`;
+            // Keep bill visible during expansion
+            if (imgRef.current) imgRef.current.style.opacity = "1";
+            if (purpleBgRef.current) purpleBgRef.current.style.opacity = "0";
           },
         });
 
@@ -302,8 +300,8 @@ export default function FloatingCard() {
                 rotateZ: 0,
                 zIndex: 40,
               });
-              if (imgRef.current) imgRef.current.style.opacity = "0";
-              if (purpleBgRef.current) purpleBgRef.current.style.opacity = "1";
+              if (imgRef.current) imgRef.current.style.opacity = "1";
+              if (purpleBgRef.current) purpleBgRef.current.style.opacity = "0";
             },
             onLeaveBack: () => {
               gsap.set(card, { zIndex: 50 }); // stays in front when scrolling back from tailored
@@ -350,7 +348,7 @@ export default function FloatingCard() {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "contain",
+              objectFit: "cover",
             }}
           />
         </div>
@@ -383,7 +381,7 @@ export default function FloatingCard() {
             inset: 0,
             width: "100%",
             height: "100%",
-            objectFit: "contain",
+            objectFit: "cover",
             zIndex: 2,
           }}
         />
