@@ -63,7 +63,7 @@ export default function PartnerGrid() {
 
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
-      {/* PART 1: Stats — normal scrolling content */}
+      {/* PART A: Stats */}
       <div style={{ background: "#1e1b4b" }} className="py-16 lg:py-[120px] pb-8 lg:pb-[60px]">
         <div style={{ maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
           <div
@@ -135,7 +135,7 @@ export default function PartnerGrid() {
                 <img
                   src="/svg/static_img_Awards_Updated-logo.svg"
                   alt="Awards"
-                  style={{ height: 64, opacity: 1.0 }}
+                  className="h-12 lg:h-[110px]"
                 />
               </div>
             </div>
@@ -143,7 +143,47 @@ export default function PartnerGrid() {
         </div>
       </div>
 
-      {/* PART 2: Single grid with 3D tilt zoom */}
+      {/* PART B-MOBILE: Static partner grid for mobile */}
+      <div className="lg:hidden" style={{ background: "#2A206A" }}>
+        <div className="px-4 pb-8">
+          {/* 3-column grid of white rounded cells */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 8,
+              maxWidth: 400,
+              margin: "0 auto",
+            }}
+          >
+            {Array.from({ length: 15 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  borderRadius: 12,
+                  aspectRatio: "1 / 1.2",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        {/* Wave transition to white */}
+        <svg
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+          className="w-full block"
+          style={{ height: 80 }}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z"
+            fill="#2A206A"
+          />
+        </svg>
+      </div>
+
+      {/* PART B: WebGL Grid zoom — desktop only */}
       <div ref={gridWrapperRef} className="hidden lg:block h-[300vh] overflow-hidden">
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"
@@ -242,12 +282,6 @@ export default function PartnerGrid() {
         </div>
       </div>
 
-      {/* Mobile: simple navy to white curve */}
-      <div className="lg:hidden" style={{ background: "white" }}>
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#1e1b4b" />
-        </svg>
-      </div>
     </section>
   );
 }
