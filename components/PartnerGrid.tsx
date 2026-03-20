@@ -184,7 +184,7 @@ export default function PartnerGrid() {
           </div>
         </div>
         {/* Mobile partner grid cells */}
-        <div className="px-4 pt-8 pb-4">
+        <div className="px-4 pt-4 pb-8">
           <div
             style={{
               display: "grid",
