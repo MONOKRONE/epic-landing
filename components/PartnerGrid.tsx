@@ -64,7 +64,7 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
       {/* PART A: Stats */}
-      <div style={{ background: "#1e1b4b" }} className="py-16 lg:py-[120px] pb-8 lg:pb-[60px]">
+      <div style={{ background: "#1e1b4b" }} className="hidden lg:block py-16 lg:py-[120px] pb-8 lg:pb-[60px]">
         <div style={{ maxWidth: 1400, margin: "0 auto" }} className="px-4 lg:px-10">
           <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
@@ -143,26 +143,64 @@ export default function PartnerGrid() {
         </div>
       </div>
 
-      {/* PART B-MOBILE: Static partner grid for mobile */}
+      {/* PART C: Mobile fallback — stats + grid + wave */}
       <div className="lg:hidden" style={{ background: "#2A206A" }}>
-        <div className="px-4 pb-8">
-          {/* 3-column grid of white rounded cells */}
+        <div className="px-6 py-16">
+          <h2 className="text-3xl font-bold text-white leading-tight mb-8">
+            The results speak for themselves
+          </h2>
+          <div className="flex flex-col gap-6 mb-8">
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>
+                $290B+
+              </p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
+                volume processed in 2024
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>
+                99.99%
+              </p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
+                platform uptime in 2024
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-black" style={{ color: "#20A472" }}>
+                2,500+
+              </p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
+                lender connections nationwide
+              </p>
+            </div>
+          </div>
+          <div className="mt-8">
+            <img
+              src="/svg/static_img_Awards_Updated-logo.svg"
+              alt="Awards"
+              className="h-12"
+            />
+          </div>
+        </div>
+        {/* Mobile partner grid cells */}
+        <div className="px-4 pt-8 pb-4">
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
               gap: 8,
-              maxWidth: 400,
+              maxWidth: 360,
               margin: "0 auto",
             }}
           >
-            {Array.from({ length: 15 }).map((_, i) => (
+            {Array.from({ length: 12 }).map((_, i) => (
               <div
                 key={i}
                 style={{
-                  background: "rgba(255,255,255,0.08)",
+                  background: "rgba(255,255,255,0.06)",
                   borderRadius: 12,
-                  aspectRatio: "1 / 1.2",
+                  aspectRatio: "1 / 1.3",
                 }}
               />
             ))}
