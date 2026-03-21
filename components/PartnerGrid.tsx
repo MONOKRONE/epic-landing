@@ -18,6 +18,9 @@ export default function PartnerGrid() {
     const gl = canvas.getContext("webgl", { antialias: true, alpha: true, premultipliedAlpha: false });
     if (!gl) return;
     gl.getExtension("OES_standard_derivatives");
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.clearColor(0, 0, 0, 0);
 
     // Shaders
     const vertSrc = `
@@ -185,6 +188,7 @@ export default function PartnerGrid() {
     // Render loop
     function render() {
       const elapsed = (performance.now() - startTime) / 1000;
+      gl!.clear(gl!.COLOR_BUFFER_BIT);
       gl!.uniform1f(uProgress, scrollProgress);
       gl!.uniform1f(uTime, elapsed);
       gl!.drawArrays(gl!.TRIANGLES, 0, 6);
