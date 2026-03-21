@@ -8,9 +8,11 @@ gsap.registerPlugin(ScrollTrigger);
 export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
     const canvas = canvasRef.current;
+    const stats = statsRef.current;
     if (!gridWrapper || !canvas) return;
 
     const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
@@ -168,6 +170,20 @@ export default function PartnerGrid() {
         }
       );
 
+      // Stats overlay scrolls up and fades out
+      if (stats) {
+        gsap.to(stats, {
+          y: -300,
+          opacity: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: gridWrapper,
+            start: "top top",
+            end: "60% top",
+            scrub: 0.5,
+          },
+        });
+      }
     }, gridWrapper);
 
     // Render loop
@@ -207,6 +223,7 @@ export default function PartnerGrid() {
 
           {/* Stats overlay — absolute positioned in the right area */}
           <div
+            ref={statsRef}
             style={{
               position: "absolute",
               top: "8vh",
