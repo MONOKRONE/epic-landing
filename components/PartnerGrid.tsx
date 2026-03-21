@@ -239,27 +239,28 @@ export default function PartnerGrid() {
               color: 'white',
               marginBottom: 32,
               lineHeight: 1.15,
+              textAlign: 'right',
             }}>
               The results speak for themselves
             </h2>
 
-            <div style={{ marginBottom: 32 }}>
+            <div style={{ textAlign: 'right', marginBottom: 32 }}>
               <p style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 300, color: '#ffffff', lineHeight: 1, letterSpacing: '-0.02em' }}>$290,000,000,000+</p>
               <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>volume processed in 2024</p>
             </div>
 
-            <div style={{ display: 'flex', gap: 48, marginBottom: 36 }}>
-              <div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 48, marginBottom: 36 }}>
+              <div style={{ textAlign: 'center' }}>
                 <p style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: 300, color: '#ffffff', lineHeight: 1 }}>99.99%</p>
                 <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>platform uptime in 2024</p>
               </div>
-              <div>
+              <div style={{ textAlign: 'center' }}>
                 <p style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: 300, color: '#ffffff', lineHeight: 1 }}>2,500+</p>
                 <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>lender connections nationwide</p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 24 }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 24 }}>
               <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 80 }} />
             </div>
           </div>
