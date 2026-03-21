@@ -179,8 +179,8 @@ export default function PartnerGrid() {
           scrollTrigger: {
             trigger: gridWrapper,
             start: "top top",
-            end: "25% top",
-            scrub: 0.3,
+            end: "15% top",
+            scrub: 0.2,
           },
         });
       }
@@ -218,6 +218,7 @@ export default function PartnerGrid() {
               width: "100%",
               height: "100%",
               display: "block",
+              zIndex: 10,
             }}
           />
 
@@ -230,7 +231,8 @@ export default function PartnerGrid() {
               left: "62%",
               right: "3vw",
               pointerEvents: "none",
-              zIndex: 10,
+              zIndex: 5,
+              overflow: "hidden",
             }}
           >
             <h2 style={{
