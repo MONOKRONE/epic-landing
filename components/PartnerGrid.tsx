@@ -15,7 +15,7 @@ export default function PartnerGrid() {
     const stats = statsRef.current;
     if (!gridWrapper || !canvas) return;
 
-    const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
+    const gl = canvas.getContext("webgl", { antialias: true, alpha: true, premultipliedAlpha: false });
     if (!gl) return;
     gl.getExtension("OES_standard_derivatives");
 
@@ -88,13 +88,9 @@ export default function PartnerGrid() {
         float inGrid = step(0.0, gridUV.x) * step(0.0, gridUV.y)
                      * step(gridUV.x, COLS) * step(gridUV.y, ROWS);
 
-        // Colors — use Epic purple
-        vec3 purple = vec3(0.024, 0.119, 0.033); // #2D6135 (linear sRGB)
-        vec3 white = vec3(1.0);
-
-        vec3 color = mix(purple, white, cellMask * inGrid);
-
-        gl_FragColor = vec4(color, 1.0);
+        // Colors — transparent bg, white cards
+        float card = cellMask * inGrid;
+        gl_FragColor = vec4(1.0, 1.0, 1.0, card);
       }
     `;
 
@@ -207,7 +203,7 @@ export default function PartnerGrid() {
     <section style={{ zIndex: 52, position: "relative" }}>
 
       {/* PART A+B: WebGL Grid with stats overlay */}
-      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "180vh", position: "relative" }}>
+      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "180vh", position: "relative", background: "#2D6135" }}>
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <canvas
             ref={canvasRef}
