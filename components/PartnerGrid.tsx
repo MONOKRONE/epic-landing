@@ -89,7 +89,7 @@ export default function PartnerGrid() {
                      * step(gridUV.x, COLS) * step(gridUV.y, ROWS);
 
         // Colors — use Epic purple
-        vec3 purple = vec3(0.169, 0.369, 0.200); // #2B5E33
+        vec3 purple = vec3(0.176, 0.380, 0.208); // #2D6135
         vec3 white = vec3(1.0);
 
         vec3 color = mix(purple, white, cellMask * inGrid);
