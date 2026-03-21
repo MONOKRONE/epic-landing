@@ -385,7 +385,8 @@ export default function Hero() {
               className="relative w-full lg:w-[580px] h-[350px] lg:h-[520px]"
               style={{
                 maxWidth: "100%",
-                perspective: 900,
+                perspective: "900px",
+                transformStyle: "preserve-3d",
               }}
             >
               {/* --- Decorative flowing ribbon SVG --- */}
@@ -444,14 +445,14 @@ export default function Hero() {
               <div
                 ref={photoRef}
                 className="absolute inset-0"
-                style={{ zIndex: 2 }}
+                style={{ zIndex: 2, transformStyle: "preserve-3d" }}
               >
                 <div
                   className="w-full h-full overflow-hidden"
                   style={{
                     borderRadius: 16,
                     boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.1)",
-                    transform: "rotateY(-6deg) rotateX(4deg)",
+                    transform: "rotateY(-8deg) rotateX(5deg)",
                     transformStyle: "preserve-3d",
                   }}
                 >
@@ -474,12 +475,13 @@ export default function Hero() {
                   left: -90,
                   zIndex: 30,
                   width: 180,
+                  transformStyle: "preserve-3d",
                 }}
               >
                 <div
                   style={{
                     overflow: 'hidden',
-                    transform: "rotateY(8deg) rotateX(-3deg) translateZ(40px)",
+                    transform: "rotateY(12deg) rotateX(-5deg) translateZ(40px)",
                     transformStyle: "preserve-3d",
                     boxShadow: "0 25px 50px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.08)",
                     borderRadius: 14,
@@ -498,12 +500,13 @@ export default function Hero() {
                   right: '30%',
                   zIndex: 30,
                   width: 190,
+                  transformStyle: "preserve-3d",
                 }}
               >
                 <div
                   style={{
                     overflow: 'hidden',
-                    transform: "rotateY(5deg) rotateX(6deg) translateZ(30px)",
+                    transform: "rotateY(8deg) rotateX(10deg) translateZ(30px)",
                     transformStyle: "preserve-3d",
                     boxShadow: "0 30px 60px rgba(0,0,0,0.14), 0 12px 24px rgba(0,0,0,0.08)",
                     borderRadius: 14,
@@ -522,12 +525,13 @@ export default function Hero() {
                   right: -80,
                   zIndex: 30,
                   width: 160,
+                  transformStyle: "preserve-3d",
                 }}
               >
                 <div
                   style={{
                     overflow: 'hidden',
-                    transform: "rotateY(-10deg) rotateX(5deg) translateZ(50px)",
+                    transform: "rotateY(-14deg) rotateX(8deg) translateZ(50px)",
                     transformStyle: "preserve-3d",
                     boxShadow: "0 30px 60px rgba(0,0,0,0.15), 0 12px 24px rgba(0,0,0,0.08)",
                     borderRadius: 14,
