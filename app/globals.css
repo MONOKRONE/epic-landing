@@ -31,13 +31,13 @@
   --foreground: #171717;
 
   /* Brand */
-  --navy: #3A7D44;
-  --navy-light: #4A9154;
-  --teal: #3A7D44;
-  --teal-light: #4A9154;
-  --teal-dark: #2D6135;
-  --purple: #3A7D44;
-  --purple-light: #4A9154;
+  --navy: #2B5E33;
+  --navy-light: #3A7D44;
+  --teal: #2B5E33;
+  --teal-light: #3A7D44;
+  --teal-dark: #1E4D27;
+  --purple: #2B5E33;
+  --purple-light: #3A7D44;
 
   /* Neutrals */
   --white: #ffffff;
@@ -53,16 +53,16 @@
   --gray-900: #212529;
 
   /* Semantic */
-  --color-primary: #3A7D44;
-  --color-primary-light: #4A9154;
-  --color-accent: #3A7D44;
-  --color-accent-light: #4A9154;
-  --color-text: #2D6135;
+  --color-primary: #2B5E33;
+  --color-primary-light: #3A7D44;
+  --color-accent: #2B5E33;
+  --color-accent-light: #3A7D44;
+  --color-text: #1E4D27;
   --color-text-light: #6b7280;
   --color-text-muted: #9ca3af;
   --color-bg: #ffffff;
   --color-bg-alt: #f8f9fa;
-  --color-dark: #3A7D44;
+  --color-dark: #2B5E33;
   --color-border: #e9ecef;
 
   /* Primary shades for components */
@@ -71,9 +71,9 @@
   --color-primary-200: #a5d6a7;
   --color-primary-300: #81c784;
   --color-primary-400: #66bb6a;
-  --color-primary-500: #4A9154;
-  --color-primary-600: #3A7D44;
-  --color-primary-700: #2D6135;
+  --color-primary-500: #3A7D44;
+  --color-primary-600: #2B5E33;
+  --color-primary-700: #1E4D27;
   --color-primary-dark: #1B5E20;
 }
 

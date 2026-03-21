@@ -34,7 +34,7 @@ function DocLienRelease() {
     <>
       <div
         className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center"
-        style={{ background: "#3A7D44" }}
+        style={{ background: "#2B5E33" }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M20 6L9 17l-5-5" />
@@ -43,7 +43,7 @@ function DocLienRelease() {
       <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#94a3b8" }}>
         Official Document
       </p>
-      <h3 className="text-2xl font-black mt-1" style={{ color: "#2D6135" }}>
+      <h3 className="text-2xl font-black mt-1" style={{ color: "#1E4D27" }}>
         Lien Release
       </h3>
       <p className="text-xs font-mono mt-1" style={{ color: "#94a3b8" }}>
@@ -58,10 +58,10 @@ function DocLienRelease() {
       ].map(([label, value]) => (
         <div key={label} className="flex justify-between items-end py-2 border-b" style={{ borderColor: "#f1f5f9" }}>
           <span className="text-[10px] font-bold uppercase" style={{ color: "#94a3b8" }}>{label}</span>
-          <span className="text-sm font-bold" style={{ color: "#2D6135" }}>{value}</span>
+          <span className="text-sm font-bold" style={{ color: "#1E4D27" }}>{value}</span>
         </div>
       ))}
-      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#3A7D44", color: "white" }}>
+      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#2B5E33", color: "white" }}>
         RELEASED — March 15, 2026
       </div>
     </>
@@ -73,14 +73,14 @@ function DocTitleCertificate() {
     <>
       <div
         className="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center"
-        style={{ border: "2px solid #2D6135" }}
+        style={{ border: "2px solid #1E4D27" }}
       >
-        <span className="text-[8px] font-black tracking-wider" style={{ color: "#2D6135" }}>SEAL</span>
+        <span className="text-[8px] font-black tracking-wider" style={{ color: "#1E4D27" }}>SEAL</span>
       </div>
       <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#94a3b8" }}>
         State of California
       </p>
-      <h3 className="text-2xl font-black mt-1" style={{ color: "#2D6135" }}>
+      <h3 className="text-2xl font-black mt-1" style={{ color: "#1E4D27" }}>
         Title Certificate
       </h3>
       <p className="text-xs font-mono mt-1" style={{ color: "#94a3b8" }}>
@@ -95,10 +95,10 @@ function DocTitleCertificate() {
       ].map(([label, value]) => (
         <div key={label} className="flex justify-between items-end py-2 border-b" style={{ borderColor: "#f1f5f9" }}>
           <span className="text-[10px] font-bold uppercase" style={{ color: "#94a3b8" }}>{label}</span>
-          <span className="text-sm font-bold" style={{ color: "#2D6135" }}>{value}</span>
+          <span className="text-sm font-bold" style={{ color: "#1E4D27" }}>{value}</span>
         </div>
       ))}
-      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#2D6135", color: "white" }}>
+      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#1E4D27", color: "white" }}>
         TITLE TRANSFERRED
       </div>
     </>
@@ -110,14 +110,14 @@ function DocPayoffConfirmation() {
     <>
       <div
         className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center"
-        style={{ background: "#3A7D44" }}
+        style={{ background: "#2B5E33" }}
       >
         <span className="text-white font-bold text-lg">$</span>
       </div>
       <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#94a3b8" }}>
         Payment Verified
       </p>
-      <h3 className="text-2xl font-black mt-1" style={{ color: "#2D6135" }}>
+      <h3 className="text-2xl font-black mt-1" style={{ color: "#1E4D27" }}>
         Payoff Confirmation
       </h3>
       <p className="text-xs font-mono mt-1" style={{ color: "#94a3b8" }}>
@@ -132,10 +132,10 @@ function DocPayoffConfirmation() {
       ].map(([label, value]) => (
         <div key={label} className="flex justify-between items-end py-2 border-b" style={{ borderColor: "#f1f5f9" }}>
           <span className="text-[10px] font-bold uppercase" style={{ color: "#94a3b8" }}>{label}</span>
-          <span className="text-sm font-bold" style={{ color: "#2D6135" }}>{value}</span>
+          <span className="text-sm font-bold" style={{ color: "#1E4D27" }}>{value}</span>
         </div>
       ))}
-      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#3A7D44", color: "white" }}>
+      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#2B5E33", color: "white" }}>
         CONFIRMED — Funds Delivered
       </div>
     </>
@@ -152,7 +152,7 @@ function DocLenderDashboard() {
     <>
       <div
         className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center"
-        style={{ background: "#2D6135" }}
+        style={{ background: "#1E4D27" }}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="2" />
@@ -169,7 +169,7 @@ function DocLenderDashboard() {
       <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#94a3b8" }}>
         Epic Network
       </p>
-      <h3 className="text-2xl font-black mt-1" style={{ color: "#2D6135" }}>
+      <h3 className="text-2xl font-black mt-1" style={{ color: "#1E4D27" }}>
         Connected Lenders
       </h3>
       <p className="text-xs font-mono mt-1" style={{ color: "#94a3b8" }}>
@@ -180,19 +180,19 @@ function DocLenderDashboard() {
         {bars.map((bar) => (
           <div key={bar.label}>
             <div className="flex justify-between mb-1.5">
-              <span className="text-xs font-bold" style={{ color: "#2D6135" }}>{bar.label}</span>
-              <span className="text-xs font-bold" style={{ color: "#3A7D44" }}>{bar.pct}%</span>
+              <span className="text-xs font-bold" style={{ color: "#1E4D27" }}>{bar.label}</span>
+              <span className="text-xs font-bold" style={{ color: "#2B5E33" }}>{bar.pct}%</span>
             </div>
             <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "#f1f5f9" }}>
               <div
                 className="h-full rounded-full"
-                style={{ width: `${bar.pct}%`, background: "#3A7D44" }}
+                style={{ width: `${bar.pct}%`, background: "#2B5E33" }}
               />
             </div>
           </div>
         ))}
       </div>
-      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#2D6135", color: "white" }}>
+      <div className="mt-6 inline-block px-4 py-2 rounded-full text-xs font-bold" style={{ background: "#1E4D27", color: "white" }}>
         ALL LENDERS CONNECTED
       </div>
     </>
@@ -236,7 +236,7 @@ export default function Tailored() {
     >
       <div
         className="sticky top-0 h-screen overflow-hidden"
-        style={{ background: "#e8f5e9", zIndex: 51 }}
+        style={{ background: "#1E4D27", zIndex: 51 }}
       >
         <div className="max-w-[1400px] mx-auto px-4 lg:px-10 h-full flex items-center">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center w-full">

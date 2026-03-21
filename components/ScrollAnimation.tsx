@@ -716,7 +716,7 @@ export default function ScrollAnimation() {
                     ref={soldRef}
                     className="absolute top-4 right-4 z-20 px-6 py-3 rounded-full text-base font-black shadow-lg tracking-wider"
                     style={{
-                      background: "#3A7D44",
+                      background: "#2B5E33",
                       color: "white",
                       opacity: 0,
                     }}
@@ -746,7 +746,7 @@ export default function ScrollAnimation() {
                     <div className="w-20 h-28 bg-white rounded-lg shadow-xl border border-slate-200 flex flex-col items-center justify-center p-2">
                       <div
                         className="w-3 h-3 rounded-full mb-1"
-                        style={{ background: "#3A7D44" }}
+                        style={{ background: "#2B5E33" }}
                       />
                       <div className="w-10 h-0.5 bg-slate-200 mb-1" />
                       <div className="w-8 h-0.5 bg-slate-200 mb-1" />

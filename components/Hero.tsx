@@ -71,7 +71,7 @@ const barColors = [
   "#c7d2fe",
   "#c7d2fe",
   "#c7d2fe",
-  "#3A7D44",
+  "#2B5E33",
 ];
 
 /* ------------------------------------------------------------------ */
@@ -392,9 +392,9 @@ export default function Hero() {
               >
                 <defs>
                   <linearGradient id="heroMainGradient" x1="0.45" y1="0" x2="0.55" y2="1">
-                    <stop offset="0%" stopColor="#3A7D44" />
+                    <stop offset="0%" stopColor="#2B5E33" />
                     <stop offset="45%" stopColor="#4338a0" />
-                    <stop offset="100%" stopColor="#4A9154" />
+                    <stop offset="100%" stopColor="#3A7D44" />
                   </linearGradient>
                 </defs>
 

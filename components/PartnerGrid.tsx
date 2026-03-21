@@ -87,7 +87,7 @@ export default function PartnerGrid() {
                      * step(gridUV.x, COLS) * step(gridUV.y, ROWS);
 
         // Colors — use Epic purple
-        vec3 purple = vec3(0.227, 0.490, 0.267); // #3A7D44
+        vec3 purple = vec3(0.169, 0.369, 0.200); // #2B5E33
         vec3 white = vec3(1.0);
 
         vec3 color = mix(purple, white, cellMask * inGrid);
@@ -191,7 +191,7 @@ export default function PartnerGrid() {
     <section style={{ zIndex: 52, position: "relative" }}>
 
       {/* PART A: Stats — centered aesthetic layout */}
-      <div style={{ background: '#3A7D44' }} className="py-20 lg:py-32">
+      <div style={{ background: '#2B5E33' }} className="py-20 lg:py-32">
         <div style={{ maxWidth: 1100, margin: '0 auto' }} className="px-4 lg:px-10">
 
           {/* Title */}
@@ -254,7 +254,7 @@ export default function PartnerGrid() {
       </div>
 
       {/* PART C: Mobile fallback */}
-      <div className="lg:hidden" style={{ background: "#3A7D44" }}>
+      <div className="lg:hidden" style={{ background: "#2B5E33" }}>
         <div className="px-4 py-16 text-center">
           <h2 className="text-3xl font-bold text-white mb-8">The results speak for themselves</h2>
           <div className="flex flex-col gap-6">
@@ -276,7 +276,7 @@ export default function PartnerGrid() {
           </div>
         </div>
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#3A7D44" />
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2B5E33" />
         </svg>
       </div>
     </section>
