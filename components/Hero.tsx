@@ -149,133 +149,107 @@ export default function Hero() {
     return () => hero.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  /* ---- Scroll parallax + entry animations + scroll card ---- */
+  /* ---- All animations: entry, 3D, float, scroll ---- */
   useEffect(() => {
-    // Entry animations via CSS transitions (avoids GSAP scroll conflicts)
-    const entryEls = [
-      { el: leftContentRef.current, delay: 100 },
-      { el: photoRef.current, delay: 150 },
-      { el: notifRef.current, delay: 350 },
-      { el: ledgerRef.current, delay: 450 },
-      { el: graphRef.current, delay: 550 },
-    ];
+    const allAnims: gsap.core.Tween[] = [];
 
-    const entryTimers: ReturnType<typeof setTimeout>[] = [];
-    entryEls.forEach(({ el, delay }) => {
-      if (!el) return;
-      el.style.opacity = "0";
-      el.style.transform = "translateY(40px)";
-      const timer = setTimeout(() => {
-        el.style.transition =
-          "opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)";
-        el.style.opacity = "1";
-        el.style.transform = "translateY(0px)";
-      }, delay);
-      entryTimers.push(timer);
+    // Set per-element perspective so 3D rotations have depth
+    [photoRef, notifRef, ledgerRef, graphRef].forEach((ref) => {
+      if (ref.current) gsap.set(ref.current, { transformPerspective: 800 });
     });
 
-    // Gentle floating bob on each card
-    const floatAnims: gsap.core.Tween[] = [];
-    if (notifRef.current) {
-      floatAnims.push(gsap.to(notifRef.current, { y: -8, duration: 2.5, ease: "sine.inOut", repeat: -1, yoyo: true, delay: 0 }));
-    }
-    if (ledgerRef.current) {
-      floatAnims.push(gsap.to(ledgerRef.current, { y: -10, duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true, delay: 0.5 }));
-    }
-    if (graphRef.current) {
-      floatAnims.push(gsap.to(graphRef.current, { y: -7, duration: 2.8, ease: "sine.inOut", repeat: -1, yoyo: true, delay: 1 }));
-    }
-
-    // Scroll-based animations
-    const scrollAnims: gsap.core.Tween[] = [];
-
-    // Background orbs scroll parallax
-    scrollAnims.push(
-      gsap.to(bgOrbsRef.current, {
-        y: 200,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-      })
+    // --- Entry animations (GSAP manages all transforms, including 3D) ---
+    allAnims.push(
+      gsap.fromTo(leftContentRef.current,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: "expo.out", delay: 0.1 }
+      )
     );
-
-    // Left content scroll parallax
-    scrollAnims.push(
-      gsap.to(leftContentRef.current, {
-        y: 100,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-      })
-    );
-
-    // Photo: moves toward top-right and shrinks on scroll
-    scrollAnims.push(
+    allAnims.push(
       gsap.fromTo(photoRef.current,
-        { x: 0, y: 0, scale: 1, opacity: 1 },
-        {
-          x: 150,
-          y: -100,
-          scale: 0.7,
-          opacity: 0,
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 2,
-          },
-        }
+        { y: 40, opacity: 0, rotationY: 0, rotationX: 0 },
+        { y: 0, opacity: 1, rotationY: -6, rotationX: 4, duration: 0.9, ease: "expo.out", delay: 0.15 }
+      )
+    );
+    allAnims.push(
+      gsap.fromTo(notifRef.current,
+        { y: 40, opacity: 0, rotationY: 0, rotationX: 0, z: 0 },
+        { y: 0, opacity: 1, rotationY: 8, rotationX: -3, z: 40, duration: 0.9, ease: "expo.out", delay: 0.35 }
+      )
+    );
+    allAnims.push(
+      gsap.fromTo(ledgerRef.current,
+        { y: 40, opacity: 0, rotationY: 0, rotationX: 0, z: 0 },
+        { y: 0, opacity: 1, rotationY: 5, rotationX: 6, z: 30, duration: 0.9, ease: "expo.out", delay: 0.45 }
+      )
+    );
+    allAnims.push(
+      gsap.fromTo(graphRef.current,
+        { y: 40, opacity: 0, rotationY: 0, rotationX: 0, z: 0 },
+        { y: 0, opacity: 1, rotationY: -10, rotationX: 5, z: 50, duration: 0.9, ease: "expo.out", delay: 0.55 }
       )
     );
 
-    // SVG ribbon: fade out as hero scrolls away
+    // --- Gentle floating bob (delayed until entries complete) ---
+    if (notifRef.current) {
+      allAnims.push(gsap.to(notifRef.current, { y: -8, duration: 2.5, ease: "sine.inOut", repeat: -1, yoyo: true, delay: 1.5 }));
+    }
+    if (ledgerRef.current) {
+      allAnims.push(gsap.to(ledgerRef.current, { y: -10, duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true, delay: 1.5 }));
+    }
+    if (graphRef.current) {
+      allAnims.push(gsap.to(graphRef.current, { y: -7, duration: 2.8, ease: "sine.inOut", repeat: -1, yoyo: true, delay: 1.5 }));
+    }
+
+    // --- Scroll-based animations ---
+    // Background orbs parallax
+    allAnims.push(
+      gsap.to(bgOrbsRef.current, {
+        y: 200,
+        scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: 1 },
+      })
+    );
+
+    // Left content parallax
+    allAnims.push(
+      gsap.to(leftContentRef.current, {
+        y: 100,
+        scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: 1 },
+      })
+    );
+
+    // Photo: scroll out (rotations preserved — GSAP only animates specified props)
+    allAnims.push(
+      gsap.to(photoRef.current, {
+        x: 150, y: -100, scale: 0.7, opacity: 0,
+        scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: 2 },
+      })
+    );
+
+    // SVG ribbon fade
     if (svgRibbonRef.current) {
-      scrollAnims.push(
-        gsap.fromTo(svgRibbonRef.current,
-          { opacity: 1 },
-          {
-            opacity: 0,
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: "top top",
-              end: "60% top",
-              scrub: 2,
-            },
-          }
-        )
+      allAnims.push(
+        gsap.to(svgRibbonRef.current, {
+          opacity: 0,
+          scrollTrigger: { trigger: heroRef.current, start: "top top", end: "60% top", scrub: 2 },
+        })
       );
     }
 
-    // Floating UI cards: fade out with the photo
+    // Cards: scroll out (rotations preserved — only y and opacity change)
     [notifRef, ledgerRef, graphRef].forEach((ref) => {
-      scrollAnims.push(
-        gsap.fromTo(ref.current,
-          { y: 0, opacity: 1 },
-          {
-            y: -80,
-            opacity: 0,
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: "top top",
-              end: "60% top",
-              scrub: 2,
-            },
-          }
-        )
+      if (!ref.current) return;
+      allAnims.push(
+        gsap.to(ref.current, {
+          y: -80, opacity: 0,
+          scrollTrigger: { trigger: heroRef.current, start: "top top", end: "60% top", scrub: 2 },
+        })
       );
     });
 
     return () => {
-      entryTimers.forEach((t) => clearTimeout(t));
-      floatAnims.forEach((a) => a.kill());
-      scrollAnims.forEach((a) => a.kill());
-      scrollAnims.forEach((a) => {
+      allAnims.forEach((a) => {
+        a.kill();
         if (a.scrollTrigger) a.scrollTrigger.kill();
       });
     };
@@ -383,11 +357,7 @@ export default function Hero() {
           >
             <div
               className="relative w-full lg:w-[580px] h-[350px] lg:h-[520px]"
-              style={{
-                maxWidth: "100%",
-                perspective: "900px",
-                transformStyle: "preserve-3d",
-              }}
+              style={{ maxWidth: "100%" }}
             >
               {/* --- Decorative flowing ribbon SVG --- */}
               <svg
@@ -444,26 +414,20 @@ export default function Hero() {
               {/* --- Main Background Photo --- */}
               <div
                 ref={photoRef}
-                className="absolute inset-0"
-                style={{ zIndex: 2, transformStyle: "preserve-3d" }}
+                className="absolute inset-0 overflow-hidden"
+                style={{
+                  borderRadius: 16,
+                  boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.1)",
+                  zIndex: 2,
+                }}
               >
-                <div
-                  className="w-full h-full overflow-hidden"
-                  style={{
-                    borderRadius: 16,
-                    boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.1)",
-                    transform: "rotateY(-8deg) rotateX(5deg)",
-                    transformStyle: "preserve-3d",
-                  }}
-                >
-                  <Image
-                    src="/jpg/salesman-car-showroom.jpg"
-                    alt="Customer using mobile payment"
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
+                <Image
+                  src="/jpg/salesman-car-showroom.jpg"
+                  alt="Customer using mobile payment"
+                  fill
+                  className="object-cover"
+                  priority
+                />
               </div>
 
               {/* --- 1. Lien Released Notification (top-left) --- */}
@@ -475,20 +439,12 @@ export default function Hero() {
                   left: -90,
                   zIndex: 30,
                   width: 180,
-                  transformStyle: "preserve-3d",
+                  overflow: 'hidden',
+                  boxShadow: "0 25px 50px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.08)",
+                  borderRadius: 14,
                 }}
               >
-                <div
-                  style={{
-                    overflow: 'hidden',
-                    transform: "rotateY(12deg) rotateX(-5deg) translateZ(40px)",
-                    transformStyle: "preserve-3d",
-                    boxShadow: "0 25px 50px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.08)",
-                    borderRadius: 14,
-                  }}
-                >
-                  <img src="/svg/card-lien-release.svg" alt="Lien Release Notification" style={{ width: '100%', height: 'auto', display: 'block' }} />
-                </div>
+                <img src="/svg/card-lien-release.svg" alt="Lien Release Notification" style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
 
               {/* --- 2. Recent Payoffs Ledger (bottom-left) --- */}
@@ -500,20 +456,12 @@ export default function Hero() {
                   right: '30%',
                   zIndex: 30,
                   width: 190,
-                  transformStyle: "preserve-3d",
+                  overflow: 'hidden',
+                  boxShadow: "0 30px 60px rgba(0,0,0,0.14), 0 12px 24px rgba(0,0,0,0.08)",
+                  borderRadius: 14,
                 }}
               >
-                <div
-                  style={{
-                    overflow: 'hidden',
-                    transform: "rotateY(8deg) rotateX(10deg) translateZ(30px)",
-                    transformStyle: "preserve-3d",
-                    boxShadow: "0 30px 60px rgba(0,0,0,0.14), 0 12px 24px rgba(0,0,0,0.08)",
-                    borderRadius: 14,
-                  }}
-                >
-                  <img src="/svg/card-recent-payoffs.svg" alt="Recent Payoffs" style={{ width: '100%', height: 'auto', display: 'block' }} />
-                </div>
+                <img src="/svg/card-recent-payoffs.svg" alt="Recent Payoffs" style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
 
               {/* --- 3. Monthly Payoffs Chart (right) --- */}
@@ -525,20 +473,12 @@ export default function Hero() {
                   right: -80,
                   zIndex: 30,
                   width: 160,
-                  transformStyle: "preserve-3d",
+                  overflow: 'hidden',
+                  boxShadow: "0 30px 60px rgba(0,0,0,0.15), 0 12px 24px rgba(0,0,0,0.08)",
+                  borderRadius: 14,
                 }}
               >
-                <div
-                  style={{
-                    overflow: 'hidden',
-                    transform: "rotateY(-14deg) rotateX(8deg) translateZ(50px)",
-                    transformStyle: "preserve-3d",
-                    boxShadow: "0 30px 60px rgba(0,0,0,0.15), 0 12px 24px rgba(0,0,0,0.08)",
-                    borderRadius: 14,
-                  }}
-                >
-                  <img src="/svg/card-monthly-payoffs.svg" alt="Monthly Payoffs" style={{ width: '100%', height: 'auto', display: 'block' }} />
-                </div>
+                <img src="/svg/card-monthly-payoffs.svg" alt="Monthly Payoffs" style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
 
             </div>
