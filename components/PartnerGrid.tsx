@@ -207,7 +207,7 @@ export default function PartnerGrid() {
     <section style={{ zIndex: 52, position: "relative" }}>
 
       {/* PART A+B: WebGL Grid with stats overlay */}
-      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "180vh", position: "relative", background: "#2D6135" }}>
+      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "180vh", position: "relative", background: "#1E4D27" }}>
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <canvas
             ref={canvasRef}
@@ -269,7 +269,7 @@ export default function PartnerGrid() {
       </div>
 
       {/* PART C: Mobile fallback */}
-      <div className="lg:hidden" style={{ background: "#2B5E33" }}>
+      <div className="lg:hidden" style={{ background: "#1E4D27" }}>
         <div className="px-4 py-16 text-center">
           <h2 className="text-3xl font-bold text-white mb-8">The results speak for themselves</h2>
           <div className="flex flex-col gap-6">
@@ -291,7 +291,7 @@ export default function PartnerGrid() {
           </div>
         </div>
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2B5E33" />
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#1E4D27" />
         </svg>
       </div>
     </section>
