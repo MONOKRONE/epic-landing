@@ -8,7 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 export default function PartnerGrid() {
   const gridWrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   useEffect(() => {
     const gridWrapper = gridWrapperRef.current;
     const canvas = canvasRef.current;
@@ -48,11 +47,9 @@ export default function PartnerGrid() {
         vec2 uv = v_uv;
         float aspect = u_resolution.x / u_resolution.y;
         vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
+        float t = u_progress;
 
-        // Reversed: progress 0 = zoomed out (grid visible), progress 1 = zoomed in (navy)
-        float t = 1.0 - u_progress;
-
-        // Warp: curtain pull — strongest when zoomed out
+        // Warp: curtain pull
         float warpAmt = t * t * 5.0;
         float yBottom = clamp(0.5 - p.y, 0.0, 1.0);
         float xSpread = 1.0 + warpAmt * yBottom * yBottom;
@@ -60,15 +57,8 @@ export default function PartnerGrid() {
         warped.x = p.x / xSpread;
         warped.y = -p.y - 1.76;
 
-        // Zoom target offset — drift toward 2nd column as we zoom in
-        float drift = smoothstep(0.3, 0.95, u_progress);
-        warped.x += drift * 0.12;
-        warped.y -= drift * 0.08;
-
-        // Zoom: from very zoomed out → through normal → deep into a card gap (navy)
-        float zoomOut = 1.0 + t * t * 8.0;
-        float zoomIn = 1.0 + pow(u_progress, 3.0) * 18.0;
-        float zoom = zoomOut / zoomIn;
+        // Zoom
+        float zoom = 1.0 + t * t * 8.0;
         warped /= zoom;
 
         // Grid coordinates
@@ -78,15 +68,14 @@ export default function PartnerGrid() {
           (warped.x + gridW * 0.5) / gridW * COLS,
           (warped.y + gridH * 0.5) / gridH * ROWS
         );
-
-        // Staircase: each column shifts down
+        // Staircase: each column shifts down by 33% of one cell height
         float colIndex = clamp(floor(gridUV.x), 0.0, COLS - 1.0);
         float stairOffset = colIndex * 0.33;
         gridUV.y -= stairOffset;
 
         vec2 cellUV = fract(gridUV);
-        float gap = mix(0.012, 0.025, t);
-        float cornerR = mix(0.003, 0.045, t);
+        float gap = mix(0.025, 0.012, t);
+        float cornerR = mix(0.045, 0.003, t);
 
         vec2 cellCenter = cellUV - 0.5;
         vec2 halfBox = vec2(0.5 - gap);
@@ -97,15 +86,11 @@ export default function PartnerGrid() {
         float inGrid = step(0.0, gridUV.x) * step(0.0, gridUV.y)
                      * step(gridUV.x, COLS) * step(gridUV.y, ROWS);
 
-        // Colors
+        // Colors — use Epic purple
         vec3 purple = vec3(0.165, 0.125, 0.416); // #2A206A
         vec3 white = vec3(1.0);
 
         vec3 color = mix(purple, white, cellMask * inGrid);
-
-        // Fade to solid navy as we zoom deep in
-        float fadeToNavy = smoothstep(0.78, 1.0, u_progress);
-        color = mix(color, purple, fadeToNavy);
 
         gl_FragColor = vec4(color, 1.0);
       }
@@ -182,6 +167,7 @@ export default function PartnerGrid() {
           },
         }
       );
+
     }, gridWrapper);
 
     // Render loop
@@ -204,27 +190,11 @@ export default function PartnerGrid() {
   return (
     <section style={{ zIndex: 52, position: "relative" }}>
 
-      {/* PART A: WebGL Grid — zooms IN from staircase grid to solid navy */}
-      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "300vh", position: "relative" }}>
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
-          <canvas
-            ref={canvasRef}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              display: "block",
-            }}
-          />
-        </div>
-      </div>
-
-      {/* PART B: Stats — seamless navy continuation */}
+      {/* PART A: Stats — centered aesthetic layout */}
       <div style={{ background: '#2A206A' }} className="py-20 lg:py-32">
         <div style={{ maxWidth: 1100, margin: '0 auto' }} className="px-4 lg:px-10">
 
+          {/* Title */}
           <h2 style={{
             fontSize: 'clamp(2rem, 4vw, 3.2rem)',
             fontWeight: 700,
@@ -236,11 +206,13 @@ export default function PartnerGrid() {
             The results speak for themselves
           </h2>
 
+          {/* Big stat — full number */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <p style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', fontWeight: 300, color: '#20A472', lineHeight: 1, letterSpacing: '-0.02em' }}>$290,000,000,000+</p>
             <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', marginTop: 12 }}>volume processed in 2024</p>
           </div>
 
+          {/* Two smaller stats side by side */}
           <div style={{
             display: 'flex',
             justifyContent: 'center',
@@ -257,9 +229,27 @@ export default function PartnerGrid() {
             </div>
           </div>
 
+          {/* Awards — bigger */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 32 }}>
             <img src="/svg/static_img_Awards_Updated-logo.svg" alt="Awards" style={{ height: 110 }} />
           </div>
+        </div>
+      </div>
+
+      {/* PART B: WebGL Grid zoom — scroll driven */}
+      <div ref={gridWrapperRef} className="hidden lg:block" style={{ height: "180vh", position: "relative" }}>
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              display: "block",
+            }}
+          />
         </div>
       </div>
 
