@@ -226,10 +226,9 @@ export default function PartnerGrid() {
             ref={statsRef}
             style={{
               position: "absolute",
-              top: "8vh",
-              right: "4vw",
-              width: "50%",
-              maxWidth: 650,
+              top: "6vh",
+              left: "58%",
+              right: "3vw",
               pointerEvents: "none",
               zIndex: 10,
             }}
