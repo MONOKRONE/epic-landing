@@ -218,7 +218,6 @@ export default function PartnerGrid() {
               width: "100%",
               height: "100%",
               display: "block",
-              zIndex: 10,
             }}
           />
 
@@ -228,10 +227,10 @@ export default function PartnerGrid() {
             style={{
               position: "absolute",
               top: "6vh",
-              left: "62%",
-              right: "3vw",
+              left: "65%",
+              right: "2vw",
               pointerEvents: "none",
-              zIndex: 5,
+              zIndex: 10,
               overflow: "hidden",
             }}
           >
@@ -247,7 +246,7 @@ export default function PartnerGrid() {
             </h2>
 
             <div style={{ textAlign: 'right', marginBottom: 32 }}>
-              <p style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 300, color: '#ffffff', lineHeight: 1, letterSpacing: '-0.02em' }}>$290,000,000,000+</p>
+              <p style={{ fontSize: 'clamp(2rem, 3.5vw, 3.5rem)', fontWeight: 300, color: '#ffffff', lineHeight: 1, letterSpacing: '-0.02em' }}>$290,000,000,000+</p>
               <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>volume processed in 2024</p>
             </div>
 
