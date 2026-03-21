@@ -179,8 +179,8 @@ export default function PartnerGrid() {
           scrollTrigger: {
             trigger: gridWrapper,
             start: "top top",
-            end: "60% top",
-            scrub: 0.5,
+            end: "25% top",
+            scrub: 0.3,
           },
         });
       }
