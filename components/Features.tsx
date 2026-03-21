@@ -122,7 +122,7 @@ export default function Features() {
                     style={{ width: '80%', height: '80%', objectFit: 'contain' }}
                   />
                 </div>
-                <p style={{ marginTop: 8, fontSize: 13, fontWeight: 500, color: '#1e1b4b' }}>
+                <p style={{ marginTop: 8, fontSize: 13, fontWeight: 500, color: '#2D6135' }}>
                   {bank.name}
                 </p>
               </div>

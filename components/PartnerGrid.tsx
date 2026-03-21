@@ -87,7 +87,7 @@ export default function PartnerGrid() {
                      * step(gridUV.x, COLS) * step(gridUV.y, ROWS);
 
         // Colors — use Epic purple
-        vec3 purple = vec3(0.165, 0.125, 0.416); // #2A206A
+        vec3 purple = vec3(0.227, 0.490, 0.267); // #3A7D44
         vec3 white = vec3(1.0);
 
         vec3 color = mix(purple, white, cellMask * inGrid);
@@ -191,7 +191,7 @@ export default function PartnerGrid() {
     <section style={{ zIndex: 52, position: "relative" }}>
 
       {/* PART A: Stats — centered aesthetic layout */}
-      <div style={{ background: '#2A206A' }} className="py-20 lg:py-32">
+      <div style={{ background: '#3A7D44' }} className="py-20 lg:py-32">
         <div style={{ maxWidth: 1100, margin: '0 auto' }} className="px-4 lg:px-10">
 
           {/* Title */}
@@ -208,7 +208,7 @@ export default function PartnerGrid() {
 
           {/* Big stat — full number */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <p style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', fontWeight: 300, color: '#20A472', lineHeight: 1, letterSpacing: '-0.02em' }}>$290,000,000,000+</p>
+            <p style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', fontWeight: 300, color: '#ffffff', lineHeight: 1, letterSpacing: '-0.02em' }}>$290,000,000,000+</p>
             <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', marginTop: 12 }}>volume processed in 2024</p>
           </div>
 
@@ -220,11 +220,11 @@ export default function PartnerGrid() {
             marginBottom: 56,
           }}>
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 300, color: '#20A472', lineHeight: 1 }}>99.99%</p>
+              <p style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 300, color: '#ffffff', lineHeight: 1 }}>99.99%</p>
               <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginTop: 10 }}>platform uptime in 2024</p>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 300, color: '#20A472', lineHeight: 1 }}>2,500+</p>
+              <p style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 300, color: '#ffffff', lineHeight: 1 }}>2,500+</p>
               <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginTop: 10 }}>lender connections nationwide</p>
             </div>
           </div>
@@ -254,20 +254,20 @@ export default function PartnerGrid() {
       </div>
 
       {/* PART C: Mobile fallback */}
-      <div className="lg:hidden" style={{ background: "#2A206A" }}>
+      <div className="lg:hidden" style={{ background: "#3A7D44" }}>
         <div className="px-4 py-16 text-center">
           <h2 className="text-3xl font-bold text-white mb-8">The results speak for themselves</h2>
           <div className="flex flex-col gap-6">
             <div>
-              <p className="text-3xl font-black" style={{ color: "#20A472" }}>$290B+</p>
+              <p className="text-3xl font-black" style={{ color: "#ffffff" }}>$290B+</p>
               <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>volume processed in 2024</p>
             </div>
             <div>
-              <p className="text-3xl font-black" style={{ color: "#20A472" }}>99.99%</p>
+              <p className="text-3xl font-black" style={{ color: "#ffffff" }}>99.99%</p>
               <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>platform uptime in 2024</p>
             </div>
             <div>
-              <p className="text-3xl font-black" style={{ color: "#20A472" }}>2,500+</p>
+              <p className="text-3xl font-black" style={{ color: "#ffffff" }}>2,500+</p>
               <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>lender connections nationwide</p>
             </div>
           </div>
@@ -276,7 +276,7 @@ export default function PartnerGrid() {
           </div>
         </div>
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full block" style={{ height: 80 }} xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#2A206A" />
+          <path d="M0,0 C480,120 960,120 1440,0 L1440,0 L0,0 Z" fill="#3A7D44" />
         </svg>
       </div>
     </section>
