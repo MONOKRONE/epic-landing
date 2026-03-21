@@ -443,22 +443,26 @@ export default function Hero() {
               {/* --- Main Background Photo --- */}
               <div
                 ref={photoRef}
-                className="absolute inset-0 overflow-hidden"
-                style={{
-                  borderRadius: 16,
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.1)",
-                  zIndex: 2,
-                  transform: "rotateY(-6deg) rotateX(4deg)",
-                  transformStyle: "preserve-3d",
-                }}
+                className="absolute inset-0"
+                style={{ zIndex: 2 }}
               >
-                <Image
-                  src="/jpg/salesman-car-showroom.jpg"
-                  alt="Customer using mobile payment"
-                  fill
-                  className="object-cover"
-                  priority
-                />
+                <div
+                  className="w-full h-full overflow-hidden"
+                  style={{
+                    borderRadius: 16,
+                    boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.1)",
+                    transform: "rotateY(-6deg) rotateX(4deg)",
+                    transformStyle: "preserve-3d",
+                  }}
+                >
+                  <Image
+                    src="/jpg/salesman-car-showroom.jpg"
+                    alt="Customer using mobile payment"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
               </div>
 
               {/* --- 1. Lien Released Notification (top-left) --- */}
@@ -470,14 +474,19 @@ export default function Hero() {
                   left: -90,
                   zIndex: 30,
                   width: 180,
-                  overflow: 'hidden',
-                  transform: "rotateY(8deg) rotateX(-3deg) translateZ(40px)",
-                  transformStyle: "preserve-3d",
-                  boxShadow: "0 25px 50px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.08)",
-                  borderRadius: 14,
                 }}
               >
-                <img src="/svg/card-lien-release.svg" alt="Lien Release Notification" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    transform: "rotateY(8deg) rotateX(-3deg) translateZ(40px)",
+                    transformStyle: "preserve-3d",
+                    boxShadow: "0 25px 50px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.08)",
+                    borderRadius: 14,
+                  }}
+                >
+                  <img src="/svg/card-lien-release.svg" alt="Lien Release Notification" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                </div>
               </div>
 
               {/* --- 2. Recent Payoffs Ledger (bottom-left) --- */}
@@ -489,14 +498,19 @@ export default function Hero() {
                   right: '30%',
                   zIndex: 30,
                   width: 190,
-                  overflow: 'hidden',
-                  transform: "rotateY(5deg) rotateX(6deg) translateZ(30px)",
-                  transformStyle: "preserve-3d",
-                  boxShadow: "0 30px 60px rgba(0,0,0,0.14), 0 12px 24px rgba(0,0,0,0.08)",
-                  borderRadius: 14,
                 }}
               >
-                <img src="/svg/card-recent-payoffs.svg" alt="Recent Payoffs" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    transform: "rotateY(5deg) rotateX(6deg) translateZ(30px)",
+                    transformStyle: "preserve-3d",
+                    boxShadow: "0 30px 60px rgba(0,0,0,0.14), 0 12px 24px rgba(0,0,0,0.08)",
+                    borderRadius: 14,
+                  }}
+                >
+                  <img src="/svg/card-recent-payoffs.svg" alt="Recent Payoffs" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                </div>
               </div>
 
               {/* --- 3. Monthly Payoffs Chart (right) --- */}
@@ -508,14 +522,19 @@ export default function Hero() {
                   right: -80,
                   zIndex: 30,
                   width: 160,
-                  overflow: 'hidden',
-                  transform: "rotateY(-10deg) rotateX(5deg) translateZ(50px)",
-                  transformStyle: "preserve-3d",
-                  boxShadow: "0 30px 60px rgba(0,0,0,0.15), 0 12px 24px rgba(0,0,0,0.08)",
-                  borderRadius: 14,
                 }}
               >
-                <img src="/svg/card-monthly-payoffs.svg" alt="Monthly Payoffs" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    transform: "rotateY(-10deg) rotateX(5deg) translateZ(50px)",
+                    transformStyle: "preserve-3d",
+                    boxShadow: "0 30px 60px rgba(0,0,0,0.15), 0 12px 24px rgba(0,0,0,0.08)",
+                    borderRadius: 14,
+                  }}
+                >
+                  <img src="/svg/card-monthly-payoffs.svg" alt="Monthly Payoffs" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                </div>
               </div>
 
             </div>
