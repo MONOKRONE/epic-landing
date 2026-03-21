@@ -227,7 +227,7 @@ export default function PartnerGrid() {
             style={{
               position: "absolute",
               top: "6vh",
-              left: "58%",
+              left: "62%",
               right: "3vw",
               pointerEvents: "none",
               zIndex: 10,
